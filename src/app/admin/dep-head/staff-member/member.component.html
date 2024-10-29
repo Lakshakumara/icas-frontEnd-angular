@@ -1,0 +1,48 @@
+<div class="topClass">
+  <h1>Member Details</h1>
+  <div class="spinner-container" *ngIf="dataSource.loading$ | async">
+    <mat-progress-bar>Loading </mat-progress-bar>
+  </div>
+  <div class="extra" *ngIf="member" >
+    <fieldset>
+      <legend>CONFIRMATION OF EMPLOYMENTSHIP</legend>
+      <li>
+        <a>Name: {{member.name}}</a>
+        <a>Department: {{member.department}}</a>
+        <a>Designation: {{member.designation}}</a>
+        </li>
+        <div class="hori">
+        <mat-checkbox [checked]="regAccept" (change)="regAccept = !regAccept" >Certify working up to now</mat-checkbox>
+      <button [disabled]="!regAccept"  mat-raised-button color="primary" (click)="acceptRegistration()">Accept Registration</button>
+      </div>
+    </fieldset>
+  </div>
+
+
+  <!--<mat-form-field class="example-full-width">
+    <input type="text" placeholder="Search by Employee No or Name" aria-label="text" matInput
+        [matAutocomplete]="auto">
+    <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let option of suggestEmployee" [value]="option">{{option}}
+        </mat-option>
+    </mat-autocomplete>
+</mat-form-field> -->
+
+
+  <table mat-table class="topClass-table mat-elevation-z8" [dataSource]="dataSource" matSort matSortActive="id"
+    matSortDirection="asc" matSortDisableClear>
+
+    <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema; let i = index">
+      <th *matHeaderCellDef> {{columnsSchema[i].label}}</th>
+      <td mat-cell *matCellDef="let element" [align]="columnsSchema[i].type === 'number' ? 'right' : 'left'">
+        {{ element[col.key] }} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumn; sticky:true"></tr>
+    <tr mat-row *matRowDef="let member; columns: displayedColumn;" (click)="onRowClicked(member)"></tr>
+  </table>
+
+  <mat-paginator class="mat-elevation-z8" #paginator [length]="10" [pageIndex]="0" [pageSize]="3"
+    [pageSizeOptions]="[1,5, 10, 20]" aria-label="Select page">
+  </mat-paginator>
+</div>

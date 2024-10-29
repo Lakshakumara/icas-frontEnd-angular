@@ -1,0 +1,35 @@
+<div class="main-div" fxLayoutAlign="center center" fxFlexFill>
+  <mat-card>
+    <mat-card-header>
+      <div style="text-align: center">
+        <mat-card-title color="primary"
+          >OUSL Insurance Claim Automation System</mat-card-title
+        >
+      </div>
+    </mat-card-header>
+    <!--mat-toolbar color="primary">OUSL Insurance Claim Automation System</mat-toolbar-->
+    <mat-card-content>
+      <form
+        class="login-form"
+        fxLayoutAlign="stretch"
+        fxLayout="column"
+        [formGroup]="empNoForm"
+        (ngSubmit)="isMember()"
+      >
+        <mat-form-field class="example-full-width">
+          <mat-label>Employee Number</mat-label>
+          <input matInput placeholder="Search..." formControlName="empNo" />
+        </mat-form-field>
+        <button
+          mat-raised-button
+          [disabled]="!empNoForm.valid"
+          type="submit"
+          color="primary"
+        >
+          Search
+        </button>
+      </form>
+    </mat-card-content>
+    <mat-card-actions> </mat-card-actions>
+  </mat-card>
+</div>

@@ -1,0 +1,133 @@
+<form [formGroup]="formGroup">
+  <h1 mat-dialog-title>{{ inputdata.title }}</h1>
+  <div mat-dialog-content>
+    <mat-checkbox [disabled]="
+        member.currentRegistration.schemeType == SCHEME_INDIVIDUAL ||
+        member.dependants.length == 0
+      " #chkEnabledep (change)="disableDependants(chkEnabledep.checked)">Claim for Dependent</mat-checkbox>
+    <mat-form-field class="hori">
+      <mat-label>Claim Benificiary</mat-label>
+      <mat-select formControlName="dependant">
+        <mat-option [value]="claimer" *ngFor="let claimer of member.dependants">{{ claimer.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Request Claim Amount</mat-label>
+      <input matInput formControlName="requestAmount" />
+    </mat-form-field>
+    <app-chip-selector (getScheme)="onNotifySelectedScheme($event)"></app-chip-selector>
+    <!--app-test (getTitles)="onNotifySelected($event)"></app-test-->
+
+    <mat-checkbox #chkEnableInjury (change)="disableInjury(chkEnableInjury.checked)">Injury</mat-checkbox>
+
+    <ng-container *ngIf="chkEnableInjury.checked; then injuryData">
+    </ng-container>
+    <ng-template #injuryData>
+      <mat-form-field class="example-full-width">
+        <mat-label>Date of Injury</mat-label>
+        <input matInput [matDatepicker]="pickerin" [min]="beforeThreeMonth" [max]="today" placeholder="Date of Injury"
+          formControlName="injuryDate" />
+        <mat-datepicker-toggle matIconSuffix [for]="pickerin"></mat-datepicker-toggle>
+        <mat-datepicker #pickerin></mat-datepicker>
+        <mat-hint>dd/mm/yyyy</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Place of Incident</mat-label>
+        <input matInput formControlName="injuryPlace" />
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Precisely how the Accident Occured</mat-label>
+        <input matInput formControlName="injuryHow" />
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Nature & Extent of Injuries</mat-label>
+        <input matInput formControlName="injuryNature" />
+      </mat-form-field>
+    </ng-template>
+    <mat-divider></mat-divider>
+
+    <mat-checkbox #chkEnableIllness (change)="disableIllness(chkEnableIllness.checked)">Illness</mat-checkbox>
+    <ng-container *ngIf="chkEnableIllness.checked; then illnessData">
+    </ng-container>
+    <ng-template #illnessData>
+      <mat-form-field class="example-full-width">
+        <mat-label>Date of Commencement of Illness</mat-label>
+        <input matInput [matDatepicker]="pickerid" [min]="beforeThreeMonth" [max]="today" placeholder="Date of Injury"
+          formControlName="illnessDate" />
+        <mat-datepicker-toggle matIconSuffix [for]="pickerid"></mat-datepicker-toggle>
+        <mat-datepicker #pickerid></mat-datepicker>
+        <mat-hint>dd/mm/yyyy</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Nature of Description of illness</mat-label>
+        <input matInput formControlName="illnessNature" />
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Date of first consultation regarding this ailment</mat-label>
+        <input matInput [matDatepicker]="pickercd" [min]="beforeThreeMonth" [max]="today" placeholder="choose.."
+          formControlName="illnessFirstConsultDate" />
+        <mat-datepicker-toggle matIconSuffix [for]="pickercd"></mat-datepicker-toggle>
+        <mat-datepicker #pickercd></mat-datepicker>
+        <mat-hint>dd/mm/yyyy</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Nature & address of first Doctor who was first consulted</mat-label>
+        <input matInput formControlName="illnessFirstDr" />
+      </mat-form-field>
+    </ng-template>
+    <mat-divider></mat-divider>
+
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>Period of Hospitalization</mat-label>
+      <mat-date-range-input [rangePicker]="pickerhd" [min]="beforeThreeMonth" [max]="today">
+        <input matInput matStartDate formControlName="hospitalStartDate" placeholder="Start date" />
+        <input matInput matEndDate formControlName="hospitalEndDate" placeholder="End date" />
+      </mat-date-range-input>
+      <mat-hint>dd/mm/yyyy – dd/mm/yyyy</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="pickerhd"></mat-datepicker-toggle>
+      <mat-date-range-picker #pickerhd></mat-date-range-picker>
+
+      <!--@if (range.controls.start.hasError('matStartDateInvalid')) {
+            <mat-error>Invalid start date</mat-error>
+            }
+            @if (range.controls.end.hasError('matEndDateInvalid')) {
+            <mat-error>Invalid end date</mat-error>
+            }-->
+    </mat-form-field>
+    <mat-divider></mat-divider>
+
+    <Details>
+      <summary>General Information*</summary>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Nature of treatment</mat-label>
+        <input matInput formControlName="infoTreatment" />
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Name of Hospital concerned if any</mat-label>
+        <input matInput formControlName="infoHospital" />
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Name of any consulting Specialists</mat-label>
+        <input matInput formControlName="infoConsultant" />
+      </mat-form-field>
+    </Details>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-raised-button color="primary" [disabled]="!formGroup.valid" (click)="saveClaim()">
+      Save
+    </button>
+    <button mat-raised-button color="warn" (click)="closePopup()">Close</button>
+    <!--<button mat-raised-button mat-dialog-close color="accent">Cancel</button>-->
+  </div>
+</form>

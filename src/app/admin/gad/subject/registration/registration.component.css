@@ -1,0 +1,36 @@
+.mat-card{
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+.mat-mdc-table .mdc-data-table__row:hover {
+  background-color: rgba(236, 236, 236, 0.514) !important;
+}
+
+.mat-column-id {
+  width: 50px;
+}
+
+.mat-mdc-table .mdc-data-table__header-row {
+  height: 35px;
+  background-color: lightgray;
+  text-align: left;
+}
+
+.mat-mdc-table .mdc-data-table__row {
+  height: 35px;
+}
+
+.mySpan {
+  display: inline-block;
+  width: 30%;
+}
+
+.input {
+  padding: 4px 10px;
+  border: 1px solid #666;
+  background: #cce6ff;
+}
+.btn {
+  align-items: flex-end;
+}

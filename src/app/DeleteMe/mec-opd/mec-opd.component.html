@@ -1,0 +1,186 @@
+<div class="container">
+  <div class="header">
+    <h2>OPD Claim Medical update</h2>
+  </div>
+  <div class="nav">
+    <mat-accordion>
+      <mat-form-field>
+        <mat-label>Employee No or Name</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #input />
+      </mat-form-field>
+
+      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+          <mat-panel-title> Member Details </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div *ngIf="selectedMember">
+          <div *ngFor="let m of selectedMember">
+            <ul>
+              EmpNo:
+              <b>{{ m.empNo }}</b>
+            </ul>
+            <ul>
+              Name:
+              <b>{{ m.name }}</b>
+            </ul>
+            <ul>
+              NIC:
+              <b>{{ m.nic }}</b>
+            </ul>
+            <ul>
+              Designation:
+              <b>{{ m.designation }}</b>
+            </ul>
+            <ul>
+              Contact No:
+              <b>{{ m.contactNo }}</b>
+            </ul>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <div>
+      <table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="asc" matSortDisableClear>
+        <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema; let i = index">
+          <th *matHeaderCellDef>{{ columnsSchema[i].label }}</th>
+          <td mat-cell *matCellDef="let element" [align]="columnsSchema[i].type == 'number' ? 'right' : 'left'">
+            {{ element[col.key] }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumn"></tr>
+        <tr mat-row *matRowDef="let claimOpd; columns: displayedColumn" (click)="onRowClicked(claimOpd)"></tr>
+      </table>
+    </div>
+    <mat-paginator #paginator [length]="10" [pageIndex]="0" [pageSize]="3" [pageSizeOptions]="[1, 5, 10, 20]"
+      aria-label="Select page">
+    </mat-paginator>
+  </div>
+  <!--mat-card>
+            <table mat-table class="topClass-table mat-elevation-z8" [dataSource]="dataSource" matSort
+                matSortActive="id" matSortDirection="asc" matSortDisableClear>
+                <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema; let i = index">
+                    <th *matHeaderCellDef>{{ columnsSchema[i].label }}</th>
+                    <td mat-cell *matCellDef="let element"
+                        [align]="columnsSchema[i].type == 'number' ? 'right' : 'left'">
+                        {{ element[col.key] }}
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumn; sticky: true"></tr>
+                <tr mat-row *matRowDef="let claimOpd; columns: displayedColumn" (click)="onRowClicked(claimOpd)"></tr>
+            </table>
+            <mat-paginator class="mat-elevation-z8" #paginator [length]="10" [pageIndex]="0" [pageSize]="3"
+                [pageSizeOptions]="[1, 5, 10, 20]" aria-label="Select page">
+            </mat-paginator>
+        </mat-card-->
+
+  <mat-card class="mainbody">
+    <div *ngIf="selectedClaim != null">
+      <h4>
+        Claim Request for <b>{{ selectedClaim.requestFor }}</b>
+      </h4>
+      <table class="fullWith" cellspacing="0">
+        <tr>
+          <td>
+            Category: <b>{{ selectedClaim.category }}</b>
+          </td>
+          <td>
+            Name: <b>{{ selectedClaim.member.name }}</b>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Date: <b>{{ selectedClaim.claimDate }}</b>
+          </td>
+          <td>
+            Gender: <b>{{ selectedClaim.member.sex }}</b>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Contact: <b>{{ selectedClaim.member.contactNo }}</b>
+          </td>
+          <td>
+            DOB: <b>{{ selectedClaim.member.dob }}</b>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Request Amount:
+            <b>{{ selectedClaim.requestAmount | currency : "Rs." }}</b>
+          </td>
+          <td>
+            Designation: <b>{{ selectedClaim.member.designation }}</b>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <form [formGroup]="formGroup" *ngIf="this.selectedClaim">
+      <mat-form-field class="fullWith">
+        <mat-label>Select Scheme Title</mat-label>
+        <input type="text" matInput formControlName="stateGroup" required [matAutocomplete]="autoGroup" />
+        <mat-autocomplete #autoGroup="matAutocomplete">
+          <div *ngFor="let group of stateGroupOptions | async">
+            <mat-optgroup [label]="group.id">
+              <div *ngFor="let idTxt of group.idText">
+                <mat-option [value]="idTxt">{{ idTxt }}</mat-option>
+              </div>
+            </mat-optgroup>
+          </div>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field class="fullWith" floatLabel="always">
+        <mat-label>Remarks on medical documents</mat-label>
+        <input matInput formControlName="mecremarks" />
+      </mat-form-field>
+
+      <mat-form-field floatLabel="always">
+        <mat-label>Deduction Amount</mat-label>
+        <input matInput type="number" class="example-right-align" placeholder="0" formControlName="deductionAmount" />
+        <span matTextSuffix>.00</span>
+        <mat-hint *ngIf="selectedClaim">Request Amount {{ selectedClaim.requestAmount }}</mat-hint>
+      </mat-form-field>
+
+      <mat-checkbox formControlName="rejected" #chkEnable ngModel (change)="disableField(chkEnable.checked)">Reject
+        because</mat-checkbox>
+
+      <mat-form-field class="fullWith" floatLabel="always">
+        <mat-label>Reason for rejection</mat-label>
+        <input [attr.disabled]="true" matInput formControlName="rejectremarks" />
+      </mat-form-field>
+    </form>
+    <button mat-raised-button color="accent" (click)="updateClaim()" [disabled]="!formGroup.valid">
+      Update Claim Sheet
+    </button>
+  </mat-card>
+
+  <mat-card class="rside">
+    <mat-accordion>
+      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+          <mat-panel-title> Medical History </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div *ngIf="selectedMember">
+          <div *ngFor="let m of selectedMember">
+            <ul>
+              EmpNo:
+              <b>{{ m.empNo }}</b>
+            </ul>
+            <ul>
+              Name:
+              <b>{{ m.name }}</b>
+            </ul>
+            <ul>
+              NIC:
+              <b>{{ m.nic }}</b>
+            </ul>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card>
+</div>

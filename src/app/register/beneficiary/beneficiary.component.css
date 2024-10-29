@@ -1,0 +1,10 @@
+
+.example-full-width {
+    width: 98%;
+}
+
+.mat-input-element {
+    position: relative;
+    top: -0.3em;
+    /* Adjust accordingly to keep placeholder/input text vertically centered. */
+}

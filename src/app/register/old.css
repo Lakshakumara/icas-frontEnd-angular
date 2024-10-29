@@ -1,0 +1,44 @@
+.mat-elevation-z4{
+    width: 100%;
+  }
+  .login-wrapper {
+    height: 100%;
+    width: 100%;
+  }
+  .login-wrapper .register-form {
+    width: 100%;
+  }
+  .login-wrapper .example-full-width,
+  .login-wrapper .btn-block {
+    width: 100%;
+  }
+  .btn-block{
+    margin: 2%;
+  }
+  .login-wrapper mat-card-header {
+    text-align: left;
+    width: 100%;
+    display: flex;
+    font-weight: 400;
+  }
+  .login-wrapper mat-card-header mat-card-title {
+    font-size: 20px;
+    margin: 0;
+  }
+  .login-wrapper .mat-card {
+    padding: 40px 70px 50px;
+  }
+  .login-wrapper .mat-stroked-button {
+    border: 1px solid currentColor;
+    line-height: 54px;
+    background: #FFF7FA;
+  }
+  .login-wrapper .mat-form-field-appearance-legacy .mat-form-field-infix {
+    padding: 0.8375em 0;
+  }
+  
+  .content {
+    padding: 16px;
+  }
+  
+  

@@ -1,0 +1,67 @@
+<mat-accordion>
+    <mat-expansion-panel display="flex" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Member Application
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <form class="login-form" fxLayoutAlign="stretch" fxLayout="row" [formGroup]="appForm">
+            <div class="hori">
+                <mat-form-field class="app_dld">
+                    <mat-label>Employee Number</mat-label>
+                    <input matInput placeholder="Search..." formControlName="empNo">
+                </mat-form-field>
+
+                <mat-form-field class="app_dld">
+                    <mat-label>Application Year</mat-label>
+                    <input matInput placeholder="Year" formControlName="year">
+                </mat-form-field>
+
+                <button mat-raised-button color="accent" [disabled]="!appForm.valid"
+                    (click)="downloadMembershipApplication()">Download</button>
+            </div>
+        </form>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Claim Application
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="hori">
+        <mat-form-field class="example-full-width" appearance="outline" >
+            <mat-label>Claim List</mat-label>
+            <mat-select [(ngModel)]="selectedClaimId">
+              <mat-option [value]="c.id"  *ngFor="let c of claimList">{{c.requestFor+" on "+c.claimDate}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+        <button mat-raised-button color="accent" (click)="claimApplication()">Download</button>
+    </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Welfare Scheme Documents
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="hori">
+            
+        <button mat-raised-button color="accent" (click)="schemeRegulation()">Download Scheme Regulation</button>
+    </div>
+    </mat-expansion-panel>
+    <!--
+    <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Voucher Generation
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+    </mat-expansion-panel>
+-->
+
+</mat-accordion>

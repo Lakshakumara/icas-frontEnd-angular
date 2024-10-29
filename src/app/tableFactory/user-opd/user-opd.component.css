@@ -1,0 +1,33 @@
+
+.hori {
+  display: flex;
+  width: 100%;
+  margin-left: 16px;
+  margin-top: 16px;
+  align-items: baseline;
+  gap: 20px;
+}
+tr.mat-mdc-row:hover {
+  background-color: rgb(183, 174, 223);
+  cursor: pointer;
+}
+.mat-mdc-table .mdc-data-table__row:hover{
+  background-color: rgba(236, 236, 236, 0.514) !important;
+  }
+.mat-column-id {
+width: 32px;
+border-right: 1px solid black;
+padding-right: 24px;
+text-align: center;
+}
+
+.mat-column-claimStatus {
+font-style: italic;
+}
+.mat-column-requestAmount {
+  font-style: bold;
+  font-size: large;
+  padding-right:20px;
+  text-align: right;
+  content: ",";
+}

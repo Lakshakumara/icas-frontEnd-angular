@@ -1,0 +1,233 @@
+<div class="container">
+  <div class="header">
+    <h2>{{title}}</h2>
+  </div>
+
+  <div class="nav">
+    <mat-form-field>
+      <mat-label>Employee No or Name</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #input />
+    </mat-form-field>
+    <!--mat-accordion>
+      
+      
+      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+          <mat-panel-title> Member Details </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div *ngIf="selectedClaim">
+            <ul>
+              EmpNo:
+              <b>{{ selectedClaim.member.empNo }}</b>
+            </ul>
+            <ul>
+              Name:
+              <b>{{ selectedClaim.member.name }}</b>
+            </ul>
+            <ul>
+              NIC:
+              <b>{{ selectedClaim.member.nic }}</b>
+            </ul>
+            <ul>
+              Designation:
+              <b>{{ selectedClaim.member.designation }}</b>
+            </ul>
+            <ul>
+              Contact No:
+              <b>{{ selectedClaim.member.contactNo }}</b>
+            </ul>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion-->
+    <div>
+      <table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="asc" matSortDisableClear>
+        <!--ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema; let i = index">
+          <th *matHeaderCellDef>{{ columnsSchema[i].label }}</th>
+
+          <td mat-cell *matCellDef="let element" [align]="columnsSchema[i].type == 'number' ? 'right' : 'left'">
+            {{ element[col.key] }}
+          </td-->
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ columnsSchema[0].label }}
+          </th>
+          <td mat-cell *matCellDef="let element" class="m-card-title" test data-label="id">
+            {{element.id}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="empNo">
+          <th class="tbody" mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ columnsSchema[1].label }}
+          </th>
+
+          <td mat-cell *matCellDef="let element" class="m-card-sub-title" data-label="empNo">
+            <a  [matTooltip]="element.member.name">{{ element.empNo }}</a><!--button mat-raised-button 
+      [matTooltipDisabled]="true"
+      #myTooltip="matTooltip" 
+      matTooltip="Action done!"
+      (click)="displayTooltip()">
+    </button-->
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="requestFor">
+          <th class="mat-header-row" mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ columnsSchema[2].label }}
+          </th>
+          <td mat-cell *matCellDef="let element" class="has_label_on_mobile" data-label="requestFor">
+            {{ element.requestFor }}
+          </td>
+
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumn"></tr>
+        <tr mat-row *matRowDef="let claimOpd; columns: displayedColumn" (click)="onRowClicked(claimOpd)"></tr>
+      </table>
+    </div>
+    <!--mat-paginator #paginator [length]="10" [pageIndex]="0" [pageSize]="3" [pageSizeOptions]="[1, 5, 10, 20]"
+      aria-label="Select page">
+    </mat-paginator-->
+  </div>
+
+  <mat-card class="mainbody">
+    <div *ngIf="selectedClaim">
+      <h4>
+        Claim Request for <b>{{ selectedClaim.requestFor }}</b>
+      </h4>
+      <table class="fullWith" cellspacing="0">
+        <tr>
+          <td>
+            Category: <b>{{ selectedClaim.category }}</b>
+          </td>
+          <td>
+            Name: <b>{{ selectedClaim.member.name }}</b>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Date: <b>{{ selectedClaim.claimDate }}</b>
+          </td>
+          <td>
+            Gender: <b>{{ selectedClaim.member.sex }}</b>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Contact: <b>{{ selectedClaim.member.contactNo }}</b>
+          </td>
+          <td>
+            DOB: <b>{{ selectedClaim.member.dob }}</b>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Request Amount:
+            <b>{{ selectedClaim.requestAmount | currency : "Rs." }}</b>
+          </td>
+          <td>
+            Designation: <b>{{ selectedClaim.member.designation }}</b>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <br>
+    <mat-divider></mat-divider>
+    <form [formGroup]="formGroup" *ngIf="this.selectedClaim">
+      <mat-form-field class="fullWith">
+        <mat-label>Select Scheme Title</mat-label>
+        <input type="text" matInput formControlName="stateGroup" required [matAutocomplete]="autoGroup" />
+        <mat-autocomplete #autoGroup="matAutocomplete">
+          <div *ngFor="let group of stateGroupOptions | async">
+            <mat-optgroup class="gpLabel" [label]="group.id">
+              <div *ngFor="let idTxt of group.idText">
+                <mat-option class="gpDescription" [value]="idTxt">{{
+                  idTxt
+                  }}</mat-option>
+              </div>
+            </mat-optgroup>
+          </div>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <div *ngIf="formGroup.value.stateGroup != ''">
+        <mat-radio-group class="example-radio-group" aria-label="Select an option"
+          (change)="onRadioButtonChange($event)">
+          <div class="hori">
+            <mat-radio-button value="Rejected">Reject because</mat-radio-button>
+            <mat-form-field class="fullWith">
+              <mat-label>Reason for rejection</mat-label>
+              <input matInput formControlName="rejectremarks" />
+            </mat-form-field>
+          </div>
+
+          <div class="hori">
+            <mat-radio-button value="Deducted">Accept with Deduction</mat-radio-button>
+            <mat-form-field class="fullWith">
+              <mat-label>Deduction Amount</mat-label>
+              <input matInput type="number" class="example-right-align" placeholder="0"
+                formControlName="deductionAmount" />
+              <span matTextSuffix>.00</span>
+            </mat-form-field>
+            <mat-form-field class="fullWith">
+              <mat-label>Reason for deduction</mat-label>
+              <input matInput formControlName="deductionremarks" />
+            </mat-form-field>
+          </div>
+          <div class="hori">
+            <mat-radio-button value="Approved">Approved as it is</mat-radio-button>
+            <mat-form-field class="fullWith">
+              <mat-label>Approval remarks if any </mat-label>
+              <input matInput formControlName="remarks" />
+            </mat-form-field>
+            <button mat-raised-button color="accent" [disabled]="!formGroup.valid" (click)="addClaimTitle()">
+              Add
+            </button>
+          </div>
+        </mat-radio-group>
+      </div>
+      <app-my-table [enableCheckbox]="true" [allowMultiSelect]="false"[rowData]="currentClaimData"
+        [sqColumnDefinition]="columnDefinition" (getSelectedRows)="onNotifySelected($event)" 
+        >
+      </app-my-table>
+
+      <button mat-raised-button color="warn" [disabled]="!this.selectedclaimTitle"  (click)="removeClaimTitle()">
+        Remove Item
+      </button>
+        <mat-form-field class="fullWith">
+          <mat-label>Overrall Remarks on medical documents</mat-label>
+          <input matInput formControlName="mecremarks" />
+        </mat-form-field>
+        
+        <button mat-raised-button color="accent" (click)="updateClaim()" [disabled]="!(this.currentClaimData.length > 0)">
+          Complete and Submit the Claim
+        </button>
+
+        
+    </form>
+    
+    
+    <mat-card-footer>
+      
+      
+    </mat-card-footer>
+  </mat-card>
+
+  <mat-card class="rside">
+    <mat-accordion>
+      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+          <mat-panel-title> Medical History </mat-panel-title>
+        </mat-expansion-panel-header>
+
+
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card>
+
+  <!--div class="footer">
+    <span> Software Training @OUSL 2024 </span>
+  </div-->
+</div>

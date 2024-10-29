@@ -1,0 +1,11 @@
+.app_dld{
+    margin-left: 20dp;
+}
+.hori {
+    display: flex;
+    padding-left: 16px;
+    margin-right: 16px;
+    width: 100%;
+    align-items: baseline;
+    gap: 20px;
+  }

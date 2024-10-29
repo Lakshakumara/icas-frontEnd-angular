@@ -1,0 +1,54 @@
+<div class="container">
+  <div class="header">
+    <h1>Voucher Generation</h1>
+  </div>
+
+  <mat-card class="mainbody">
+    <mat-card-title class="hori">
+      <mat-form-field class="example-full-width" appearance="outline" >
+        <mat-label>Previous vouchers</mat-label>
+        <mat-select [(ngModel)]="selectedvoucherId">
+          <mat-option [value]="v"  *ngFor="let v of voucherIds">{{v | date:'yyyy-MM-dd hh:mm a' }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-raised-button color="accent" (click)="showVoucher()">
+        Show Voucher
+      </button>
+
+      <button [disabled]="selectedvoucherId == null" mat-raised-button color="accent" (click)="downloadVoucher()">
+        Download Voucher
+      </button>
+  
+    </mat-card-title>
+    <mat-card-content>
+      <app-my-table [enableCheckbox]="true" [allowMultiSelect]="true" [rowData]="rowData"
+        (getSelectedRows)="onNotifySelected($event)" [sqPaginationConfig]="tablePaginationSettings"
+        [sqColumnDefinition]="columnDefinition">
+      </app-my-table>
+      
+    </mat-card-content>
+    <mat-card-footer class="btn">
+      <div class="hori">
+        <button mat-raised-button color="accent" (click)="reload()">
+          Reload
+        </button>
+        
+        <button mat-raised-button color="accent" (click)="voucherGenerate()">
+          Voucher Generate
+        </button>
+      </div>
+    </mat-card-footer>
+  </mat-card>
+  <mat-card class="rside">
+    <app-my-table [enableCheckbox]="false" [allowMultiSelect]="false"[rowData]="claimData"
+    [sqColumnDefinition]="cDataColumnDefinition" (getSelectedRows)="cData($event)" 
+    >
+  </app-my-table>
+  <mat-action-row>
+    <button mat-raised-button [disabled]="claimData?.length == 0" color="accent" class="btn" (click)="setPaidAmount()">
+      Set Paid Amount
+    </button>
+  </mat-action-row>
+  </mat-card>
+</div>

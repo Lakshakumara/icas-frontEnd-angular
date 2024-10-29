@@ -1,0 +1,27 @@
+<form [formGroup]="formGroup">
+  <mat-form-field class="example-chip-list">
+    <mat-label>Reasons for claim</mat-label>
+    <mat-chip-grid #chipGrid aria-label="Title selection">
+      <div *ngFor="let title of selectedTitles">
+
+        <mat-chip-row (removed)="remove(title)">
+          {{title}}
+          <button matChipRemove [attr.aria-label]="'remove ' + title">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+
+      </div>
+    </mat-chip-grid>
+    <input placeholder="Add another reason..." #titleInput formControlName="schemeTitles" [matChipInputFor]="chipGrid"
+      [matAutocomplete]="auto" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      (matChipInputTokenEnd)="add($event)" />
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+      <div *ngFor="let title of titles |async;">
+
+        <mat-option [value]="title">{{title}}</mat-option>
+
+      </div>
+    </mat-autocomplete>
+  </mat-form-field>
+</form>

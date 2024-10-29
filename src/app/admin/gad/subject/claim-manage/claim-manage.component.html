@@ -1,0 +1,107 @@
+<div class="topClass">
+  <h1>Claims Management</h1>
+  <div class="hori">
+    <mat-form-field>
+      <mat-label>Year</mat-label>
+      <input matInput placeholder="Year" [(ngModel)]="search_year" />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Choose a Claim Status</mat-label>
+      <mat-select [(ngModel)]="claimViewOptionSelected" (selectionChange)="loadClaimPage()">
+        <mat-option [value]="claimViewOption" *ngFor="let claimViewOption of claimViewOptions">{{ claimViewOption }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Search By Employee No or Name</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Search Columns" #input />
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="selectedClaim?.member" class="hori">
+    <fieldset>
+      <legend>Selected Member</legend>
+      <div class="memberData">
+        <a>EmpNo: {{ selectedClaim?.member!.empNo }}</a>
+        <a>Name: {{ selectedClaim?.member!.name }}</a>
+        <span>NIC: {{ selectedClaim?.member!.nic }}</span>
+      </div>
+    </fieldset>
+<div>
+    <ng-container *ngIf="selectedClaim?.claimStatus == status_Pending; then toMEC;">
+    </ng-container>
+
+    <ng-template #toMEC>
+      <div class="hori">
+        <mat-checkbox #chmec [checked]="false">Hard Copies are Correct</mat-checkbox>
+        <button mat-raised-button [disabled]="!chmec.checked" color="primary" (click)="forwordMEC()">
+          Forward to MEC
+        </button>
+      </div>
+    </ng-template>
+
+    <ng-container *ngIf="selectedClaim?.claimStatus == status_mecApproved; then voucher">
+    </ng-container>
+
+    <ng-template #voucher>
+      <div class="hori">
+        <a>Visit Voucher Generation Panel</a>
+        <button mat-raised-button (click)="forwordMVoucherPage()" color="primary">
+          Voucher Generation
+        </button>
+      </div>
+    </ng-template>
+
+    <ng-container *ngIf="selectedClaim?.claimStatus == status_reject; then rejected">
+    </ng-container>
+    
+
+    <ng-template #rejected>
+      <div>
+        <a>Rejected Date: {{ selectedClaim?.rejectedDate | date }}</a>
+        <a>Reason for Rejection: {{ selectedClaim?.rejectRemarks }}</a>
+      </div>
+    </ng-template>
+    
+    <ng-container *ngIf="selectedClaim?.claimStatus == status_finance;">
+      <div>
+        Voucher ID: <b>{{selectedClaim?.voucherId}}</b>
+        <br>
+        Date: <b>{{selectedClaim?.voucherId | date:'yyyy-MM-dd hh:mm a'}}</b>
+      </div>
+    </ng-container>
+
+    <form [formGroup]="formGroup" *ngIf="this.selectedClaim?.claimStatus == status_Pending ||
+    this.selectedClaim?.claimStatus == status_mecApproved" class="hori">
+      <mat-checkbox formControlName="rejected" #chkEnable (change)="disableField(chkEnable.checked)">Reject
+        because</mat-checkbox>
+      <mat-form-field class="fullWith">
+        <mat-label>Remarks for Rejection </mat-label>
+        <input matInput formControlName="rejectremarks" />
+      </mat-form-field>
+      <button [disabled]="!formGroup.valid || !chkEnable.checked" mat-raised-button color="warn"
+        (click)="rejectClaim()">
+        Reject Claim
+      </button>
+    </form>
+</div>
+  </div>
+
+  <table mat-table class="topClass-table mat-elevation-z8" [dataSource]="dataSource" matSort matSortActive="id"
+    matSortDirection="asc" matSortDisableClear >
+    <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema; let i = index">
+      <th *matHeaderCellDef>{{ columnsSchema[i].label }}</th>
+      <td mat-cell *matCellDef="let element" [align]="columnsSchema[i].type === 'number' ? 'right' : 'left'">
+        {{ element[col.key] }}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumn; sticky: true"></tr>
+    <tr mat-row *matRowDef="let claim; columns: displayedColumn" (click)="onRowClicked(claim)"></tr>
+  </table>
+  <mat-paginator class="mat-elevation-z8" #paginator [length]="10" [pageIndex]="0" [pageSize]="3"
+    [pageSizeOptions]="[1, 5, 10, 20]" aria-label="Select page">
+  </mat-paginator>
+</div>

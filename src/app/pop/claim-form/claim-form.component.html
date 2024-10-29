@@ -1,0 +1,83 @@
+<form [formGroup]="dForm">
+  <h1 mat-dialog-title>{{ inputdata.title }}</h1>
+  <div mat-dialog-content>
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>Choose Claim Type</mat-label>
+      <mat-select formControlName="requestFor">
+        <mat-option [value]="ctype" *ngFor="let ctype of claimTypes"
+          >{{ ctype }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>Enter Incident Dates</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input
+          matStartDate
+          [min]="beforeThreeMonth"
+          [max]="today"
+          formControlName="startDate"
+          placeholder="Start date"
+        />
+        <input
+          matEndDate
+          [min]="beforeThreeMonth"
+          [max]="today"
+          formControlName="endDate"
+          placeholder="End date"
+        />
+      </mat-date-range-input>
+      <mat-hint>dd/mm/yyyy – dd/mm/yyyy</mat-hint>
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+
+      <!--@if (range.controls.start.hasError('matStartDateInvalid')) {
+            <mat-error>Invalid start date</mat-error>
+            }
+            @if (range.controls.end.hasError('matEndDateInvalid')) {
+            <mat-error>Invalid end date</mat-error>
+            }-->
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>Request Amount</mat-label>
+      <input matInput formControlName="requestAmount" />
+    </mat-form-field>
+
+    <mat-tab-group>
+      <ng-container *ngFor="let claimType of claimTypes; index as i">
+        <mat-tab label="{{ claimType }}">
+          <ng-template matTabContent>
+            <table>
+              <thead>
+                <th>#</th>
+                <th>Description</th>
+                <th>Amount</th>
+              </thead>
+              <tr class="sceme-row" *ngFor="let scheme of filterSchemeData(i)">
+                <td class="idText-cell">{{ scheme.idText }}</td>
+                <td class="title-cell">{{ scheme.title }}</td>
+                <td class="amount-cell">{{ scheme.amount }}</td>
+              </tr>
+            </table>
+          </ng-template>
+        </mat-tab>
+      </ng-container>
+    </mat-tab-group>
+  </div>
+  <div mat-dialog-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="!dForm.valid"
+      (click)="addOpdData()"
+    >
+      Save
+    </button>
+    <button mat-raised-button color="warn" (click)="closePopup()">Close</button>
+  </div>
+</form>

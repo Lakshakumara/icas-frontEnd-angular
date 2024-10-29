@@ -1,0 +1,93 @@
+<div style="height: 85%; border: 1px solid #eee">
+    <as-split [useTransition]="true" unit="percent" [gutterSize]="10" [direction]="'horizontal'">
+
+        <as-split-area [size]="30" [order]="1" [visible]="true">
+            <mat-card class="mat-elevation-z4">
+                <mat-card-header>
+                    <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label>Claim Type</mat-label>
+                        <mat-select>
+                            <mat-option [value]="cat" *ngFor="let cat of claimCategories">{{cat}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                </mat-card-header>
+                <table mat-table class="topClass-table mat-elevation-z8" [dataSource]="dataSource" matSort
+                    matSortActive="id" matSortDirection="asc" matSortDisableClear>
+
+                    <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema; let i = index">
+                        <th *matHeaderCellDef> {{columnsSchema[i].label}}</th>
+                        <td mat-cell *matCellDef="let element"
+                            [align]="columnsSchema[i].type == 'number' ? 'right' : 'left'"> {{
+                            element[col.key] }} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumn; sticky:true"></tr>
+                    <tr mat-row *matRowDef="let claim; columns: displayedColumn;" (click)="onRowClicked(claim)">
+                    </tr>
+                </table>
+                <mat-card-footer>
+                    <mat-paginator class="mat-elevation-z8" #paginator [length]="10" [pageIndex]="0" [pageSize]="3"
+                        [pageSizeOptions]="[1,5, 10, 20]" aria-label="Select page">
+                    </mat-paginator>
+                </mat-card-footer>
+            </mat-card>
+        </as-split-area>
+
+
+        <as-split-area [size]="50" [order]="2" [visible]="true">
+            <mat-card>
+                <mat-card-title>Claim History</mat-card-title>
+                <!--<mat-form-field>
+                    <mat-chip-grid #myChipGrid [(ngModel)]="mySelection"
+                      aria-label="enter sandwich fillings">
+                      @for (filling of claimCategories; track filling) {
+                        <mat-chip-row (removed)="remove(filling)">
+                          {{filling.name}}
+                          <button matChipRemove>
+                            <mat-icon>cancel</mat-icon>
+                          </button>
+                        </mat-chip-row>
+                      }
+                      <input [matChipInputFor]="myChipGrid"
+                             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                             (matChipInputTokenEnd)="add($event)" />
+                    </mat-chip-grid>
+                  </mat-form-field>-->
+                <p>Body</p>
+                <mat-divider></mat-divider>
+                <mat-divider inset vertical></mat-divider>
+                <mat-card-footer>
+                    <button mat-raised-button color="primary">Submit</button>
+                </mat-card-footer>
+            </mat-card>
+        </as-split-area>
+
+        <as-split-area [size]="30" [order]="2" [visible]="true">
+            <as-split [useTransition]="true" unit="percent" [gutterSize]="10" [direction]="'vertical'">
+                <as-split-area [size]="30" [order]="1" [visible]="true">
+                    <mat-card>
+                        <div class="claim" *ngIf="selectedClaim">
+                            <Details>
+                                <summary>Claim Details</summary>
+                                {{selectedClaim | json}}
+                            </Details>
+                        </div>
+                    </mat-card>
+                </as-split-area>
+                <as-split-area [size]="50" [order]="2" [visible]="true">
+                    <!--<button
+                mat-button
+                class="collapse-btn"
+                (click)="keepLeft=!keepLeft"
+              ></button>-->
+                    <Details>
+                        <summary>Member Details</summary>
+                        {{selectedMember | json}}
+                    </Details>
+                </as-split-area>
+            </as-split>
+        </as-split-area>
+    </as-split>
+</div>

@@ -1,0 +1,271 @@
+<div>
+  <h1>Member Registration</h1>
+  <label>
+    <input [value]="'Individual'" [(ngModel)]="schemeType" name="schemeType" type="radio"
+      [checked]="schemeType == 'Individual'" />
+    Individual
+  </label>
+  <label>
+    <input [value]="'Family'" [(ngModel)]="schemeType" name="schemeType" type="radio"
+      [checked]="schemeType == 'Family'" />
+    Family
+  </label>
+</div>
+<form class="register-form" [formGroup]="formGroup">
+  <div fxLayout="row wrap" fxLayoutAlign="space-between" fxLayoutGap="8dp">
+    <mat-card class="mat-elevation-z4" fxFlex="40%" fxFlex.xs="100%" fxFlex.sm="100%">
+      <mat-card-header>
+        <mat-card-title>HR Details</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <!--
+          <mat-form-field   appearance="outline">
+            <mat-label>Employee Number</mat-label>
+            <input matInput formControlName="empNo" #field>
+          </mat-form-field>
+
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Full Name of the Applicant</mat-label>
+            <input matInput placeholder="Full Name" formControlName="name">
+          </mat-form-field>
+
+          <mat-form-field class="example-full-width">
+            <mat-label>Permanant Address</mat-label>
+            <input matInput placeholder="Permanant Address" formControlName="address">
+          </mat-form-field>
+
+          <mat-form-field class="example-full-width">
+            <mat-label>Choose a Civil Status</mat-label>
+            <mat-select formControlName="civilStatus">
+              <mat-option [value]="civil_status" *ngFor="let civil_status of Civil_statuss">{{civil_status}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="example-full-width">
+            <mat-label>Contact Number</mat-label>
+            <input matInput placeholder="Contact Number" formControlName="contactNo">
+            <mat-icon matSuffix>phone</mat-icon>
+          </mat-form-field>
+        -->
+
+        <ul class="member">
+          <div *ngIf="member">
+            <div>
+              <span class="mySpan">Name: </span><b>{{ formGroup.value.name }}</b>
+            </div>
+            <div>
+              <span class="mySpan">Department: </span><b>{{ formGroup.value.department }}</b>
+            </div>
+            <div>
+              <span class="mySpan">Designation: </span><b>{{ formGroup.value.designation }}</b>
+            </div>
+            <div>
+              <span class="mySpan">Employee No:</span><b>{{ formGroup.value.empNo }}</b>
+            </div>
+            <div>
+              <span class="mySpan">Address: </span><b>{{ formGroup.value.address }}</b>
+            </div>
+            <div>
+              <span class="mySpan">DOB: </span><b>{{ formGroup.value.dob }}</b>
+            </div>
+            <div>
+              <span class="mySpan">NIC: </span><b>{{ formGroup.value.nic }}</b>
+            </div>
+            <div>
+              <span class="mySpan" class="mySpan">Gender: </span><b>{{ formGroup.value.sex }}</b>
+            </div>
+            <div>
+              <span class="mySpan">Civil Status: </span><b>{{ formGroup.value.civilStatus }}</b>
+            </div>
+            <div>
+              <span class="mySpan">Contact No: </span><b>{{ formGroup.value.contactNo }}</b>
+            </div>
+            <div>
+              <span class="mySpan">Email: </span><b>{{ formGroup.value.email }}</b>
+            </div>
+          </div>
+        </ul>
+      </mat-card-content>
+    </mat-card>
+    <!--
+      <mat-card class="mat-elevation-z4" fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="33%">
+        <mat-card-header></mat-card-header>
+        <mat-card-content>
+          <mat-form-field class="example-full-width">
+            <mat-label>Natinal Identity Card Number</mat-label>
+            <input matInput placeholder="Natinal Identity Card Number" formControlName="nic">
+          </mat-form-field>
+
+          <mat-form-field class="example-full-width">
+            <mat-label>Gender</mat-label>
+            <mat-select formControlName="sex">
+              <mat-option [value]="sex" *ngFor="let sex of Sex">{{sex}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="example-full-width">
+            <mat-label>Date of Birth</mat-label>
+            <input matInput [matDatepicker]="picker" placeholder="DOB" formControlName="dob">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-hint>dd/mm/yyyy</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field class="example-full-width">
+            <mat-label>Designation</mat-label>
+            <input matInput placeholder="Designation" formControlName="designation">
+          </mat-form-field>
+
+          <mat-form-field class="example-full-width">
+            <mat-label>Name of the Department/Division</mat-label>
+            <input matInput placeholder="Name of the Department/Division" formControlName="department">
+          </mat-form-field>
+
+        </mat-card-content>
+      </mat-card> -->
+
+    <!--Beneficiary data-->
+    <mat-card fxFlex="60%" fxFlex.xs="100%" fxFlex.sm="100%">
+      <mat-card-header>
+        <mat-card-title>Beneficiary Details</mat-card-title>
+        <div fxFlex></div>
+        <button class="btn" mat-raised-button (click)="popupBenificiary()" color="primary">
+          Add
+        </button>
+      </mat-card-header>
+      <mat-card-content>
+        <ng-container>
+          <table mat-table class="mat-elevation-z8" [dataSource]="beneficiaryData">
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef>ID</th>
+              <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Name</th>
+              <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="nic">
+              <th mat-header-cell *matHeaderCellDef>NIC</th>
+              <td mat-cell *matCellDef="let element">{{ element.nic }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="relationship">
+              <th mat-header-cell *matHeaderCellDef>Relationship</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.relationship }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="percent">
+              <th mat-header-cell *matHeaderCellDef>Percentage</th>
+              <td mat-cell *matCellDef="let element">{{ element.percent }}</td>
+            </ng-container>
+
+            <!-- Symbol Column -->
+            <ng-container matColumnDef="star">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-icon-button [matMenuTriggerFor]="menu" [matMenuTriggerData]="element.name">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <!--ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef> Action</th>
+              <td mat-cell *matCellDef="let element">
+                <button (click)="editBenificiary(element.id)" mat-raised-button color="primary">Edit</button>
+                <button mat-raised-button color="warn" (click)="removeBenificiary(element.name)">Delete</button>
+              </td>
+            </ng-container-->
+
+            <tr mat-header-row *matHeaderRowDef="beneficiaryColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: beneficiaryColumns"></tr>
+          </table>
+        </ng-container>
+      </mat-card-content>
+
+      <!--Dependants-->
+      <mat-card *ngIf="schemeType == 'Family'">
+        <mat-card-header>
+          <mat-card-title>Dependant Details</mat-card-title>
+          <div fxFlex></div>
+          <button mat-raised-button (click)="popupDependant()" color="primary">
+            Add
+          </button>
+        </mat-card-header>
+        <mat-card-content>
+          <ng-container formArrayName="memberRegistrations">
+            <table mat-table class="mat-elevation-z8" [dataSource]="dependantData">
+              <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>ID</th>
+                <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="nic">
+                <th mat-header-cell *matHeaderCellDef>NIC</th>
+                <td mat-cell *matCellDef="let element">{{ element.nic }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="dob">
+                <th mat-header-cell *matHeaderCellDef>DOB</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.dob | date : "dd/MM/yyyy" }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="relationship">
+                <th mat-header-cell *matHeaderCellDef>Relationship</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.relationship }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let element">
+                  <button (click)="editDependant(element.name)" mat-raised-button color="primary">
+                    Edit
+                  </button>
+                  <button mat-raised-button color="warn" (click)="removeDependant(element.name)">
+                    Delete
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          </ng-container>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card-actions>
+        <div fxLayout="row" style="margin: 2%; text-align: right">
+          <button mat-raised-button color="accent" class="btn-block" (click)="registerProcess()">
+            Register
+          </button>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</form>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item>
+    <mat-icon>edit</mat-icon>
+    <span>Edit</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>delete</mat-icon>
+    <span>Delete</span>
+  </button>
+</mat-menu>

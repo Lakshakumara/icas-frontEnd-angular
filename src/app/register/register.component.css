@@ -1,0 +1,20 @@
+.mySpan {
+   display: inline-block;
+   width: auto;
+   padding-bottom: 10px;
+}
+.table-responsive {
+   overflow-x: auto;
+ }
+ .table-responsive table {
+   white-space: nowrap;
+ }
+ .mat-mdc-table {
+   display: block;
+   width: 100%;
+   overflow-x: auto;
+ }
+ .register-form td.mat-column-star {
+  width: 20px;
+  padding-right: 8px !important;
+}

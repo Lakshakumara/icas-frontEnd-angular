@@ -1,0 +1,74 @@
+<mat-nav-list>
+  <div *ngIf="member" mat-list-item>
+    <mat-icon>name</mat-icon>
+    <span class="nav-caption">{{ member.name }}</span>
+    <span class="nav-caption" *ngFor="let role of roles">Role {{ role }}</span>
+  </div>
+
+  <a mat-list-item routerLink="/home" (click)="onSidenavClose()">
+    <mat-icon>home</mat-icon> <span class="nav-caption">Home</span>
+  </a>
+  <a mat-list-item routerLink="/signin" (click)="onSidenavClose()">
+    <mat-icon>history</mat-icon> <span class="nav-caption">Sign Out</span>
+  </a>
+  <a mat-list-item routerLink="/c_history" (click)="onSidenavClose()">
+    <mat-icon>history</mat-icon> <span class="nav-caption">Claim History</span>
+  </a>
+  <a mat-list-item routerLink="/download" (click)="onSidenavClose()">
+    <mat-icon>account_circle</mat-icon>
+    <span class="nav-caption">Download</span>
+  </a>
+  <a mat-list-item routerLink="/profile" (click)="onSidenavClose()">
+    <mat-icon>contact_support</mat-icon><span class="nav-caption">Profile</span>
+  </a>
+  <!--a mat-list-item *ngIf="isAdmin" mat-button matBadgeColor="accent" [matMenuTriggerFor]="admin" (click)="onSidenavClose()">
+        <mat-icon>contact_support</mat-icon><span class="nav-caption">Admin</span>
+    </a-->
+</mat-nav-list>
+
+<!--mat-menu #admin="matMenu">
+    <button mat-menu-item [matMenuTriggerFor]="dep_head">
+      Department Head
+    </button>
+    <button mat-menu-item [matMenuTriggerFor]="subject_cleark">
+      Claim Management
+    </button>
+    <button mat-menu-item [matMenuTriggerFor]="mec">MEC</button>
+    <button mat-menu-item [matMenuTriggerFor]="super_admin">
+      Super Admin
+    </button>
+  </mat-menu>
+  <mat-menu #dep_head="matMenu">
+    <button *ngIf="isDepHead" routerLink="admin/head/member" mat-menu-item>
+      Membership Acceptance
+    </button>
+    <button *ngIf="isDepHead" routerLink="admin/head/claim" mat-menu-item>
+      Claims Acceptance
+    </button>
+    <button *ngIf="!isDepHead" mat-menu-item>No Access</button>
+  </mat-menu>
+
+  <mat-menu #subject_cleark="matMenu">
+    <button routerLink="admin/gad/subject/reg" mat-menu-item>Members</button>
+    <button routerLink="admin/gad/subject/claimupdate" mat-menu-item>
+      Claims Update
+    </button>
+    <button routerLink="admin/gad/subject/voucher" mat-menu-item>
+      Voucher Generation
+    </button>
+  </mat-menu>
+
+  <mat-menu #mec="matMenu">
+    <button routerLink="admin/mec/opd" mat-menu-item>OPD Claims</button>
+    <button routerLink="admin/mec/hs" mat-menu-item>H&S Claims</button>
+  </mat-menu>
+
+  <mat-menu #super_admin="matMenu">
+    <button routerLink="admin/super/scheme" mat-menu-item>
+      Scheme Update
+    </button>
+    <button routerLink="admin/super/access" mat-menu-item>
+      Privelidge Grants
+    </button>
+  </mat-menu>
+-->

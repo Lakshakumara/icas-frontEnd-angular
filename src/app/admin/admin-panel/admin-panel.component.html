@@ -1,0 +1,106 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav mat-elevation-z8" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+  [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
+    <button mat-button>Subject</button>
+    <mat-divider></mat-divider>
+    <mat-nav-list>
+
+        <mat-accordion>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Membership
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <a mat-list-item [routerLink]="'/admin/reg'">Registration Accept</a>
+                <a mat-list-item [routerLink]="'/ss'">Members</a>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+            </mat-expansion-panel>
+
+
+            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Claim
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            OPD
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <a mat-list-item routerLink="/home">Accept</a>
+                    <a mat-list-item routerLink="/signin">MEC</a>
+                    <a mat-list-item routerLink="/Payments">History</a>
+                </mat-expansion-panel>
+
+                <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            H&S
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <a mat-list-item routerLink="/home">Accept</a>
+                    <a mat-list-item routerLink="/signin">MEC</a>
+                    <a mat-list-item routerLink="/c_history">Payment</a>
+                </mat-expansion-panel>
+
+            </mat-expansion-panel>
+
+            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Super Admin
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <a mat-list-item (click)="showScheme">Scheme Edit</a>
+                <a mat-list-item (click)="showScheme">User Access</a>
+            </mat-expansion-panel>
+
+        </mat-accordion>
+
+    </mat-nav-list>
+    <mat-divider></mat-divider>
+</mat-sidenav>
+
+
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>Administartion</span>
+      <span class="example-fill-remaining-space"></span>
+
+      <button mat-button matBadge="13" matBadgePosition="before" matBadgeColor="accent"
+        [matMenuTriggerFor]="admin">GAD</button>
+      <mat-menu #admin="matMenu">
+        <button mat-menu-item [matMenuTriggerFor]="registration">Registration</button>
+        <button mat-menu-item [matMenuTriggerFor]="claim">Claim</button>
+      </mat-menu>
+
+      <mat-menu #registration="matMenu">
+        <button mat-menu-item>Application Accept</button>
+        <button mat-menu-item>Application Reject</button>
+      </mat-menu>
+
+      <mat-menu #claim="matMenu">
+        <button mat-menu-item>New Claim</button>
+        <button matBadge="8" matBadgePosition="after" matBadgeColor="accent" mat-menu-item>Medical Officer</button>
+        <button mat-menu-item>MEC</button>
+      </mat-menu>
+
+    </mat-toolbar>
+    <!-- Add Content Here 
+    <app-subject></app-subject>-->
+  </mat-sidenav-content>
+</mat-sidenav-container>

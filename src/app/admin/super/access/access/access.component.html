@@ -1,0 +1,14 @@
+<mat-drawer-container class="example-container" autosize="true">
+    <mat-drawer #drawer class="example-sidenav" mode="side" opened>
+        <input type="text" placeholder="Search by name" #filter>
+
+        <button class="primary" type="button" (click)="filterResults(filter.value)">Search</button>
+    </mat-drawer>
+  
+    <div class="example-sidenav-content">
+      <button type="button" mat-button (click)="drawer.toggle()">
+        Toggle sidenav
+      </button>
+    </div>
+  
+  </mat-drawer-container>

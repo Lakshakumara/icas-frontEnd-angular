@@ -126,7 +126,7 @@ export class HospitalComponent implements OnInit {
 
   ngOnInit(): void {
     this.member = this.share.getUser();
-    console.log('Member ', this.member);
+    //console.log('Member ', this.member);
     if (this.member) {
       this,
         this.member.dependants.forEach((b) => {
@@ -140,7 +140,7 @@ export class HospitalComponent implements OnInit {
     this.schemeTitles = schemeTitles;
   }
   onNotifySelectedScheme(schemeTitles: Scheme[]) {
-    this.schemeTitles = [schemeTitles[0].title];
+    if (schemeTitles.length >= 1) this.schemeTitles = [schemeTitles[0].title];
   }
 
   closePopup() {

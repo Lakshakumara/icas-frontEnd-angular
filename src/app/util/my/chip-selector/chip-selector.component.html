@@ -1,28 +1,24 @@
 <form [formGroup]="formGroup">
-    <mat-form-field class="example-full-width">
-      <mat-label>Scheme Titles</mat-label>
-      <mat-chip-grid #chipGrid aria-label="Title selection">
-        <div *ngFor="let title of selectedScheme"> 
-  
-          <mat-chip-row (removed)="remove(title)">
-            {{title?.title}}
-            <button matChipRemove [attr.aria-label]="'remove ' + title">
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip-row>
-  
-        </div>
-      </mat-chip-grid>
-      <input placeholder="New Titles..." #titleInput formControlName="schemeTitles"
-        [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
-        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-        (matChipInputTokenEnd)="add($event)"/>
-      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-        <div *ngFor="let scheme of titlesSc |async; "> 
-    
-          <mat-option [value]="scheme">{{scheme.idText}} {{' '}} {{scheme.title}}</mat-option>
-        
-        </div>
-      </mat-autocomplete>
-    </mat-form-field>
-  </form>
+  <mat-form-field class="example-full-width">
+    <mat-label>Scheme Titles</mat-label>
+    <mat-chip-grid #chipGrid aria-label="Title selection">
+      <div *ngFor="let title of selectedScheme">
+        <mat-chip-row (removed)="remove(title)">
+          {{title?.title}}
+          <button matChipRemove [attr.aria-label]="'remove ' + title">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+
+      </div>
+    </mat-chip-grid>
+    <input placeholder="New Titles..." #titleInput formControlName="schemeTitles" [matChipInputFor]="chipGrid"
+      [matAutocomplete]="auto" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      (matChipInputTokenEnd)="add($event)" />
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+      <mat-option *ngFor="let scheme of titlesSc | async" [value]="scheme">
+        {{scheme.idText}} {{' '}} {{scheme.title}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</form>

@@ -1,4 +1,4 @@
-<mat-sidenav-container>
+<mat-sidenav-container class="example-container">
   <mat-sidenav #sidenav role="navigation">
     <!-- this is a place for us to add side-nav code-->
     <app-sidenav-list [member]="member" *ngIf="isMenuShow" (sidenavClose)="sidenav.close()"></app-sidenav-list>
@@ -10,11 +10,12 @@
       <app-loading-spinner *ngIf="showLoading"></app-loading-spinner>
     </div>
     <!--in here all the content must reside. We will add a navigation header as well-->
-    <router-outlet></router-outlet>
-    
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+    <footer class="footer">
+      <span> Software Training component by YML Kumara @OUSL 2024 Under supervision of Dr.LSK Udugama</span>
+    </footer>
   </mat-sidenav-content>
-  
+
 </mat-sidenav-container>
-<footer>
-  <span> Software Training component by YML Kumara @OUSL 2024 Under supervision of Dr.LSK Udugama</span>
-</footer>

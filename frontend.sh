@@ -5,7 +5,7 @@ echo "3. Build and run Docker container"
 echo "4. Build Docker image"
 echo "5. Run Docker container"
 echo "6. Remove previous docker image, container and build and run new Docker container"
-echo "7. NPM install build application adn build docker container"
+echo "7. NPM install build application and build docker container"
 #..........................................
 read task
 if [ $task -eq 1 ]
@@ -29,7 +29,7 @@ elif [ $task -eq 3 ]
 then
 echo "Please Enter Imagename"
 read imagename
-echo "Please Enter external port which is in proxy_pass port in dauflt file 4000"
+echo "Please Enter external port which is in proxy_pass port in dauflt file 80"
 read portout
 echo "Please Enter Internal port 4200" 
 read portin
@@ -57,7 +57,7 @@ echo "Previous image and continer are removed....."
 docker images
 echo "Please Enter Imagename"
 read imagename
-echo "Please Enter external port which is in proxy_pass port in dauflt file"
+echo "Please Enter external port which is in proxy_pass port in dauflt file usually 80"
 read portout
 echo "Please Enter Internal port 4200"
 read portin
@@ -76,7 +76,7 @@ read piname
 echo "Please Enter Image name to new build"
 read imagename
 npm install
-ng build --prod
+ng build --configuration production --aot
 docker build -t $imagename .
 docker rm -f $piname
 docker image remove $piname

@@ -10,10 +10,10 @@ import { SharedService } from 'src/app/shared/shared.service';
   styleUrls: ['./profile.component.css'],
 })
 export class ProfileComponent {
-  member!: Member;
+  profile!: Member;
   constructor(private router: Router, private share: SharedService) {
-    this.member = this.share.getUser();
-    if (this.member != undefined) {
+    this.profile = this.share.getUser();
+    if (this.profile != undefined) {
     } else {
       this.router.navigate(['/signin']);
     }

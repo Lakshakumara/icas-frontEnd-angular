@@ -14,8 +14,7 @@ import { Utils } from '../util/utils';
 export class AuthServiceService {
   private API_URL = environment.baseUrl;
 
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getMembers(
     searchFor: string,
@@ -186,7 +185,7 @@ export class AuthServiceService {
         return responseJson;
       })
       .catch((error) => {
-        return null;//new Error(error);
+        return null; //new Error(error);
       });
   }
 
@@ -278,9 +277,7 @@ export class AuthServiceService {
   }
   async getVouchers(): Promise<number[]> {
     try {
-      const response = await fetch(
-        `${this.API_URL}/claim/voucherIds`
-      );
+      const response = await fetch(`${this.API_URL}/claim/voucherIds`);
       if (response.ok) return response.json();
       else throw Error('Error getting Voucher');
     } catch (error) {
@@ -313,14 +310,12 @@ export class AuthServiceService {
 
   async deleteClaimData(id: number): Promise<boolean> {
     try {
-      const response = await fetch(
-        `${this.API_URL}/claim/delete/${id}`, {
+      const response = await fetch(`${this.API_URL}/claim/delete/${id}`, {
         method: 'delete',
         headers: {
           'Content-Type': 'application/json',
         },
-      }
-      );
+      });
       if (response.ok) return response.json();
       else throw Error('Error deleting Item');
     } catch (error) {
@@ -332,6 +327,30 @@ export class AuthServiceService {
     setTimeout(function () {
       return 100;
     }, 10000);
+  }
+
+  /**
+   * testing codes bellow
+   */
+  getMembersByPages(
+    page: number,
+    size: number,
+    search: string = ''
+  ): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    if (search) {
+      params = params.set('search', search);
+    }
+    return this.http
+      .get(`${this.API_URL}/member`, { params })
+      .pipe<Member[]>(map((res: any) => res));
+  }
+
+  updateRoles(memberId: number, roles: string[]): Observable<any> {
+    return this.http.put(`${this.API_URL}/member/${memberId}/roles`, { roles });
   }
 
   /*update(criteria: string, data: any): Observable<number> {
@@ -412,6 +431,4 @@ getOPD(
      .pipe<ClaimOPD[]>(map((res: any) => res)); //res["payload"]
  }
 */
-
-
 }

@@ -1,14 +1,26 @@
-<mat-drawer-container class="example-container" autosize="true">
-    <mat-drawer #drawer class="example-sidenav" mode="side" opened>
-        <input type="text" placeholder="Search by name" #filter>
+<div>
+  <mat-form-field>
+    <mat-label>Search Member</mat-label>
+    <input matInput [formControl]="memberSearchControl">
+  </mat-form-field>
 
-        <button class="primary" type="button" (click)="filterResults(filter.value)">Search</button>
-    </mat-drawer>
-  
-    <div class="example-sidenav-content">
-      <button type="button" mat-button (click)="drawer.toggle()">
-        Toggle sidenav
-      </button>
-    </div>
-  
-  </mat-drawer-container>
+  <mat-list>
+    <mat-list-item *ngFor="let member of members" (click)="selectMember(member)">
+      {{ member.name }}
+    </mat-list-item>
+  </mat-list>
+
+  <mat-paginator [length]="totalMembers" [pageSize]="pageSize" (page)="onPageChange($event.pageIndex)">
+  </mat-paginator>
+
+  <div *ngIf="selectedMember">
+    <h2>Manage Roles for {{ selectedMember.name }}</h2>
+    <mat-form-field>
+      <mat-label>Roles</mat-label>
+      <mat-select [formControl]="memberRolesControl" multiple>
+        <mat-option *ngFor="let role of roles" [value]="role">{{ role }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="updateRoles()">Update Roles</button>
+  </div>
+</div>

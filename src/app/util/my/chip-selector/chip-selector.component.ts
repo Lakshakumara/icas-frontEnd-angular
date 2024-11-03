@@ -41,19 +41,6 @@ export class ChipSelectorComponent implements OnInit {
   allScheme: Scheme[] = [];
   selectedScheme: Scheme[] = [];
   titlesSc!: Observable<Scheme[]>;
-  xx: Scheme = {
-    id: 0,
-    amount: 0,
-    descriptionen: '',
-    descriptionsi: '',
-    descriptionta: '',
-    idText: '',
-    title: '',
-    isEdit: false,
-    isSelected: false,
-    rate: 0,
-    unit: '',
-  };
 
   @ViewChild('titleInput') titleInput!: ElementRef<HTMLInputElement>;
 
@@ -74,30 +61,11 @@ export class ChipSelectorComponent implements OnInit {
   }
 
   ngOnInit() {
-    /*this.titlesSc = this.formGroup.get('schemeTitles')!.valueChanges.pipe(
-      startWith(null),
-      map((scheme: Scheme | null) =>
-        scheme?.title ? this._filterx(scheme.title) : this.allScheme.slice()
-      )
-    );*/
-
     this.titlesSc = this.formGroup.get('schemeTitles')!.valueChanges.pipe(
       startWith(''),
       map((value: string) => this._filterx(value || ''))
     );
   }
-
-  /* add(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-    if (this.allScheme.find((s) => s.title == value)) {
-      this.getScheme.emit(this.selectedScheme);
-    }
-
-    // Clear the input value
-    event.chipInput!.clear();
-    console.log('add ', value);
-    this.formGroup.get('schemeTitles')!.setValue('');
-  }*/
 
   add(event: any): void {
     const input = event.input;
@@ -120,7 +88,6 @@ export class ChipSelectorComponent implements OnInit {
     if (input) {
       input.value = '';
     }
-    console.log('add ', value);
     this.formGroup.get('schemeTitles')!.setValue('');
   }
 
@@ -144,18 +111,6 @@ export class ChipSelectorComponent implements OnInit {
     this.titleInput.nativeElement.value = '';
     this.formGroup.get('schemeTitles')!.setValue('');
   }
-  /*selected(event: MatAutocompleteSelectedEvent): void {
-    let zz = this.allScheme.filter((s) => {
-      return s.title == event.option.value.title;
-    })[0];
-    if (!this.selectedScheme.includes(zz)) {
-      this.selectedScheme.push(zz);
-      this.getScheme.emit(this.selectedScheme);
-    }
-
-    this.titleInput.nativeElement.value = '';
-    this.formGroup.get('schemeTitles')!.setValue(null);
-  }*/
 
   private _filterx(value: string): Scheme[] {
     let filterValue = '';

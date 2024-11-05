@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { Member } from 'src/app/Model/member';
 import { SharedService } from 'src/app/shared/shared.service';
 

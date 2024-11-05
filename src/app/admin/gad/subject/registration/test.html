@@ -1,0 +1,229 @@
+<div style="height: 85%; border: 1px solid #eee; display: flex;">
+    <!-- Search Area -->
+    <div style="flex: 0 0 30%; border-right: 1px solid #eee;">
+        <mat-card class="mat-elevation-z4">
+            <mat-card-header>
+                <mat-form-field appearance="outline">
+                    <mat-label>Search</mat-label>
+                    <input matInput placeholder="Names or Emp No" #input>
+                </mat-form-field>
+            </mat-card-header>
+            <mat-card-content>
+                <table mat-table class="topClass-table mat-elevation-z8" [dataSource]="dataSource" matSort
+                    matSortActive="id" matSortDirection="asc" matSortDisableClear>
+
+                    <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema; let i = index">
+                        <th *matHeaderCellDef> {{columnsSchema[i].label}}</th>
+                        <td mat-cell *matCellDef="let element" [align]="columnsSchema[i].type === 'number' ? 'right' : 'left'">
+                            {{ element[col.key] }} 
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumn; sticky:true"></tr>
+                    <tr mat-row *matRowDef="let member; columns: displayedColumn;" (click)="onRowClicked(member)">
+                    </tr>
+                </table>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <!-- Main Content Area -->
+    <div style="flex: 1; padding: 16px;">
+        <mat-tab-group>
+            <mat-tab label="Member Details">
+                <ng-template matTabContent>
+                    <ul class="member">
+                        <div *ngIf="member">
+                            <div>
+                                <span class="mySpan">Name: </span><b>{{ member.name }}</b>
+                            </div>
+                            <div>
+                                <span class="mySpan">Department: </span><b>{{ member.department }}</b>
+                            </div>
+                            <div>
+                                <span class="mySpan">Designation: </span><b>{{ member.designation }}</b>
+                            </div>
+                            <div>
+                                <span class="mySpan">Employee No:</span><b>{{ member.empNo }}</b>
+                            </div>
+                            <div>
+                                <span class="mySpan">Address: </span><b>{{ member.address }}</b>
+                            </div>
+                            <div>
+                                <span class="mySpan">DOB: </span><b>{{ member.dob }}</b>
+                            </div>
+                            <div>
+                                <span class="mySpan">NIC: </span><b>{{ member.nic }}</b>
+                            </div>
+                            <div>
+                                <span class="mySpan">Gender: </span><b>{{ member.sex }}</b>
+                            </div>
+                            <div>
+                                <span class="mySpan">Civil Status: </span><b>{{ member.civilStatus }}</b>
+                            </div>
+                            <div>
+                                <span class="mySpan">Contact No: </span><b>{{ member.contactNo }}</b>
+                            </div>
+                            <div>
+                                <span class="mySpan">Email: </span><b>{{ member.email }}</b>
+                            </div>
+                        </div>
+                    </ul>
+                    <Details>
+                        <summary>Dependants Details <b>{{member?.dependants?.length}}</b></summary>
+                        <ng-container *ngFor="let dep of member?.dependants; let i = index">
+                            <ul>
+                                <Details>
+                                    <summary>{{dep.relationship}}- {{ dep.name }}</summary>
+                                    <ul>
+                                        <div>
+                                            <span class="mySpan">NIC: </span><b>{{ dep.nic }}</b>
+                                        </div>
+                                        <div>
+                                            <span class="mySpan">DOB :</span><b>{{ dep.dob | date:'yyyy-MMM-dd' }}</b>
+                                        </div>
+                                    </ul>
+                                </Details>
+                            </ul>
+                        </ng-container>
+                    </Details>
+
+                    <Details>
+                        <summary>Beneficiaries Details <b>{{member?.beneficiaries?.length}}</b></summary>
+                        <ng-container *ngFor="let ben of member?.beneficiaries; let i = index">
+                            <ul>
+                                <Details>
+                                    <summary>{{ben.relationship}}- {{ ben.name }}</summary>
+                                    <ul>
+                                        <div>
+                                            <span class="mySpan">NIC: </span><b>{{ ben.nic }}</b>
+                                        </div>
+                                        <div>
+                                            <span class="mySpan">Percent :</span><b>{{ ben.percent/100 | percent }}</b>
+                                        </div>
+                                        <div>
+                                            <span class="mySpan">Register Date: </span><b>{{ ben.registerDate | date:'yyyy-MMM-dd' }}</b>
+                                        </div>
+                                    </ul>
+                                </Details>
+                            </ul>
+                        </ng-container>
+                    </Details>
+                </ng-template>
+            </mat-tab>
+
+            <mat-tab label="Role Update">
+                <ng-template matTabContent>
+                    <div style="width:90%; height: 70vh;">
+                        <form [formGroup]="roleGroup">
+                            <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="roleData" formControlName="selectedRoles">
+                            </ng-multiselect-dropdown>
+                            <button mat-raised-button color="accent" (click)="roleUpdate()">Update</button>
+                        </form>
+                    </div>
+                </ng-template>
+            </mat-tab>
+
+            <mat-tab label="Member Updates">
+                <ng-template matTabContent>
+                    <mat-accordion>
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>Renew MemberShips</mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <form [formGroup]="reNew">
+                                <mat-radio-group aria-label="Select an option">
+                                    <label>
+                                        <input #allMember type="radio" value="all" formControlName="selector"> All Members
+                                    </label>
+                                    <label>
+                                        <input type="radio" value="single" formControlName="selector">{{member?.name}}
+                                    </label>
+                                </mat-radio-group>
+                                <br>
+                                <span>
+                                    <input #year matInput placeholder="year" type="number" formControlName="year">
+                                </span>
+                                <button aria-busy="true" color="accent" (click)="registrationOpen()">update</button>
+                            </form>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>Suspends MemberShips</mat-panel-title>
+                                <mat-label>Under Construction</mat-label>
+                            </mat-expansion-panel-header>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </ng-template>
+            </mat-tab>
+
+            <mat-tab label="new User">
+                <ng-template matTabContent>
+                    <form [formGroup]="formGroup">
+                        <div><span class="mySpan">User Name: </span>
+                            <input matInput placeholder="UserName" formControlName="empNo">
+                        </div>
+                        <div><span class="mySpan">Name: </span>
+                            <input matInput placeholder="Full Name" formControlName="name">
+                        </div>
+                        <div><span class="mySpan">Address: </span>
+                            <input matInput placeholder="Permanant Address" formControlName="address" type="text">
+                        </div>
+                        <div><span class="mySpan">Contact Number: </span>
+                            <input matInput placeholder="Contact Number" formControlName="contactNo" type="tel">
+                        </div>
+                        <div><span class="mySpan">Email Address: </span>
+                            <input matInput placeholder="Email address" formControlName="email" type="email">
+                        </div>
+                        <div><span class="mySpan">NIC Number: </span>
+                            <input matInput placeholder="National Identity Card Number" formControlName="nic">
+                        </div>
+                        <div><span class="mySpan">Designation: </span>
+                            <input matInput placeholder="Designation" formControlName="designation">
+                        </div>
+                        <div><span class="mySpan">Department/Division: </span>
+                            <input matInput placeholder="Name of the Department/Division" formControlName="department">
+                        </div>
+                        <div><span class="mySpan">System Access Level: </span>
+                            <mat-select formControlName="roles">
+                                <mat-option [value]="role" *ngFor="let role of access">{{role}}</mat-option>
+                            </mat-select>
+                        </div>
+
+                        <div style="margin:2%;text-align:right;">
+                            <button mat-raised-button [disabled]="!formGroup.valid" color="accent" class="btn-block" (click)="registerProcess()">Register</button>
+                            <button mat-raised-button color="warm" class="btn-block" (click)="clearReg()">Cancel</button>
+                        </div>
+                    </form>
+                </ng-template>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+
+    <!-- Claim History Area -->
+    <div style="flex: 0 0 20%; border-left: 1px solid #eee; padding-left: 16px;">
+        <mat-card class="mat-elevation-z4">
+            <mat-card-header>
+                <h3>Claim History</h3>
+            </mat-card-header>
+            <mat-card-content>
+                <table mat-table class="topClass-table mat-elevation-z8" [dataSource]="dataSource" matSort>
+                    <ng-container matColumnDef="claimStatus">
+                        <th mat-header-cell *matHeaderCellDef> Claim Status </th>
+                        <td mat-cell *matCellDef="let element">{{element.claimStatus}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="paidAmount">
+                        <th mat-header-cell *matHeaderCellDef> Paid Amount </th>
+                        <td mat-cell *matCellDef="let element">{{element.paidAmount | currency}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="claimSchemeData">
+                        <th mat-header-cell *matHeaderCellDef> Claim Scheme </th>
+                        <td mat-cell *matCellDef="let element">{{element.claimSchemeData}}</td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="['claimStatus', 'paidAmount', 'claimSchemeData']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['claimStatus', 'paidAmount', 'claimSchemeData']"></tr>
+                </table>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

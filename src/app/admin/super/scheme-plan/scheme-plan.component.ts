@@ -1,6 +1,7 @@
 import { Scheme, SchemeColumns } from '../../../Model/scheme';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Member } from 'src/app/Model/member';
@@ -20,7 +21,8 @@ export class SchemePlanComponent implements OnInit {
   columnsSchema: any = SchemeColumns;
   dataSource = new MatTableDataSource<Scheme>();
   valid: any = {};
-
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  
   constructor(
     public dialog: MatDialog,
     private schemeService: SchemeService,
@@ -39,7 +41,9 @@ export class SchemePlanComponent implements OnInit {
     } else this.router.navigate(['/signin']);
     this.loader.hideLoader();
   }
-
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator; // Link paginator to dataSource
+  }
   editRow(row: Scheme) {
     if (row.id === 0) {
       console.log('adding ', row);

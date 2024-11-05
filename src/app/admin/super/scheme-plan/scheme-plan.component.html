@@ -1,7 +1,7 @@
 <article class="table-header">
-  <div>
-    <button class="button-remove-rows" mat-button (click)="removeSelectedRows()">Remove Rows</button>
-    <button class="button-add-row" mat-button (click)="addRow()">Add Row</button>
+  <div class="button-container">
+    <button class="button-remove-rows" mat-raised-button (click)="removeSelectedRows()">Remove Rows</button>
+    <button class="button-add-row" mat-raised-button (click)="addRow()">Add Row</button>
     <span class="example-fill-remaining-space"></span>
   </div>
 
@@ -59,6 +59,4 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 
 </table>
-<mat-paginator>
-  <mat-paginator [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
-</mat-paginator>
+<mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" [pageSize]="5"></mat-paginator>

@@ -20,27 +20,19 @@
         </mat-list>
       </mat-grid-tile>
       <mat-grid-tile>
-        <!--mat-list>
-          <mat-list-item><strong>Status:</strong> {{ profile.status }}</mat-list-item>
-          <mat-list-item><strong>Registration Open:</strong> {{ profile.registrationOpen ? 'Yes' : 'No' }}</mat-list-item>
-          <mat-list-item><strong>Modification Date:</strong> {{ profile.mdate }}</mat-list-item>
-        </mat-list-->
-        <mat-divider></mat-divider>
-        <h3>Roles</h3>
-        <mat-chip-listbox>
-          <mat-chip *ngFor="let role of profile.roles">{{ role.role }}</mat-chip>
-        </mat-chip-listbox>
-      </mat-grid-tile>
+        <div style="padding: 16px;">
+            <h3 style="margin-bottom: 8px;">Roles</h3>
+            <mat-chip-listbox aria-label="User Roles" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <mat-chip *ngFor="let role of profile.roles" color="primary" selected>
+                    {{ role.role }}
+                    <mat-icon matChipTrailingIcon >cancel</mat-icon>
+                </mat-chip>
+            </mat-chip-listbox>
+        </div>
+    </mat-grid-tile>
     </mat-grid-list>
     <mat-divider></mat-divider>
-    <h3>Current Registration</h3>
-    <mat-list>
-      <mat-list-item><strong>Year:</strong> {{ profile.currentRegistration.year }}</mat-list-item>
-      <mat-list-item><strong>Scheme Type:</strong> {{ profile.currentRegistration.schemeType }}</mat-list-item>
-      <mat-list-item><strong>Accepted Date:</strong> {{ profile.currentRegistration.acceptedDate }}</mat-list-item>
-    </mat-list>
-    <mat-divider></mat-divider>
-    <h3>Member Registrations</h3>
+    <h3>Member Registrations Details</h3>
     <mat-list *ngFor="let reg of profile.memberRegistrations">
       <mat-list-item><strong>Year:</strong> {{ reg.year }}</mat-list-item>
       <mat-list-item><strong>Scheme Type:</strong> {{ reg.schemeType }}</mat-list-item>

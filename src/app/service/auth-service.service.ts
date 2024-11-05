@@ -353,82 +353,29 @@ export class AuthServiceService {
     return this.http.put(`${this.API_URL}/member/${memberId}/roles`, { roles });
   }
 
-  /*update(criteria: string, data: any): Observable<number> {
-    console.log('reg Update ', data);
-    const x = this.http
-      .put(`${this.API_URL}/member/update/${criteria}`, data)
-      .pipe<number>(map((data: any) => data));
-
-    return x;
-  }*/
-  /* updateMember(criteria: string, data: any) {
-    console.log('updateMember ', criteria, data);
-    return this.http.post(`${this.API_URL}/member/signup`, data);
-  }
-  // not used 
-  updateClaim(claim: any): Observable<any> {
+  getAllClaimsByPages(
+    claimType: string = '%',
+    year: number = 0,
+    empNo: string = '',
+    claimStatus: string = '%',
+    filter: string = '',
+    sortDirection: string = 'asc',
+    pageIndex: number = 0,
+    pageSize: number = 10
+  ): Observable<Claim[]> {
+    console.log('getAllClaims calls claimType= ', claimType);
     return this.http
-      .put(`${this.API_URL}/claim/update`, claim)
-      .pipe<number>(map((data: any) => data));
+      .get(`${this.API_URL}/claim/getAll`, {
+        params: new HttpParams()
+          .set('claimType', claimType)
+          .set('year', year)
+          .set('empNo', empNo)
+          .set('claimStatus', claimStatus)
+          .set('filter', filter)
+          .set('sortOrder', sortDirection)
+          .set('pageNumber', pageIndex.toString())
+          .set('pageSize', pageSize.toString()),
+      })
+      .pipe<Claim[]>(map((res: any) => res));
   }
-
-async updateClaim_async(claim: any): Promise<Observable<any>> {
-    try {
-      const response = await fetch(`${this.API_URL}/claim/update`, {
-        method: 'put',
-        body: JSON.stringify(claim), // data can be `string` or {object}!
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      if (response.ok) return response.json();
-      else throw Error('Error generating pdf');
-    } catch (error) {
-      throw Error('Failed to Fetch data');
-    }
-  }*/
-  /*async saveOPD(claimOPD: any){
-  return this.http
-    .post(`${this.API_URL}/claim/opd`, claimOPD)
-    .subscribe((data: any) => data);
-}*/
-
-  /* getPendingOPDClaims(
-   filter: string,
-   sortDirection: string,
-   pageIndex: number,
-   pageSize: number
- ) {
-   return this.getClaims(
-     'opd',
-     0,
-     '',
-     'pending',
-     filter,
-     sortDirection,
-     pageIndex,
-     pageSize
-   );
- }
- 
-getOPD(
-   empNo: any,
-   filter = '',
-   sortOrder = 'asc',
-   pageNumber = 0,
-   pageSize = 3
- ): Observable<ClaimOPD[]> {
-   return this.http
-     .get(`${this.API_URL}/claim/get`, {
-       params: new HttpParams()
-         .set('type', 'opd')
-         .set('empNo', empNo)
-         .set('filter', filter)
-         .set('sortOrder', sortOrder)
-         .set('pageNumber', pageNumber.toString())
-         .set('pageSize', pageSize.toString()),
-     })
-     .pipe<ClaimOPD[]>(map((res: any) => res)); //res["payload"]
- }
-*/
 }

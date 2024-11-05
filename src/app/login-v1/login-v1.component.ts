@@ -95,8 +95,6 @@ export class LoginV1Component implements OnInit {
           preConfirm: async () => {
             try {
               let response: any = await this.authService.downloadClaim(2);
-              console.log('received from backend ', response);
-
               let dataType = response.type;
               let binaryData = [];
               binaryData.push(response);
@@ -202,6 +200,8 @@ export class LoginV1Component implements OnInit {
               .getMember(this.empNoForm.value.empNo)
               .subscribe((member) => {
                 if (member) {
+                  
+                  console.log('member ',member)
                   this.share.setUser(member);
                   const reg = member.memberRegistrations.find((r) => {
                     return (

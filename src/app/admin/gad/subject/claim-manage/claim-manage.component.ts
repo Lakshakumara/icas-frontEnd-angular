@@ -34,8 +34,12 @@ export class ClaimManageComponent {
 
   claimViewOptions: string[] = Constants.CLAIM_STATUS_VIEW;
   claimViewOptionSelected: string = 'Head Approved';
- // selectedMember!: Member| null;
+  // selectedMember!: Member| null;
   search: any;
+
+  currentPage = 0;
+  pageSize = 10;
+  totalItems = 0;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -53,6 +57,12 @@ export class ClaimManageComponent {
       Validators.required
     ),
   });
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadClaimPage();
+  }
+
   disableField(checked: any) {
     if (!checked) {
       this.formGroup.controls.rejectremarks.disable();
@@ -81,7 +91,7 @@ export class ClaimManageComponent {
   loadClaimPage() {
     //this.selectedMember = null;
     this.selectedClaim = null;
-    this.dataSource.requestData(this.getSelectedClaimStatus());
+    this.dataSource.requestData(this.getSelectedClaimStatus(),'','asc',this.currentPage,this.pageSize);
   }
   getSelectedClaimStatus(): string {
     let sop: string = '';
@@ -114,7 +124,7 @@ export class ClaimManageComponent {
     return sop;
   }
   onRowClicked(claim: Claim) {
-    this.formGroup.reset()
+    this.formGroup.reset();
     this.selectedClaim = claim;
   }
 
@@ -133,8 +143,8 @@ export class ClaimManageComponent {
       confirmButtonText: 'Forward',
       showLoaderOnConfirm: true,
       preConfirm: async () => {
-        return await this.auth.updateClaim_new(this.tobeUpdated)
-       /* .subscribe((a) => {
+        return await this.auth.updateClaim_new(this.tobeUpdated);
+        /* .subscribe((a) => {
           if (a >= 1) {
             return Swal.showValidationMessage('Sent');
           } else return Swal.showValidationMessage('Not Updated Try againg');
@@ -144,17 +154,15 @@ export class ClaimManageComponent {
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
       if (result.isConfirmed) {
-        if(result.value >= 1){
+        if (result.value >= 1) {
           Swal.fire('Sent to Medical Board', '', 'success');
           this.loadClaimPage();
-        }else Swal.fire('Error', "Failed to Update", 'error');
-
+        } else Swal.fire('Error', 'Failed to Update', 'error');
       }
     });
   }
-  forwordMVoucherPage(){
+  forwordMVoucherPage() {
     this.router.navigate(['/admin/gad/subject/voucher']);
-
   }
   forwordPaid() {
     if (this.selectedClaim == null) return;
@@ -172,7 +180,7 @@ export class ClaimManageComponent {
       showLoaderOnConfirm: true,
       preConfirm: async () => {
         return await this.auth.updateClaim_new(this.tobeUpdated);
-       /* .subscribe((a) => {
+        /* .subscribe((a) => {
           if (a >= 1) {
             return Swal.showValidationMessage('Mark as Paid');
           } else return Swal.showValidationMessage('Not Updated Try againg');
@@ -182,10 +190,10 @@ export class ClaimManageComponent {
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
       if (result.isConfirmed) {
-        if(result.value >= 1){
+        if (result.value >= 1) {
           Swal.fire('Claim Mark as Paid', '', 'success');
           this.loadClaimPage();
-        }else Swal.fire('Error', "Failed to Update", 'error');
+        } else Swal.fire('Error', 'Failed to Update', 'error');
       }
     });
   }
@@ -197,16 +205,16 @@ export class ClaimManageComponent {
       criteria: 'claimreject',
       id: this.selectedClaim!.id,
       claimStatus: Constants.CLAIMSTATUS_REJECTED,
-      rejectRemarks: this.formGroup.value.rejectremarks, 
+      rejectRemarks: this.formGroup.value.rejectremarks,
     });
     Swal.fire({
-      title: 'Reject Claim No '+this.selectedClaim!.id,
+      title: 'Reject Claim No ' + this.selectedClaim!.id,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Reject',
       showLoaderOnConfirm: true,
       preConfirm: async () => {
-        return await this.auth.updateClaim_new(this.tobeUpdated)
+        return await this.auth.updateClaim_new(this.tobeUpdated);
         /*.subscribe((a) => {
           if (a >= 1) {
             return Swal.showValidationMessage('Rejection Success');
@@ -216,11 +224,13 @@ export class ClaimManageComponent {
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
       if (result.isConfirmed) {
-        if(result.value >= 1){
+        if (result.value >= 1) {
           Swal.fire('Claim Rejected', '', 'success');
           this.loadClaimPage();
-        }else Swal.fire('Error', "Failed to Update", 'error');
+        } else Swal.fire('Error', 'Failed to Update', 'error');
       }
     });
   }
+
+
 }

@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
 import { Access_type } from 'src/app/Model/role';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
+import { Constants } from 'src/app/util/constants';
 
 @Component({
   selector: 'app-access',
@@ -15,7 +16,7 @@ export class AccessComponent implements OnInit {
   selectedMember: any = null;
   formGroup: FormGroup;
   currentPage = 0;
-  pageSize = 2;
+  pageSize = 10;
   totalMembers = 0;
 
   constructor(
@@ -64,7 +65,6 @@ export class AccessComponent implements OnInit {
         })
       )
       .subscribe((data) => {
-        console.log(data)
         this.members = data.content
         this.totalMembers = data.totalElements
       });
@@ -82,7 +82,7 @@ export class AccessComponent implements OnInit {
       this.authService
         .updateRoles(this.selectedMember.id, this.formGroup.value.memberRoles)
         .subscribe(() => {
-          alert('Roles updated successfully');
+          Constants.Toast.fire('Roles updated successfully');
         });
     }
   }

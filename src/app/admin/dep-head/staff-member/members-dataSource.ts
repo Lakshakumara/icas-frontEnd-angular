@@ -1,7 +1,7 @@
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { catchError, finalize, map } from 'rxjs/operators';
+import { catchError, finalize } from 'rxjs/operators';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Member } from 'src/app/Model/member';

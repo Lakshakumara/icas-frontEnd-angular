@@ -41,31 +41,31 @@ export class TestComponent implements OnInit {
     schemeTitles: new FormControl('', [Validators.required]),
   });
 
-  
   @ViewChild('titleInput') titleInput!: ElementRef<HTMLInputElement>;
 
   @Output() getTitles = new EventEmitter();
-  
+
   announcer = inject(LiveAnnouncer);
 
   constructor(private fb: FormBuilder, private schemeService: SchemeService) {
     this.titles = this.formGroup.get('schemeTitles')!.valueChanges.pipe(
       startWith(null),
-      map((title: string | null) => (title ? this._filter(title) : this.allTitles.slice())),
+      map((title: string | null) =>
+        title ? this._filter(title) : this.allTitles.slice()
+      )
     );
   }
 
   ngOnInit() {
-    
-    this.schemeService.getSchemeTitle("all").subscribe((title: SchemeTitles[]) => {
-      title.forEach((st)=>{
-        st.idText.map((t)=>{
-          this.allTitles.push(t);
-          
-        })
+    this.schemeService
+      .getSchemeTitle('all')
+      .subscribe((title: SchemeTitles[]) => {
+        title.forEach((st) => {
+          st.idText.map((t) => {
+            this.allTitles.push(t);
+          });
+        });
       });
-    });
-    
   }
 
   add(event: MatChipInputEvent): void {
@@ -74,7 +74,7 @@ export class TestComponent implements OnInit {
     // Add our fruit
     if (this.allTitles.includes(value)) {
       this.selectedTitles.push(value);
-      this.getTitles.emit(this.selectedTitles)
+      this.getTitles.emit(this.selectedTitles);
     }
 
     // Clear the input value
@@ -88,14 +88,14 @@ export class TestComponent implements OnInit {
 
     if (index >= 0) {
       this.selectedTitles.splice(index, 1);
-      this.getTitles.emit(this.selectedTitles)
+      this.getTitles.emit(this.selectedTitles);
       this.announcer.announce(`Removed ${title}`);
     }
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
     this.selectedTitles.push(event.option.viewValue);
-    this.getTitles.emit(this.selectedTitles)
+    this.getTitles.emit(this.selectedTitles);
     this.titleInput.nativeElement.value = '';
     this.formGroup.get('schemeTitles')!.setValue(null);
   }

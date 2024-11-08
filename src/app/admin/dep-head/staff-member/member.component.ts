@@ -26,11 +26,11 @@ import { Registration } from 'src/app/Model/registration';
 export class MemberComponent implements OnInit, AfterViewInit {
   loggeduser: any;
   member!: Member;
+  columnsSchema: any = Member_Column_Accept;
+  displayedColumn: string[] = Member_Column_Accept.map((col) => col.key);
   regAcceptData!: Registration;
   regAccept: boolean = false;
   dataSource!: MemberDataSource;
-  displayedColumn: string[] = Member_Column_Accept.map((col) => col.key);
-  columnsSchema: any = Member_Column_Accept;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -45,6 +45,8 @@ export class MemberComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.loggeduser = this.share.getUser();
     if (this.loggeduser == null) this.router.navigate(['/signin']);
+    console.log(this.displayedColumn)
+    console.log(this.columnsSchema)
     this.dataSource = new MemberDataSource(this.auth);
     this.dataSource.loadMember('notAccept');
   }

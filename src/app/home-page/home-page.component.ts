@@ -32,29 +32,29 @@ export class HomePageComponent implements OnInit {
   ) {
     this.member = this.share.getUser();
     if (this.member != undefined) {
-
     } else {
       this.router.navigate(['/signin']);
     }
   }
   ngOnInit(): void {
-    this.auth.getDashboardData(Utils.currentYear, this.member.empNo)
+    this.auth
+      .getDashboardData(Utils.currentYear, this.member.empNo)
       .subscribe((receiveData: any) => {
-        this.claimSummary = receiveData
+        this.claimSummary = receiveData;
         this.claimSummary.forEach((c) => {
           if (c.category == Constants.CATEGORY_OPD) {
             this.opdRequestSum += c.requestAmount;
             this.opdPaidSum += c.paidAmount;
-          } else if (c.category == Constants.CATEGORY_SHE){
+          } else if (c.category == Constants.CATEGORY_SHE) {
             this.hsRequestSum += c.requestAmount;
             this.hsPaidSum += c.paidAmount;
           }
-        })
+        });
       });
   }
 
   inquiry() {
-    Constants.Toast.fire("Under Construction");
+    Constants.Toast.fire('Under Construction');
   }
 
   opdClaim() {
@@ -71,8 +71,7 @@ export class HomePageComponent implements OnInit {
       },
     });
 
-    _popup.afterClosed().subscribe((item) => {
-    });
+    _popup.afterClosed().subscribe((item) => {});
   }
 
   hospitalClaim() {

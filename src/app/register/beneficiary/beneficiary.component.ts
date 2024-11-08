@@ -5,7 +5,6 @@ import { Beneficiary } from 'src/app/Model/benificiary';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Constants } from 'src/app/util/constants';
 import { Utils } from 'src/app/util/utils';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-beneficiary',
@@ -40,10 +39,6 @@ export class BeneficiaryComponent implements OnInit {
   });
 
   ngOnInit() {
-    /* this.authService.getRelationShip("%").subscribe((rs) => {
-      this.relationshipOptions = rs;
-    });*/
-
     this.editdata.forEach((d) => {
       this.dForm.patchValue({
         id: d.id,

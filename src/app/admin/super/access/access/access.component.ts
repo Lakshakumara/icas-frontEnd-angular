@@ -42,8 +42,8 @@ export class AccessComponent implements OnInit {
         this.formGroup.get('memberSearch')!.value
       )
       .subscribe((data) => {
-        this.members = data.content
-        this.totalMembers = data.totalElements
+        this.members = data.content;
+        this.totalMembers = data.totalElements;
       });
   }
 
@@ -65,8 +65,8 @@ export class AccessComponent implements OnInit {
         })
       )
       .subscribe((data) => {
-        this.members = data.content
-        this.totalMembers = data.totalElements
+        this.members = data.content;
+        this.totalMembers = data.totalElements;
       });
   }
 

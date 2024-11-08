@@ -146,43 +146,6 @@ export class HospitalComponent implements OnInit {
   closePopup() {
     this.ref.close(this.formGroup.value);
   }
-  /*saveClaim() {
-    if (this.schemeTitles == undefined) {
-      return;
-    }
-    this.formGroup.patchValue({
-      memberId: this.member.id,
-      requestFor: this.schemeTitles.toString(),
-    });
-    console.log('To be Save ', this.formGroup.value);
-    
-    Swal.fire({
-      title: 'Confirm to add new claim',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Confirm',
-      showLoaderOnConfirm: true,
-      preConfirm: async () => {
-        let res:any;
-        try {
-          res = await this.authService.addClaim(this.formGroup.value);
-          console.log('received from backend ', res);
-        } catch (error) {
-          Swal.showValidationMessage(`
-          Request failed: ${error}
-        `);
-        }
-        return res;
-      },
-      allowOutsideClick: () => !Swal.isLoading(),
-    }).then((result) => {
-      console.log('result ', result.value);
-      if (result.isConfirmed) {
-        Swal.fire('Saving', `Claim reference number ${result.value}`, 'info');
-        this.resetPage();
-      }
-    });
-  }*/
 
   saveClaim() {
     if (this.schemeTitles == undefined) {

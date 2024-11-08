@@ -21,7 +21,7 @@ export class AppComponent implements DoCheck, OnInit {
     private share: SharedService
   ) {}
   ngOnInit(): void {
-    console.log("back end ip ", environment.baseUrl)
+    console.log('back end ip ', environment.baseUrl);
   }
 
   ngDoCheck(): void {

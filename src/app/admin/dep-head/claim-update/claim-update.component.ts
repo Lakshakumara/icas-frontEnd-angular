@@ -4,7 +4,6 @@ import { MatSort } from '@angular/material/sort';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Router } from '@angular/router';
 import { merge, tap } from 'rxjs';
-import { Member } from 'src/app/Model/member';
 import Swal from 'sweetalert2';
 import { Claim, Claim_Head_Accept } from 'src/app/Model/claim';
 import { ClaimDataSource } from './claim-dataSource';
@@ -24,7 +23,6 @@ export class ClaimUpdateComponent implements OnInit {
   dataSource!: ClaimDataSource;
   displayedColumn: string[] = Claim_Head_Accept.map((col) => col.key);
   columnsSchema: any = Claim_Head_Accept;
-
 
   search: any;
   @ViewChild(MatPaginator) paginator!: MatPaginator;

@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { Member } from '../Model/member';
-import { delay, map, tap } from 'rxjs/operators';
+import { map} from 'rxjs/operators';
 import { Dependant } from '../Model/dependant';
 import { Claim } from '../Model/claim';
 import { Utils } from '../util/utils';
@@ -44,12 +44,6 @@ export class AuthServiceService {
     return this.http
       .get(`${this.API_URL}/member/relationship/${rs}`)
       .pipe<string[]>(map((data: any) => data));
-  }
-
-  getMember(empNo: any): Observable<Member> {
-    return this.http
-      .get(`${this.API_URL}/member/${empNo}`)
-      .pipe<Member>(map((data: any) => data));
   }
 
   /**
@@ -103,12 +97,6 @@ export class AuthServiceService {
 
   login(data: any): Observable<any> {
     return this.http.post(`${this.API_URL}/member/signin`, data);
-  }
-
-  register(data: any): Observable<any> {
-    return this.http
-      .post(`${this.API_URL}/member/signup`, data)
-      .pipe<any>(map((data: any) => data));
   }
 
   getUser(data: any): Observable<any> {
@@ -189,6 +177,49 @@ export class AuthServiceService {
       });
   }
 
+  registerold(data: any): Observable<any> {
+    return this.http
+      .post(`${this.API_URL}/member/signup`, data)
+      .pipe<any>(map((data: any) => data));
+  }
+
+  async register(data: any): Promise<Observable<any>> {
+    return await fetch(`${this.API_URL}/member/signup`, {
+      method: 'post',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((responseJson) => {
+        console.log('register response ', responseJson);
+        return responseJson;
+      })
+      .catch((error) => {
+        return new Error(error);
+      });
+  }
+  getMemberold(empNo: any): Observable<Member> {
+    return this.http
+      .get(`${this.API_URL}/member/${empNo}`)
+      .pipe<Member>(map((data: any) => data));
+  }
+
+  async getMember(empNo: any): Promise<Observable<Member>> {
+    return await fetch(`${this.API_URL}/member/${empNo}`, {
+      method: 'get',
+    })
+    .then((res) => res.json())
+    .then((responseJson) => {
+      console.log('register response ', responseJson);
+      return responseJson;
+    })
+    .catch((error) => {
+      return new Error(error);
+    });
+  }
+
   async addClaim(claim: any): Promise<Observable<any>> {
     return await fetch(`${this.API_URL}/claim/add`, {
       method: 'post',
@@ -239,10 +270,18 @@ export class AuthServiceService {
       .get(`${this.API_URL}/dependant/${name}`)
       .pipe<Dependant>(map((data: any) => data));
   }
-  download(type: number, year: number, empNo: string): Observable<any> {
+  download(type: number, year: any, empNo: string): Observable<any> {
     console.log('download ', year, empNo);
     return this.http.get(
       `${this.API_URL}/download/application/${year}/${empNo}`,
+      { responseType: 'blob' }
+    );
+  }
+
+  directDownload(url: string, version: string): Observable<any> {
+    console.log('download ', url, version);
+    return this.http.get(
+      `${this.API_URL}/download/${url}/${version}`,
       { responseType: 'blob' }
     );
   }

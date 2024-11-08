@@ -180,7 +180,7 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
       mDate: new Date(),
       status: Constants.REGISTRATION_PENDING,
     });
-    this.auth.register(this.formGroup.value).subscribe((response: any) => {});
+    this.auth.registerold(this.formGroup.value).subscribe((response: any) => {});
   }
 
   clearReg() {

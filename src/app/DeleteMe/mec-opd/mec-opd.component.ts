@@ -19,7 +19,7 @@ export const _filter = (opt: string[], value: string): string[] => {
 };
 
 @Component({
-  selector: 'app-mec-opd',
+  selector: 'app-mec-opdx',
   templateUrl: './mec-opd.component.html',
   styleUrls: ['./mec-opd.component.css'],
 })

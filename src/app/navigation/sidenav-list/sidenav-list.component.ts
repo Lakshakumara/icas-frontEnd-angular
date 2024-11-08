@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { Member } from 'src/app/Model/member';
+import { Constants } from 'src/app/util/constants';
 
 @Component({
   selector: 'app-sidenav-list',
@@ -26,7 +27,7 @@ export class SidenavListComponent implements OnInit {
         this.member.roles.forEach((val, key) => {
           this.roles.push(val.role);
           switch (val.role) {
-            case 'admin': {
+            case Constants.ROLE_ADMIN: {
               this.isAdmin = true;
               this.isGADHead = true;
               this.isDepHead = true;
@@ -35,24 +36,24 @@ export class SidenavListComponent implements OnInit {
               this.isSuperAdmin = true;
               break;
             }
-            case 'GADHead':
+            case Constants.ROLE_GAD_HEAD:
               this.isGADHead = true;
               break;
-            case 'DepHead':
+            case Constants.ROLE_DEP_HEAD:
               this.isDepHead = true;
               break;
-            case 'mo':
+            case Constants.ROLE_MO:
               this.isMo = true;
               break;
-            case 'mec':
+            case Constants.ROLE_MEC:
               this.isMec = true;
               break;
-            case 'superAdmin':
+            case Constants.ROLE_SUPER_ADMIN:
               this.isSuperAdmin = true;
               break;
           }
         });
-    this.isUser = this.roles.includes('user');
+    this.isUser = this.roles.includes(Constants.ROLE_USER);
   }
 
   public onSidenavClose = () => {

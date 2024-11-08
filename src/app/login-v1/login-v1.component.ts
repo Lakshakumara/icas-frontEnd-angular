@@ -197,7 +197,7 @@ export class LoginV1Component implements OnInit {
             //Is a Valid Staff Member check for current year registration
 
             this.authService
-              .getMember(this.empNoForm.value.empNo)
+              .getMemberold(this.empNoForm.value.empNo)
               .subscribe((member) => {
                 if (member) {
                   

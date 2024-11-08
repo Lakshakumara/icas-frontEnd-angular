@@ -30,13 +30,7 @@ export class RegisterComponent implements OnInit {
   schemeType: string = Constants.SCHEME_INDIVIDUAL;
   member!: Member;
   data!: any;
-  Roles: any = [
-    'SUPER_ADMIN',
-    'ADMIN',
-    'SUBJECT_CLERK',
-    'MEDICAL OFFICEF',
-    'USER',
-  ];
+  Roles: any = [Constants.ROLE_USER];
   Civil_statuss: any = ['Married', 'Unmarried'];
   Sex: any = ['Male', 'Female'];
 
@@ -200,100 +194,6 @@ export class RegisterComponent implements OnInit {
   }
   private isBenPercents() {}
 
-  registerProcess() {
-    let sum: number = 0;
-    this.beneficiaryData.data.forEach((a) => (sum += Number(a.percent)));
-
-    let msg = `Confirm to submit Data ?`;
-    let btn = 'Yes, Submit!';
-    if (sum > 100) {
-      Swal.fire({
-        title: `Beneficiary percentage is ${sum}% not acceptable`,
-        icon: 'error',
-        showCancelButton: false,
-        confirmButtonText: 'Retry !',
-      });
-      return;
-    } else if (sum < 100) {
-      msg = `Beneficiary percentage is ${sum}%`;
-      btn = `Submit anyway`;
-    }
-
-    Swal.fire({
-      title: msg,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: btn,
-      showLoaderOnConfirm: true,
-      preConfirm: async () => {
-        this.setDep();
-        this.setBen();
-        this.formGroup.patchValue({
-          roles: [{ role: Constants.ROLE_USER }],
-          memberRegistrations: [
-            {
-              id: null,
-              year: Utils.currentYear,
-              schemeType: this.schemeType,
-            },
-          ],
-          mDate: Utils.today,
-          registrationOpen: 0,
-          status: Constants.REGISTRATION_PENDING,
-          password: Constants.DEFAULT_PASSWORD,
-          scheme: this.schemeType,
-        });
-        console.log('tobe insert ', this.formGroup.value);
-        return this.authService
-          .register(this.formGroup.value)
-          .subscribe((reg) => {
-            console.log('saved', reg);
-            return this.authService
-              .getMember(this.formGroup.value.empNo)
-              .subscribe((m) => {
-                this.share.setUser(m);
-                Swal.fire({
-                  title: `Download pdf`,
-                  icon: 'question',
-                  showCancelButton: true,
-                  confirmButtonText: 'Save',
-                  allowOutsideClick: () => false,
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    this.downloadMembershipApplication(
-                      Utils.currentYear,
-                      m.empNo
-                    );
-                  }
-
-                  const reg = m.memberRegistrations.find((r) => {
-                    return (
-                      r.year == Utils.currentYear && r.acceptedDate != null
-                    );
-                  });
-                  if (reg !== undefined) {
-                    this.router.navigate(['/home']);
-                  } else {
-                    Swal.fire(
-                      'Membership acceptace is required',
-                      `Contact Department Head`,
-                      'warning'
-                    ).then(() => {
-                      this.router.navigate(['/signin']);
-                    });
-                  }
-                });
-                this.formGroup.reset();
-                return m;
-              });
-          });
-      },
-      allowOutsideClick: () => !Swal.isLoading(),
-    }).then((result) => {
-      if (result.isConfirmed) {
-      }
-    });
-  }
   downloadMembershipApplication(year: number, empNo: string) {
     this.authService.download(1, year, empNo).subscribe((response: any) => {
       let dataType = response.type;
@@ -310,54 +210,6 @@ export class RegisterComponent implements OnInit {
       downloadLink.click();
     });
   }
-  /*registerProcess old() {
-    Swal.fire({
-      title: `Confirm to submit Data ?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, Submit!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.setDep();
-        this.setBen();
-        this.formGroup.patchValue({
-          roles: [{ role: "user" }],
-          memberRegistrations: [{ id: null, year: Utils.currentYear, schemeType: this.schemeType }],
-          mDate: Utils.today,
-          registrationOpen: 0,
-          status: "pending",
-          password:"user",
-          scheme: this.schemeType,
-        });
-        console.log("form generated values ", this.formGroup.value);
-        this.authService.register(this.formGroup.value).subscribe(
-          (response: any) => {
-            let dataType = response.type;
-            let binaryData = [];
-            binaryData.push(response);
-            let downloadLink = document.createElement('a');
-            downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: dataType }));
-            downloadLink.setAttribute('download', "Application.pdf");
-            document.body.appendChild(downloadLink);
-            console.log(downloadLink)
-            downloadLink.click();
-
-            this.authService.getMember(this.formGroup.value.empNo).subscribe(m => {
-              this.share.setUser(m);
-              this.formGroup.reset();
-              this.router.navigate(["/home"]);
-            })
-
-          }
-        );
-
-        
-      }
-      
-    });
-  }*/
 
   private setBenFormArray(x: any) {
     return this.fb.group({
@@ -388,7 +240,6 @@ export class RegisterComponent implements OnInit {
 
   removeDependant(name: string) {
     console.log('before removing  ', this.dependantData.data);
-
     Swal.fire({
       title: `Confirm to delete ${name} ?`,
       text: "You won't be able to revert this!",
@@ -488,4 +339,189 @@ export class RegisterComponent implements OnInit {
       footer: `<a href="">${JSON.stringify(subtitle)}</a>`,
     });
   }
+  registerProcess() {
+    let sum: number = 0;
+    this.beneficiaryData.data.forEach((a) => (sum += Number(a.percent)));
+
+    let msg = `Confirm to submit Data ?`;
+    let btn = 'Yes, Submit!';
+    if (sum > 100) {
+      Swal.fire({
+        title: `Beneficiary percentage is ${sum}% not acceptable`,
+        icon: 'error',
+        showCancelButton: false,
+        confirmButtonText: 'Retry !',
+      });
+      return;
+    } else if (sum < 100) {
+      msg = `Beneficiary percentage is ${sum}%`;
+      btn = `Submit anyway`;
+    }
+
+    Swal.fire({
+      title: msg,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: btn,
+      showLoaderOnConfirm: true,
+      preConfirm: async () => {
+        this.setDep();
+        this.setBen();
+        this.formGroup.patchValue({
+          roles: [{ role: Constants.ROLE_USER }],
+          memberRegistrations: [
+            {
+              id: null,
+              year: Utils.currentYear,
+              schemeType: this.schemeType,
+            },
+          ],
+          mDate: Utils.today,
+          registrationOpen: 0,
+          status: Constants.REGISTRATION_PENDING,
+          password: Constants.DEFAULT_PASSWORD,
+          scheme: this.schemeType,
+        });
+        console.log('tobe insert ', this.formGroup.value);
+        return this.authService
+          .registerold(this.formGroup.value)
+          .subscribe((reg) => {
+            console.log('saved', reg);
+            return this.authService
+              .getMemberold(this.formGroup.value.empNo)
+              .subscribe((m) => {
+                this.share.setUser(m);
+                Swal.fire({
+                  title: `Download pdf`,
+                  icon: 'question',
+                  showCancelButton: true,
+                  confirmButtonText: 'Save',
+                  allowOutsideClick: () => false,
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    this.downloadMembershipApplication(
+                      Utils.currentYear,
+                      m.empNo
+                    );
+                  }
+
+                  const reg = m.memberRegistrations.find((r) => {
+                    return (
+                      r.year == Utils.currentYear && r.acceptedDate != null
+                    );
+                  });
+                  if (reg !== undefined) {
+                    this.router.navigate(['/home']);
+                  } else {
+                    Swal.fire(
+                      'Membership acceptace is required',
+                      `Contact Department Head`,
+                      'warning'
+                    ).then(() => {
+                      this.router.navigate(['/signin']);
+                    });
+                  }
+                });
+                this.formGroup.reset();
+                return m;
+              });
+          });
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+      if (result.isConfirmed) {
+      }
+    });
+  }
+
+  /*registerProcess() {
+    let sum: number = 0;
+    this.beneficiaryData.data.forEach((a) => (sum += Number(a.percent)));
+
+    let msg = `Confirm to submit Data ?`;
+    let btn = 'Yes, Submit!';
+    if (sum > 100) {
+      Swal.fire({
+        title: `Beneficiary percentage is ${sum}% not acceptable`,
+        icon: 'error',
+        showCancelButton: false,
+        confirmButtonText: 'Retry !',
+      });
+      return;
+    } else if (sum < 100) {
+      msg = `Beneficiary percentage is ${sum}%`;
+      btn = `Submit anyway`;
+    } else if (sum == 100) {
+      msg = `Confirm for Registration`;
+      btn = `Confirm`;
+    }
+
+    const swalResult = await Swal.fire({
+      title: msg,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: btn,
+      showLoaderOnConfirm: true,
+      preConfirm: async () => {
+        this.setDep();
+        this.setBen();
+        this.formGroup.patchValue({
+          roles: [{ role: Constants.ROLE_USER }],
+          memberRegistrations: [
+            {
+              id: null,
+              year: Utils.currentYear,
+              schemeType: this.schemeType,
+            },
+          ],
+          mDate: Utils.today,
+          registrationOpen: 0,
+          status: Constants.REGISTRATION_PENDING,
+          password: Constants.DEFAULT_PASSWORD,
+          scheme: this.schemeType,
+        });
+        Swal.showValidationMessage('Processing');
+        console.log('tobe insert ', this.formGroup.value);
+        let res = await this.authService.register(this.formGroup.value);
+
+        let res1 = await this.authService.getMember(this.formGroup.value.empNo);
+
+        res1.subscribe((m) => {
+          this.share.setUser(m);
+          Swal.fire({
+            title: `Download pdf`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Save',
+            allowOutsideClick: () => false,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.downloadMembershipApplication(Utils.currentYear, m.empNo);
+            }
+
+            const reg = m.memberRegistrations.find((r) => {
+              return r.year == Utils.currentYear && r.acceptedDate != null;
+            });
+            if (reg !== undefined) {
+              this.router.navigate(['/home']);
+            } else {
+              Swal.fire(
+                'Membership acceptace is required',
+                `Contact Department Head`,
+                'warning'
+              ).then(() => {
+                this.router.navigate(['/signin']);
+              });
+            }
+          });
+          this.formGroup.reset();
+        });
+        return res;
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+      if (result.isConfirmed) {
+      }
+    });
+  }*/
 }

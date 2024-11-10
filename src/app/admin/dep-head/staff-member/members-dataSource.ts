@@ -14,7 +14,7 @@ export class MemberDataSource extends DataSource<Member> {
     private dataSetSubject = new BehaviorSubject<Member[]>([]);
     private loadingSubject = new BehaviorSubject<boolean>(false);
     public loading$ = this.loadingSubject.asObservable();
-
+    public totalCount = 0;
     constructor(private auth: AuthServiceService) { super(); }
 
     /**
@@ -44,7 +44,10 @@ export class MemberDataSource extends DataSource<Member> {
                 catchError(() => of([])),
                 finalize(() => this.loadingSubject.next(false))
             )
-            .subscribe((member: any) => this.dataSetSubject.next(member));
+            .subscribe((member: any) => {
+                this.dataSetSubject.next(member)
+                this.totalCount = member.length
+            });
         console.log("fetch data set ", this.dataSetSubject)
     }
 }

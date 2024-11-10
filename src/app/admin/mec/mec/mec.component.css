@@ -1,11 +1,15 @@
-.gpLabel{
+button.remove-button {
+  margin-top: 16px; /* Adjust the spacing as needed */
+  margin-bottom: 16px;
+}
+.gpLabel {
   font-style: italic;
   text-align: left;
   font-weight: bold;
   background: #2bb961;
-  background-color: #fa7d44
+  background-color: #fa7d44;
 }
-.gpDescription{
+.gpDescription {
   font-style: normal;
 }
 .fullWith {
@@ -42,13 +46,12 @@ input.example-right-align {
 
 .container {
   display: grid;
-  grid-template-columns: 220px 1fr 220px;
+  grid-template-columns: 250px 1fr 250px;
   grid-template-rows: auto 1fr auto;
   grid-gap: 12px;
   grid-template-areas:
     "header header header"
-    "nav content rside"
-    "footer footer footer";
+    "nav content rside";
   height: 85vh;
 }
 .header {
@@ -56,6 +59,7 @@ input.example-right-align {
   font-size: 14px;
   grid-area: header;
   text-align: center;
+  vertical-align: middle;
   background-color: #fa7d44;
 }
 
@@ -72,13 +76,6 @@ input.example-right-align {
   grid-area: rside;
   margin-right: 0.6rem;
 }
-.footer {
-  grid-area: footer;
-  background-color: #2bb961;
-  color: white;
-  text-align: center;
-  padding: 25px 0;
-}
 
 @media (max-width: 560px) {
   nav,
@@ -91,8 +88,7 @@ input.example-right-align {
       "header"
       "nav"
       "content"
-      "rside"
-      "footer";
+      "rside";
     grid-template-rows: auto auto 1fr minmax(70px, auto) auto;
   }
   .hori {
@@ -102,7 +98,6 @@ input.example-right-align {
   }
 }
 .nav mat-form-field {
-  font-size: 14px;
   width: 100%;
   height: auto;
 }
@@ -129,6 +124,6 @@ input.example-right-align {
   justify-content: flex-start;
   background-color: dimgray;
 }
-.nav ul{
+.nav ul {
   padding-left: 0%;
 }

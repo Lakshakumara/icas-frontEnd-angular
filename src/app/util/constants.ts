@@ -52,6 +52,7 @@ export class Constants {
     'Finance',
     'Paid',
   ];
+  static CLAIMSTATUS_ALL: string = '%';
   static CLAIMSTATUS_PENDING: string = 'pending';
   static CLAIMSTATUS_HEAD_APPROVED: string = 'head_approved';
   static CLAIMSTATUS_REJECTED: string = 'rejected';

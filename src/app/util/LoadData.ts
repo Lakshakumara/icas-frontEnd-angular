@@ -9,7 +9,7 @@ export class LoadDataSource extends DataSource<any> {
   paginator: MatPaginator | undefined;
   sort: MatSort | undefined;
   filter: string = '';
-
+  public totalCount = 0;
   private dataSetSubject = new BehaviorSubject<any[]>([]);
   private loadingSubject = new BehaviorSubject<boolean>(false);
   public loading$ = this.loadingSubject.asObservable();
@@ -88,7 +88,11 @@ export class LoadDataSource extends DataSource<any> {
         catchError(() => of([])),
         finalize(() => this.loadingSubject.next(false))
       )
-      .subscribe((receiveData: any) => this.dataSetSubject.next(receiveData));
+      .subscribe((receiveData: any) => {
+        console.log(receiveData)
+        this.dataSetSubject.next(receiveData.content)
+        this.totalCount = receiveData.totalElements;}
+      );
   }
 
   filterData(

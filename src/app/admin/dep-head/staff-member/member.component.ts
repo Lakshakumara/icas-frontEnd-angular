@@ -32,6 +32,7 @@ export class MemberComponent implements OnInit, AfterViewInit {
   regAccept: boolean = false;
   dataSource!: MemberDataSource;
 
+  totalLength = 0;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('input') input!: ElementRef;
@@ -45,10 +46,13 @@ export class MemberComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.loggeduser = this.share.getUser();
     if (this.loggeduser == null) this.router.navigate(['/signin']);
-    console.log(this.displayedColumn)
-    console.log(this.columnsSchema)
     this.dataSource = new MemberDataSource(this.auth);
     this.dataSource.loadMember('notAccept');
+    this.dataSource.loading$.subscribe(loading => {
+      if (!loading) {
+        this.totalLength = this.dataSource.totalCount;
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -66,8 +70,6 @@ export class MemberComponent implements OnInit, AfterViewInit {
 
     // reset the paginator after sorting
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-
-    // on sort or paginate events, load a new page
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(tap(() => this.loadMemberPage()))
       .subscribe();

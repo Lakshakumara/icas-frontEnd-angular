@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
@@ -17,7 +17,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
   templateUrl: './claim-manage.component.html',
   styleUrls: ['./claim-manage.component.css'],
 })
-export class ClaimManageComponent {
+export class ClaimManageComponent implements OnInit, AfterViewInit{
   status_Pending: string = new Constants().isHeadforClaim;
   status_reject: string = Constants.CLAIMSTATUS_REJECTED;
   status_finance: string = Constants.CLAIMSTATUS_FINANCE;
@@ -33,14 +33,10 @@ export class ClaimManageComponent {
   columnsSchema: any = Claim_All;
 
   claimViewOptions: string[] = Constants.CLAIM_STATUS_VIEW;
-  claimViewOptionSelected: string = 'Head Approved';
-  // selectedMember!: Member| null;
+  claimViewOptionSelected: string = 'All';
   search: any;
 
-  currentPage = 0;
-  pageSize = 10;
-  totalItems = 0;
-
+  totalLength = 0; // Add a total length variable to manage pagination
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -59,7 +55,6 @@ export class ClaimManageComponent {
   });
 
   onPageChange(page: number): void {
-    this.currentPage = page;
     this.loadClaimPage();
   }
 
@@ -72,11 +67,18 @@ export class ClaimManageComponent {
   }
   ngOnInit() {
     this.loggeduser = this.share.getUser();
-    //if (this.loggeduser == null) this.router.navigate(['/signin']);
+    if (this.loggeduser == null) this.router.navigate(['/signin']);
     this.dataSource = new ClaimDataSource(this.auth);
-    this.dataSource.requestData(Constants.CLAIMSTATUS_HEAD_APPROVED);
   }
   ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.loadClaimPage()
+    this.dataSource.loading$.subscribe(loading => {
+      if (!loading) {
+        this.totalLength = this.dataSource.totalCount;
+      }
+    });
+
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(tap(() => this.loadClaimPage()))
@@ -86,18 +88,18 @@ export class ClaimManageComponent {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     const val = filterValue.trim().toLowerCase();
+    this.dataSource.requestData(this.getSelectedClaimStatus(), val, this.sort.direction, this.paginator.pageIndex, this.paginator.pageSize);
   }
 
   loadClaimPage() {
-    //this.selectedMember = null;
     this.selectedClaim = null;
-    this.dataSource.requestData(this.getSelectedClaimStatus(),'','asc',this.currentPage,this.pageSize);
+    this.dataSource.requestData(this.getSelectedClaimStatus(),'', this.sort.direction, this.paginator.pageIndex, this.paginator.pageSize);
   }
   getSelectedClaimStatus(): string {
     let sop: string = '';
     switch (this.claimViewOptionSelected) {
       case 'All':
-        sop = '%';
+        sop = Constants.CLAIMSTATUS_ALL;
         break;
       case 'Pending':
         sop = Constants.CLAIMSTATUS_PENDING;

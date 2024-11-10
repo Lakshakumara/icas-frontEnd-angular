@@ -1,14 +1,14 @@
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { Observable, BehaviorSubject, of } from 'rxjs';
+import { Observable, BehaviorSubject, of, catchError, finalize } from 'rxjs';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Claim } from 'src/app/Model/claim';
 
 export class VoucherDataSource extends DataSource<Claim> {
   paginator: MatPaginator | undefined;
   sort: MatSort | undefined;
-
+  public totalCount = 0;
   private dataSetSubject = new BehaviorSubject<Claim[]>([]);
   private loadingSubject = new BehaviorSubject<boolean>(false);
   public loading$ = this.loadingSubject.asObservable();
@@ -62,16 +62,27 @@ export class VoucherDataSource extends DataSource<Claim> {
     filter = '',
     sortDirection = 'asc',
     pageIndex = 0,
-    pageSize = 10) {
+    pageSize = 10
+  ) {
     this.loadingSubject.next(true);
-    return this.auth.getAllClaims(
-      '%',
-      0,
-      '',
-      claimStatus,
-      filter,
-      sortDirection,
-      pageIndex,
-      pageSize);
+    return this.auth
+      .getAllClaims(
+        '%',
+        0,
+        '',
+        claimStatus,
+        filter,
+        sortDirection,
+        pageIndex,
+        pageSize
+      )
+      .pipe(
+        catchError(() => of([])),
+        finalize(() => this.loadingSubject.next(false))
+      )
+      .subscribe((receiveData: any) => {
+        this.dataSetSubject.next(receiveData.content);
+        this.totalCount = receiveData.totalElements;
+      });
   }
 }

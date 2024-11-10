@@ -1,47 +1,86 @@
-.full-width {
-    width: 100%;
+.topClass {
+  padding: 20px;
+  font-family: Arial, sans-serif;
 }
+
+.topClass h1 {
+  text-align: left;
+  margin-bottom: 20px;
+  color: #3f51b5; /* Mat-Primary color */
+}
+
 .hori {
-    display: flex;
-    margin-right: 16px;
-    margin-left: 16px;
-    width: 100%;
-    align-items: baseline;
-    gap: 20px;
-  }
-  .memberData {
-    width: 250px;
-  }
-a {
-    list-style: none;
-    display: inline-block;
-    margin-right: 20px;
-    display: flex;
-    justify-content: left;
-}
-h1, table{
-    margin-left: 16px;
-    overflow: auto;
-  }
-.mat-mdc-table .mdc-data-table__row:hover {
-    background-color: rgba(236, 236, 236, 0.514) !important;
+  display: flex;
+  align-items: center; /* Vertically center the items */
+  gap: 1rem; /* Add space between the items */
 }
 
-.mat-column-id {
-    width: 50px;
+.flex-form-field {
+  flex: 1; /* Make form fields take equal space */
+  min-width: 200px; /* Ensure a minimum width */
 }
 
-.mat-column-status {
-    width: 100px;
-    border: 1;
+.mat-form-field {
+  flex: 1;
+  min-width: 200px;
 }
 
-.mat-mdc-table .mdc-data-table__header-row {
-    height: 35px;
-    background-color: gray;
-    text-align: left;
+.memberData a,
+.memberData span {
+  display: block;
+  margin-bottom: 5px;
 }
 
-.mat-mdc-table .mdc-data-table__row {
-    height: 35px;
+fieldset {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+fieldset legend {
+  padding: 0 10px;
+  font-weight: bold;
+}
+
+.mat-checkbox {
+  margin-right: 20px;
+}
+
+.fullWith {
+  flex: 1;
+}
+
+.mat-elevation-z8 {
+  margin-top: 20px;
+}
+
+.topClass-table th,
+.topClass-table td {
+  padding: 8px;
+  text-align: left;
+}
+
+.topClass-table th {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+.topClass-table td {
+  border-bottom: 1px solid #ddd;
+}
+
+.mat-paginator {
+  margin-top: 20px;
+  justify-content: center;
+}
+.text-right {
+  text-align: right;
+}
+::ng-deep .mat-sort-header-container {
+  padding: 10px;
+}
+
+::ng-deep .mat-sort-header-arrow {
+  font-size: 16px;
+  color: #000;
 }

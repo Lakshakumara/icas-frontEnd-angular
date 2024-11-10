@@ -14,7 +14,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field class="flex-form-field">
       <mat-label>Search By Employee No or Name</mat-label>
       <input matInput (keyup)="applyFilter($event)" placeholder="Search Columns" #input />
     </mat-form-field>
@@ -91,18 +91,18 @@
 
   <table mat-table class="topClass-table mat-elevation-z8" [dataSource]="dataSource" matSort matSortActive="id"
     matSortDirection="asc" matSortDisableClear>
+
     <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema; let i = index">
       <th *matHeaderCellDef>{{ columnsSchema[i].label }}</th>
-      <td mat-cell *matCellDef="let element" [align]="columnsSchema[i].type === 'number' ? 'right' : 'left'">
-        {{ element[col.key] }}
+      <td mat-cell *matCellDef="let element" [ngClass]="{'text-right': col.type === 'currency'}">
+        {{ col.type === 'currency' ? (element[col.key] | currency:'Rs ':'symbol':'1.2-2') : element[col.key] }}
       </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumn; sticky: true"></tr>
     <tr mat-row *matRowDef="let claim; columns: displayedColumn" (click)="onRowClicked(claim)"></tr>
   </table>
-  
-  <mat-paginator class="mat-elevation-z8" #paginator [length]="totalItems" [pageIndex]="0" [pageSize]="pageSize"
-    (page)="onPageChange($event.pageIndex)" [pageSizeOptions]="[1, 5, 10, 20]" aria-label="Select page">
-  </mat-paginator>
+
+  <mat-paginator #paginator [length]="totalLength" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons></mat-paginator>
 </div>

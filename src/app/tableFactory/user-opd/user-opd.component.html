@@ -67,6 +67,5 @@
     <tr mat-row *matRowDef="let claim; columns: displayedColumns;" (click)="onRowClicked(claim)"></tr>
   </table>
 
-  <mat-paginator class="mat-elevation-z8" #paginator [length]="10" [pageIndex]="0" [pageSize]="3"
-    [pageSizeOptions]="[1,5, 10, 20]" aria-label="Select page">
-  </mat-paginator>
+  <mat-paginator #paginator [length]="totalLength" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"
+  showFirstLastButtons></mat-paginator>

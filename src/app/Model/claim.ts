@@ -62,12 +62,17 @@ export const Claim_All = [
   {
     key: 'id',
     type: 'number',
-    label: 'ID',
+    label: 'Claim ID',
   },
   {
     key: 'empNo',
     type: 'text',
     label: 'Emp NO',
+  },
+  {
+    key: 'name',
+    type: 'text',
+    label: 'Name',
   },
   {
     key: 'category',
@@ -80,8 +85,8 @@ export const Claim_All = [
     label: 'Status',
   },
   {
-    key: 'startDate',
-    type: 'string',
+    key: 'claimDate',
+    type: 'text',
     label: 'Date',
   },
   {
@@ -91,7 +96,7 @@ export const Claim_All = [
   },
   {
     key: 'requestAmount',
-    type: 'number',
+    type: 'currency',
     label: 'Request Amount',
   },
 ];
@@ -120,7 +125,7 @@ export const Claim_Head_Accept = [
     label: 'ID',
   },
   {
-    key: 'member.empNo',
+    key: 'empNo',
     type: 'text',
     label: 'Emp NO',
   },
@@ -130,18 +135,18 @@ export const Claim_Head_Accept = [
     label: 'Category',
   },
   {
-    key: 'startDate',
-    type: 'string',
-    label: 'Date',
+    key: 'claimDate',
+    type: 'text',
+    label: 'Claim Date',
   },
   {
     key: 'requestFor',
     type: 'text',
-    label: 'Request',
+    label: 'Request For',
   },
   {
     key: 'requestAmount',
-    type: 'number',
+    type: 'currency',
     label: 'Request Amount',
   },
 ];

@@ -128,11 +128,6 @@ export class VoucherComponent implements OnInit {
     this.dataSource = new VoucherDataSource(this.auth);
     this.dataSource
       .requestAllData(Constants.CLAIMSTATUS_MEDICAL_DECISION_APPROVED)
-      .pipe(catchError(() => of([])))
-      .subscribe((receiveData: any) => (this.rowData = receiveData));
-    this.selectedClaims = null;
-    this.tobeUpdated = null;
-    this.claimData = [];
   }
 
   setPaidAmount() {

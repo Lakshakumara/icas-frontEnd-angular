@@ -6,7 +6,6 @@ export const DownloadGuard: CanActivateFn = (route, state) => {
   const auth = inject(AuthServiceService);
   const scheme = route.paramMap.get('scheme');
   const version = route.paramMap.get('version');
-  console.log("here ", scheme)
   if (scheme && version) {
     auth.directDownload(scheme, version).subscribe((response: Blob) => {
       const url = window.URL.createObjectURL(response);

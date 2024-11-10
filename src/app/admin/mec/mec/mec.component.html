@@ -8,47 +8,8 @@
       <mat-label>Employee No or Name</mat-label>
       <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #input />
     </mat-form-field>
-    <!--mat-accordion>
-      
-      
-      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-        <mat-expansion-panel-header>
-          <mat-panel-title> Member Details </mat-panel-title>
-        </mat-expansion-panel-header>
-
-        <div *ngIf="selectedClaim">
-            <ul>
-              EmpNo:
-              <b>{{ selectedClaim.member.empNo }}</b>
-            </ul>
-            <ul>
-              Name:
-              <b>{{ selectedClaim.member.name }}</b>
-            </ul>
-            <ul>
-              NIC:
-              <b>{{ selectedClaim.member.nic }}</b>
-            </ul>
-            <ul>
-              Designation:
-              <b>{{ selectedClaim.member.designation }}</b>
-            </ul>
-            <ul>
-              Contact No:
-              <b>{{ selectedClaim.member.contactNo }}</b>
-            </ul>
-        </div>
-      </mat-expansion-panel>
-    </mat-accordion-->
     <div>
       <table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="asc" matSortDisableClear>
-        <!--ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema; let i = index">
-          <th *matHeaderCellDef>{{ columnsSchema[i].label }}</th>
-
-          <td mat-cell *matCellDef="let element" [align]="columnsSchema[i].type == 'number' ? 'right' : 'left'">
-            {{ element[col.key] }}
-          </td-->
-
         <ng-container matColumnDef="id">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>
             {{ columnsSchema[0].label }}
@@ -63,7 +24,7 @@
           </th>
 
           <td mat-cell *matCellDef="let element" class="m-card-sub-title" data-label="empNo">
-            <a  [matTooltip]="element.member.name">{{ element.empNo }}</a><!--button mat-raised-button 
+            <a [matTooltip]="element.member.name">{{ element.empNo }}</a><!--button mat-raised-button 
       [matTooltipDisabled]="true"
       #myTooltip="matTooltip" 
       matTooltip="Action done!"
@@ -86,13 +47,11 @@
         <tr mat-row *matRowDef="let claimOpd; columns: displayedColumn" (click)="onRowClicked(claimOpd)"></tr>
       </table>
     </div>
-    <!--mat-paginator #paginator [length]="10" [pageIndex]="0" [pageSize]="3" [pageSizeOptions]="[1, 5, 10, 20]"
-      aria-label="Select page">
-    </mat-paginator-->
+    <mat-paginator #paginator [length]="totalLength"></mat-paginator>
   </div>
 
   <mat-card class="mainbody">
-    <div *ngIf="selectedClaim">
+    <div *ngIf="selectedClaim; else noClaim">
       <h4>
         Claim Request for <b>{{ selectedClaim.requestFor }}</b>
       </h4>
@@ -132,9 +91,14 @@
         </tr>
       </table>
     </div>
-
-    <br>
+    <ng-template #noClaim>
+      <h4>
+        Select claim from left table...
+      </h4>
+    </ng-template>
     <mat-divider></mat-divider>
+    <br>
+
     <form [formGroup]="formGroup" *ngIf="this.selectedClaim">
       <mat-form-field class="fullWith">
         <mat-label>Select Scheme Title</mat-label>
@@ -188,31 +152,22 @@
           </div>
         </mat-radio-group>
       </div>
-      <app-my-table [enableCheckbox]="true" [allowMultiSelect]="false"[rowData]="currentClaimData"
-        [sqColumnDefinition]="columnDefinition" (getSelectedRows)="onNotifySelected($event)" 
-        >
+      <app-my-table [enableCheckbox]="true" [allowMultiSelect]="false" [rowData]="currentClaimData"
+        [sqColumnDefinition]="columnDefinition" (getSelectedRows)="onNotifySelected($event)">
       </app-my-table>
 
-      <button mat-raised-button color="warn" [disabled]="!this.selectedclaimTitle"  (click)="removeClaimTitle()">
-        Remove Item
-      </button>
-        <mat-form-field class="fullWith">
-          <mat-label>Overrall Remarks on medical documents</mat-label>
-          <input matInput formControlName="mecremarks" />
-        </mat-form-field>
-        
-        <button mat-raised-button color="accent" (click)="updateClaim()" [disabled]="!(this.currentClaimData.length > 0)">
-          Complete and Submit the Claim
-        </button>
+      <button mat-raised-button color="warn" [disabled]="!this.selectedclaimTitle" (click)="removeClaimTitle()"
+        class="remove-button">
+        Remove Item</button>
+      <mat-form-field class="fullWith">
+        <mat-label>Overrall Remarks on medical documents</mat-label>
+        <input matInput formControlName="mecremarks" />
+      </mat-form-field>
 
-        
+      <button mat-raised-button color="accent" (click)="updateClaim()" [disabled]="!(this.currentClaimData.length > 0)">
+        Complete and Submit the Claim
+      </button>
     </form>
-    
-    
-    <mat-card-footer>
-      
-      
-    </mat-card-footer>
   </mat-card>
 
   <mat-card class="rside">
@@ -226,8 +181,4 @@
       </mat-expansion-panel>
     </mat-accordion>
   </mat-card>
-
-  <!--div class="footer">
-    <span> Software Training @OUSL 2024 </span>
-  </div-->
 </div>

@@ -3,13 +3,15 @@ import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Claim, MEC_Column_Accept } from 'src/app/Model/claim';
 import Swal from 'sweetalert2';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, map, startWith } from 'rxjs';
+import { Observable, map, merge, startWith, tap } from 'rxjs';
 import { FormBuilder, Validators } from '@angular/forms';
 import { SchemeTitles } from 'src/app/Model/scheme';
 import { SchemeService } from 'src/app/service/scheme.service';
 import { Constants } from 'src/app/util/constants';
 import { LoadDataSource } from 'src/app/util/LoadData';
 import { MatTooltip } from '@angular/material/tooltip';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 
 export const _filter = (opt: string[], value: string): string[] => {
   const filterValue = value.toLowerCase();
@@ -50,18 +52,19 @@ export class MecComponent implements OnInit {
       name: 'status',
       displayName: 'Status',
       disableSorting: true,
-    }
+    },
   ];
   // @ViewChild("myTooltip") myTooltip!: MatTooltip
-  //@ViewChild(MatPaginator) paginator!: MatPaginator;
-  //@ViewChild(MatSort) sort!: MatSort;
+  totalLength = 0;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private fb: FormBuilder,
     private schemeService: SchemeService,
     private auth: AuthServiceService,
     private route: ActivatedRoute
-  ) { }
+  ) {}
 
   stateGroups!: SchemeTitles[];
   stateGroupOptions!: Observable<SchemeTitles[]>;
@@ -88,7 +91,7 @@ export class MecComponent implements OnInit {
 
   onRadioButtonChange(event: any) {
     if (event.value == undefined) return;
-    console.log(event.value)
+    console.log(event.value);
     this.formGroup.controls.deductionAmount.disable();
     this.formGroup.controls.deductionremarks.disable();
     this.formGroup.controls.rejectremarks.disable();
@@ -117,21 +120,23 @@ export class MecComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route
-      .data
-      .subscribe((v: any) => {
-        this.title = (v.param == Constants.CATEGORY_OPD) ? "OPD Claim Evaluation"
-          : "Medical Evaluation Committee";
-        this.claim_category = v.param
-      });
+    this.route.data.subscribe((v: any) => {
+      this.title =
+        v.param == Constants.CATEGORY_OPD
+          ? 'OPD Claim Evaluation'
+          : 'Medical Evaluation Committee';
+      this.claim_category = v.param;
+    });
 
     this.dataSource = new LoadDataSource(this.auth);
     //this.dataSource.paginator = this.paginator;
     //this.dataSource.sort = this.sort;
-    this.loadClaimPage()
-    this.schemeService.getSchemeTitle(this.claim_category).subscribe((titles: any) => {
-      this.stateGroups = titles;
-    });
+    this.loadClaimPage();
+    this.schemeService
+      .getSchemeTitle(this.claim_category)
+      .subscribe((titles: any) => {
+        this.stateGroups = titles;
+      });
 
     this.stateGroupOptions = this.formGroup
       .get('stateGroup')!
@@ -142,10 +147,15 @@ export class MecComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    /*this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(tap(() => this.loadClaimPage()))
-      .subscribe();*/
+      .subscribe();
+    this.dataSource.loading$.subscribe((loading) => {
+      if (!loading) {
+        this.totalLength = this.dataSource.totalCount;
+      }
+    });
   }
 
   applyFilter(event: Event) {
@@ -158,7 +168,10 @@ export class MecComponent implements OnInit {
 
   loadClaimPage() {
     this.selectedClaim = null;
-    this.dataSource.requestData(this.claim_category, Constants.CLAIMSTATUS_MEDICAL_DECISION_PENDING);
+    this.dataSource.requestData(
+      this.claim_category,
+      Constants.CLAIMSTATUS_MEDICAL_DECISION_PENDING
+    );
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
@@ -173,19 +186,18 @@ export class MecComponent implements OnInit {
   }
 
   loadTitleTable() {
-    this.dataSource
-      .loadCurrentClaimData(this.selectedClaim!.id)
-      .then(res => {
-        this.currentClaimData = res;
-        console.log("this.currentClaimData: "+JSON.stringify(this.currentClaimData));
-        
-      });
+    this.dataSource.loadCurrentClaimData(this.selectedClaim!.id).then((res) => {
+      this.currentClaimData = res;
+      console.log(
+        'this.currentClaimData: ' + JSON.stringify(this.currentClaimData)
+      );
+    });
   }
-  loadMedicalHistory() { }
+  loadMedicalHistory() {}
 
   updateClaim() {
     if (this.currentClaimData.length == 0) {
-      Constants.Toast.fire("Please add Title details");
+      Constants.Toast.fire('Please add Title details');
       return;
     }
     this.tobeUpdated = [];
@@ -223,7 +235,7 @@ export class MecComponent implements OnInit {
         if (result.value >= 1) {
           Swal.fire('Claim Updated', '', 'success');
           this.loadClaimPage();
-        } else Swal.fire('Error', "Failed to Update", 'error');
+        } else Swal.fire('Error', 'Failed to Update', 'error');
       }
     });
   }
@@ -238,15 +250,12 @@ export class MecComponent implements OnInit {
     this.tobeUpdated = [];
 
     this.tobeUpdated.push({
-      criteria: "claimdata",
+      criteria: 'claimdata',
       id: this.selectedClaim!.id,
       idText: scheme[1],
       claimDataStatus: this.claimDataStatus,
       requestAmount: this.selectedClaim!.requestAmount,
-      rejectDate:
-        this.claimDataStatus == 'Rejected'
-          ? new Date()
-          : undefined,
+      rejectDate: this.claimDataStatus == 'Rejected' ? new Date() : undefined,
       rejectRemarks: this.formGroup.value.rejectremarks,
 
       deductionAmount: this.formGroup.value.deductionAmount,
@@ -281,8 +290,7 @@ export class MecComponent implements OnInit {
           Swal.fire('Claim Updated', '', 'success');
           this.formGroup.reset();
           this.loadTitleTable();
-        } else Swal.fire('Error', "Failed to Update", 'error');
-
+        } else Swal.fire('Error', 'Failed to Update', 'error');
       }
     });
   }
@@ -293,32 +301,30 @@ export class MecComponent implements OnInit {
       text: "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: 'Yes, delete it!',
       showLoaderOnConfirm: true,
       preConfirm: async () => {
         let x = await this.auth.deleteClaimData(this.selectedclaimTitle.id);
         return x;
-
       },
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
       console.log('result ', result.value);
       if (result.isConfirmed) {
         Swal.fire({
-          title: "Deleted!",
-          text: "Data has been deleted.",
-          icon: "success"
-        }).then(_result => {
+          title: 'Deleted!',
+          text: 'Data has been deleted.',
+          icon: 'success',
+        }).then((_result) => {
           this.loadTitleTable();
-        }
-        );
+        });
         //
       } else {
         console.log('error');
       }
     });
 
-    console.log("selected id ", this.selectedclaimTitle.id)
+    console.log('selected id ', this.selectedclaimTitle.id);
   }
   private _filterGroup(value: string): SchemeTitles[] {
     if (value) {
@@ -346,9 +352,6 @@ export class MecComponent implements OnInit {
     }*/
   }
   showMember() {
-    Swal.fire('Member', '', 'info')
+    Swal.fire('Member', '', 'info');
   }
-
 }
-
-

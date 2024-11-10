@@ -15,7 +15,14 @@ export class AuthServiceService {
   private API_URL = environment.baseUrl;
 
   constructor(private http: HttpClient) {}
+  
+  login(data: any): Observable<any> {
+    return this.http.post(`${this.API_URL}/member/signin`, data);
+  }
 
+  getUser(data: any): Observable<any> {
+    return this.http.get(`${this.API_URL}/member/data`, data);
+  }
   getMembers(
     searchFor: string,
     searchText: string,
@@ -79,6 +86,7 @@ export class AuthServiceService {
       });
   }
   async saveOPD(claimOPD: any): Promise<Observable<any>> {
+    console.log("sent", claimOPD)
     return await fetch(`${this.API_URL}/claim/opd`, {
       method: 'POST',
       body: JSON.stringify(claimOPD),
@@ -95,13 +103,7 @@ export class AuthServiceService {
       });
   }
 
-  login(data: any): Observable<any> {
-    return this.http.post(`${this.API_URL}/member/signin`, data);
-  }
-
-  getUser(data: any): Observable<any> {
-    return this.http.get(`${this.API_URL}/member/data`, data);
-  }
+  
 
   /**
    *
@@ -125,7 +127,7 @@ export class AuthServiceService {
     pageIndex: number = 0,
     pageSize: number = 10
   ): Observable<Claim[]> {
-    console.log('getAllClaims calls claimType= ', claimType);
+    console.log('getAllClaims calls = ', claimType);
     return this.http
       .get(`${this.API_URL}/claim/getAll`, {
         params: new HttpParams()
@@ -135,11 +137,12 @@ export class AuthServiceService {
           .set('claimStatus', claimStatus)
           .set('filter', filter)
           .set('sortOrder', sortDirection)
-          .set('pageNumber', pageIndex.toString())
+          .set('pageIndex', pageIndex.toString())
           .set('pageSize', pageSize.toString()),
       })
       .pipe<Claim[]>(map((res: any) => res));
   }
+
   /**
    *
    * @param claimType

@@ -42,7 +42,7 @@ export class OpdComponent implements OnInit {
      * Outdoor, Spectacles, covid test etc..
      */
     requestFor: this.buildr.control('', Validators.required),
-    incidentDate: this.buildr.control('', Validators.required),
+    incidentDate: this.buildr.control(Utils.today, Validators.required),
     claimDate: this.buildr.control(Utils.today, Validators.required),
     applyDate: this.buildr.control(''),
     requestAmount: this.buildr.control({ value: <number>{}, disabled: false }, Validators.required),

@@ -25,6 +25,7 @@ export class ClaimUpdateComponent implements OnInit {
   columnsSchema: any = Claim_Head_Accept;
 
   search: any;
+  totalLength = 0; // Add a total length variable to manage pagination
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -32,13 +33,26 @@ export class ClaimUpdateComponent implements OnInit {
     private share: SharedService,
     private router: Router) { }
 
-  ngOnInit() {
+  /*ngOnInit() {
     this.loggeduser = this.share.getUser();
     if (this.loggeduser == null) this.router.navigate(['/signin']);
     this.dataSource = new ClaimDataSource(this.auth);
     this.dataSource.requestData(Constants.CLAIMSTATUS_PENDING);
-  }
+  }*/
+
+    ngOnInit() {
+      this.loggeduser = this.share.getUser();
+      if (this.loggeduser == null) this.router.navigate(['/signin']);
+      this.dataSource = new ClaimDataSource(this.auth);
+      this.dataSource.requestData(Constants.CLAIMSTATUS_PENDING);
+      this.dataSource.loading$.subscribe(loading => {
+        if (!loading) {
+          this.totalLength = this.dataSource.totalCount;
+        }
+      });
+    }
   ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(
@@ -50,14 +64,15 @@ export class ClaimUpdateComponent implements OnInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     const val = filterValue.trim().toLowerCase();
+    this.dataSource.requestData(Constants.CLAIMSTATUS_PENDING, val, this.sort.direction, this.paginator.pageIndex, this.paginator.pageSize);
   }
 
   loadClaimPage() {
-
     this.selectedClaim = null;
-    this.dataSource.requestData(Constants.CLAIMSTATUS_PENDING);
+    this.dataSource.requestData(Constants.CLAIMSTATUS_PENDING, '', this.sort.direction, this.paginator.pageIndex, this.paginator.pageSize);
     console.log("Claim Loaded")
   }
+
   onRowClicked(claim: Claim) {
     this.selectedClaim = claim;
   }

@@ -7,3 +7,16 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+.topClass-table th.mat-header-cell {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #121212; /* Set the background color to match the table */
+}
+.topClass-table tr:hover {
+  background-color: #f5f5f5;
+}
+
+.topClass-table tr.selected {
+  background-color: #d1ecf1;
+}

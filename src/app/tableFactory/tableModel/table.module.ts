@@ -8,21 +8,21 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 
 export { TableComponent } from './table.component';
-export { TablePaginationSettingsModel, ColumnSettingsModel } from './table-settings.model';
-
+export {
+  TablePaginationSettingsModel,
+  ColumnSettingsModel,
+} from './table-settings.model';
 
 @NgModule({
-    declarations: [TableComponent],
-    imports: [
-        CommonModule,
-        MatTableModule,
-        MatIconModule,
-        MatCheckboxModule,
-        MatSortModule,
-        MatPaginatorModule
-    ],
-    exports: [
-        TableComponent]
+  declarations: [TableComponent],
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatIconModule,
+    MatCheckboxModule,
+    MatSortModule,
+    MatPaginatorModule,
+  ],
+  exports: [TableComponent],
 })
-
-export class MyTableModule { }
+export class MyTableModule {}

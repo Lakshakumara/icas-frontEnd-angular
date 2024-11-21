@@ -36,6 +36,7 @@ export class SchemePlanComponent implements OnInit {
     this.member = this.share.getUser();
     if (this.member) {
       this.schemeService.getScheme().subscribe((res: any) => {
+        console.log(res)
         this.dataSource.data = res;
       });
     } else this.router.navigate(['/signin']);

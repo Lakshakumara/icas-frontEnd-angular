@@ -3,7 +3,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Observable, BehaviorSubject, of, catchError, finalize } from 'rxjs';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
-import { Claim } from '../Model/claim';
 
 export class LoadDataSource extends DataSource<any> {
   paginator: MatPaginator | undefined;
@@ -35,34 +34,10 @@ export class LoadDataSource extends DataSource<any> {
     this.dataSetSubject.complete();
     this.loadingSubject.complete();
   }
-  /**
-   *
-   * @param claimStatus  String pattern
-   * @param filter  '' to ignor
-   * @param sortDirection  default asc
-   * @param pageIndex  default 0
-   * @param pageSize default 10
-   * @returns
-   */
-  requestAllData(
-    claimStatus: string,
-    filter = '',
-    sortDirection = 'asc',
-    pageIndex = 0,
-    pageSize = 10
-  ) {
-    this.loadingSubject.next(true);
-    return this.auth.getAllClaims(
-      '%',
-      0,
-      '',
-      claimStatus,
-      filter,
-      sortDirection,
-      pageIndex,
-      pageSize
-    );
-  }
+
+  /*data() {
+    return 'dataset';
+  }*/
 
   requestData(
     claimType: string,
@@ -70,14 +45,15 @@ export class LoadDataSource extends DataSource<any> {
     filter = this.filter,
     sortDirection = 'asc',
     pageIndex = this.paginator?.pageIndex,
-    pageSize = this.paginator?.pageSize
+    pageSize = this.paginator?.pageSize,
+    empNo = ''
   ) {
     this.loadingSubject.next(true);
     this.auth
       .getAllClaims(
         claimType,
         0,
-        '',
+        empNo,
         claimStatus,
         filter,
         sortDirection,
@@ -89,33 +65,9 @@ export class LoadDataSource extends DataSource<any> {
         finalize(() => this.loadingSubject.next(false))
       )
       .subscribe((receiveData: any) => {
-        console.log(receiveData)
-        this.dataSetSubject.next(receiveData.content)
-        this.totalCount = receiveData.totalElements;}
-      );
-  }
-
-  filterData(
-    claimType: string,
-    year = 0,
-    empNo: string = '',
-    claimStatus: string,
-    filter = this.filter,
-    sortDirection = 'asc',
-    pageIndex = this.paginator?.pageIndex,
-    pageSize = this.paginator?.pageSize
-  ) {
-    this.loadingSubject.next(true);
-    return this.auth.getAllClaims(
-      claimType,
-      year,
-      empNo,
-      claimStatus,
-      filter,
-      sortDirection,
-      pageIndex,
-      pageSize
-    );
+        this.dataSetSubject.next(receiveData.content);
+        this.totalCount = receiveData.totalElements;
+      });
   }
 
   async loadCurrentClaimData(claimId: number) {
@@ -146,4 +98,56 @@ export class LoadDataSource extends DataSource<any> {
       return currentClaimData;
     });
   }
+
+  /**
+   *
+   * @param claimStatus  String pattern
+   * @param filter  '' to ignor
+   * @param sortDirection  default asc
+   * @param pageIndex  default 0
+   * @param pageSize default 10
+   * @returns
+   */
+  /* requestAllData(
+    claimStatus: string,
+    filter = '',
+    sortDirection = 'asc',
+    pageIndex = 0,
+    pageSize = 10
+  ) {
+    this.loadingSubject.next(true);
+    return this.auth.getAllClaims(
+      '',
+      0,
+      '',
+      claimStatus,
+      filter,
+      sortDirection,
+      pageIndex,
+      pageSize
+    );
+  }
+    
+  filterData(
+    claimType: string,
+    year = 0,
+    empNo: string = '',
+    claimStatus: string,
+    filter = this.filter,
+    sortDirection = 'asc',
+    pageIndex = this.paginator?.pageIndex,
+    pageSize = this.paginator?.pageSize
+  ) {
+    this.loadingSubject.next(true);
+    return this.auth.getAllClaims(
+      claimType,
+      year,
+      empNo,
+      claimStatus,
+      filter,
+      sortDirection,
+      pageIndex,
+      pageSize
+    );
+  }*/
 }

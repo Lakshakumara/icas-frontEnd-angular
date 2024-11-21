@@ -36,17 +36,21 @@ export class MemberDataSource extends DataSource<Member> {
     }
 
 
-    loadMember(searchFor: string,
-        filter = '', sortDirection = 'asc', pageIndex = 0, pageSize = 10) {
+    loadMember(searchFor: string, searchText:any, filter = '', sortDirection = 'asc', pageIndex = 0, pageSize = 10) {
         this.loadingSubject.next(true);
-        this.auth.getMembers(searchFor, '',filter, sortDirection, pageIndex, pageSize)
+        this.auth.getMembers(searchFor, searchText, filter, sortDirection, pageIndex, pageSize)
             .pipe(
                 catchError(() => of([])),
                 finalize(() => this.loadingSubject.next(false))
             )
             .subscribe((member: any) => {
-                this.dataSetSubject.next(member)
-                this.totalCount = member.length
+                if (member && member.content) {
+                    this.dataSetSubject.next(member.content);
+                    this.totalCount = member.totalElements;
+                } else {
+                    this.dataSetSubject.next([]); // Set to empty array if member or member.content is null
+                    this.totalCount = 0; // Set totalCount to 0 if there's an error
+                }
             });
         console.log("fetch data set ", this.dataSetSubject)
     }

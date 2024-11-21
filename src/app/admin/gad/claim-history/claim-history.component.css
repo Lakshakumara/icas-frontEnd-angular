@@ -1,0 +1,57 @@
+.topClass {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.header-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.header-actions {
+  position: relative;
+  text-align: right;
+  padding-right: 16px;
+}
+
+.mat-column-actions {
+  width: 48px;
+}
+
+.mat-menu-panel {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.column-selector {
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.column-selector mat-checkbox {
+  margin-bottom: 8px;
+}
+.text-right {
+  text-align: right;
+}
+
+.element-row {
+  cursor: pointer;
+}
+
+.detail-row {
+  height: 0;
+}
+
+.element-detail {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-elevation-z8 {
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+    0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+}

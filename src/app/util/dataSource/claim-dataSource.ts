@@ -1,20 +1,20 @@
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { catchError, finalize, map } from 'rxjs/operators';
+import { catchError, finalize } from 'rxjs/operators';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
-import { Member } from 'src/app/Model/member';
 import { Claim } from 'src/app/Model/claim';
 
-export class MemberDataSource extends DataSource<Member> {
-  data: Member[] | undefined;
+export class ClaimDataSource extends DataSource<Claim> {
+  data: Claim[] | undefined;
   paginator: MatPaginator | undefined;
   sort: MatSort | undefined;
 
-  private dataSetSubject = new BehaviorSubject<Member[]>([]);
+  private claimSubject = new BehaviorSubject<Claim[]>([]);
   private loadingSubject = new BehaviorSubject<boolean>(false);
   public loading$ = this.loadingSubject.asObservable();
+  public totalCount = 0;
 
   constructor(private auth: AuthServiceService) {
     super();
@@ -25,8 +25,8 @@ export class MemberDataSource extends DataSource<Member> {
    * the returned stream emits new items.
    * @returns A stream of the items to be rendered.
    */
-  connect(collectionViewer: CollectionViewer): Observable<Member[]> {
-    return this.dataSetSubject.asObservable();
+  connect(collectionViewer: CollectionViewer): Observable<Claim[]> {
+    return this.claimSubject.asObservable();
   }
 
   /**
@@ -34,33 +34,24 @@ export class MemberDataSource extends DataSource<Member> {
    * any open connections or free any held resources that were set up during connect.
    */
   disconnect(collectionViewer: CollectionViewer): void {
-    this.dataSetSubject.complete();
+    this.claimSubject.complete();
     this.loadingSubject.complete();
   }
 
-  /**
-   *
-   * @param searchFor
-   * @param searchText
-   * @param filter
-   * @param sortDirection
-   * @param pageIndex
-   * @param pageSize
-   */
-  loadMember(
-    searchFor: string,
-    searchText: string,
+  requestData(
+    claimStatus: string,
     filter = '',
     sortDirection = 'asc',
     pageIndex = 0,
     pageSize = 10
   ) {
     this.loadingSubject.next(true);
-
     this.auth
-      .getMembers(
-        searchFor,
-        searchText,
+      .getAllClaims(
+        '',
+        0,
+        '',
+        claimStatus,
         filter,
         sortDirection,
         pageIndex,
@@ -70,10 +61,9 @@ export class MemberDataSource extends DataSource<Member> {
         catchError(() => of([])),
         finalize(() => this.loadingSubject.next(false))
       )
-      .subscribe((member: Member[]) => {
-        member.sort((a, b) => a.id - b.id);
-        this.dataSetSubject.next(member);
+      .subscribe((receiveData: any) => {
+        this.claimSubject.next(receiveData.content);
+        this.totalCount = receiveData.totalElements;
       });
-    console.log('fetch data set ', this.dataSetSubject);
   }
 }

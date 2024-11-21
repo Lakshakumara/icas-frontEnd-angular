@@ -10,7 +10,7 @@ import { Observable, filter, map, merge, startWith, tap } from 'rxjs';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { SchemeTitles } from 'src/app/Model/scheme';
 import { SchemeService } from 'src/app/service/scheme.service';
-import { LoadDataSource } from 'src/app/util/LoadData';
+import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
 import { Constants } from 'src/app/util/constants';
 
 export const _filter = (opt: string[], value: string): string[] => {
@@ -75,9 +75,12 @@ export class MecOpdComponent implements OnInit {
     this.dataSource = new LoadDataSource(this.auth);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.dataSource.requestData(Constants.CATEGORY_OPD, Constants.CLAIMSTATUS_MEDICAL_DECISION_PENDING);
+    this.dataSource.requestData(
+      Constants.CATEGORY_OPD,
+      Constants.CLAIMSTATUS_MEDICAL_DECISION_PENDING
+    );
 
-    this.schemeService.getSchemeTitle("opd").subscribe((titles: any) => {
+    this.schemeService.getSchemeTitle('opd').subscribe((titles: any) => {
       this.stateGroups = titles;
     });
 
@@ -104,9 +107,12 @@ export class MecOpdComponent implements OnInit {
   }
 
   loadClaimPage() {
-    this.selectedMember=<Member[]>[{}];
-    this.selectedClaim = null;//<Claim>{};
-    this.dataSource.requestData(Constants.CATEGORY_OPD, Constants.CLAIMSTATUS_MEDICAL_DECISION_PENDING);
+    this.selectedMember = <Member[]>[{}];
+    this.selectedClaim = null; //<Claim>{};
+    this.dataSource.requestData(
+      Constants.CATEGORY_OPD,
+      Constants.CLAIMSTATUS_MEDICAL_DECISION_PENDING
+    );
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
@@ -115,29 +121,28 @@ export class MecOpdComponent implements OnInit {
     this.selectedMember = [claim.member];
     this.selectedClaim = claim;
   }
-  loadMedicalHistory() {
-  }
+  loadMedicalHistory() {}
 
   updateClaim() {
     let scheme = this.formGroup.value.stateGroup?.split('-');
     if (scheme == null) return;
 
     this.tobeUpdated = [];
-      this.tobeUpdated.push({
-        criteria: 'opdupdate',
-        id: this.selectedClaim!.id,
-        claimStatus: Constants.CLAIMSTATUS_MEDICAL_DECISION_APPROVED,
-        idText: scheme[1],
-        requestAmount: this.selectedClaim!.requestAmount,
-        deductionAmount: this.formGroup.value.deductionAmount,
-        mecremarks: this.formGroup.value.mecremarks,
-        mecreturndate: new Date(),
-        rejecteddate: this.formGroup.value.rejected ? new Date() : null,
-        rejectremarks: this.formGroup.value.rejected
-          ? this.formGroup.value.rejectremarks
-          : null,
-        remarks: this.formGroup.value.remarks,
-      });
+    this.tobeUpdated.push({
+      criteria: 'opdupdate',
+      id: this.selectedClaim!.id,
+      claimStatus: Constants.CLAIMSTATUS_MEDICAL_DECISION_APPROVED,
+      idText: scheme[1],
+      requestAmount: this.selectedClaim!.requestAmount,
+      deductionAmount: this.formGroup.value.deductionAmount,
+      mecremarks: this.formGroup.value.mecremarks,
+      mecreturndate: new Date(),
+      rejecteddate: this.formGroup.value.rejected ? new Date() : null,
+      rejectremarks: this.formGroup.value.rejected
+        ? this.formGroup.value.rejectremarks
+        : null,
+      remarks: this.formGroup.value.remarks,
+    });
 
     console.log(this.tobeUpdated);
     Swal.fire({
@@ -156,11 +161,11 @@ export class MecOpdComponent implements OnInit {
           Swal.fire('Claim Updated', '', 'success');
           this.formGroup.reset();
           this.loadClaimPage();
-        } else Swal.fire('Error', "Failed to Update", 'error');
+        } else Swal.fire('Error', 'Failed to Update', 'error');
       }
     });
   }
-  
+
   private _filterGroup(value: string): SchemeTitles[] {
     if (value) {
       return this.stateGroups

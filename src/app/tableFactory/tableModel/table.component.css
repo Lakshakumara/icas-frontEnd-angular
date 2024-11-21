@@ -26,7 +26,7 @@
 /*}*/
 
 .highlight {
-  background: #6f7942; /* grey */
+  background: #d1ecf1; /* grey */
 }
 /* Styles for mat-table end*/
 
@@ -66,3 +66,6 @@
   background: #fff;
 }
 /*Styles for Fixed header end above*/
+.table-container mat-table mat-row:hover {
+  background-color: #f5f5f5;
+}

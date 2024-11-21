@@ -1,0 +1,56 @@
+<mat-tab-group>
+    <mat-tab label="Dependants">
+        <ng-template matTabContent>
+            <Details>
+                <summary>Dependants Details <b>{{member.dependants.length}}</b></summary>
+                <ng-container *ngFor="let dep of member.dependants; let i = index">
+                    <ul>
+                        <Details>
+                            <summary>{{dep.relationship}}- {{ dep.name }}</summary>
+                            <ul>
+                                <div>
+                                    <span class="mySpan">NIC: </span><b>{{ dep.nic }}</b>
+                                </div>
+                                <div>
+                                    <span class="mySpan">DOB :</span><b>{{ dep.dob | date:'yyyy-MMM-dd'
+                                        }}</b>
+                                </div>
+                            </ul>
+                        </Details>
+                    </ul>
+                </ng-container>
+            </Details>
+
+
+        </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Benificiaries">
+        <ng-template matTabContent>
+            <Details>
+                <summary>Beneficiaries Details <b>{{member.beneficiaries.length}}</b></summary>
+                <ng-container *ngFor="let ben of member?.beneficiaries; let i = index">
+                    <ul>
+                        <Details>
+                            <summary>{{ben.relationship}}- {{ ben.name }}</summary>
+                            <ul>
+                                <div>
+                                    <span class="mySpan">NIC: </span><b>{{ ben.nic }}</b>
+                                </div>
+                                <div>
+                                    <span class="mySpan">Percent :</span><b>{{ ben.percent/100 |
+                                        percent}}</b>
+                                </div>
+                                <div>
+                                    <span class="mySpan">Register Date: </span><b>{{ ben.registerDate |
+                                        date:'yyyy-MMM-dd'
+                                        }}</b>
+                                </div>
+                            </ul>
+                        </Details>
+                    </ul>
+                </ng-container>
+            </Details>
+        </ng-template>
+    </mat-tab>
+</mat-tab-group>

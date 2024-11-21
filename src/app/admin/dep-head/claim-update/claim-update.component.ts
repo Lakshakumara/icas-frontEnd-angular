@@ -6,18 +6,18 @@ import { Router } from '@angular/router';
 import { merge, tap } from 'rxjs';
 import Swal from 'sweetalert2';
 import { Claim, Claim_Head_Accept } from 'src/app/Model/claim';
-import { ClaimDataSource } from './claim-dataSource';
+import { ClaimDataSource } from '../../../util/dataSource/claim-dataSource';
 import { SharedService } from 'src/app/shared/shared.service';
 import { Constants } from 'src/app/util/constants';
 
 @Component({
   selector: 'app-claim-update',
   templateUrl: './claim-update.component.html',
-  styleUrls: ['./claim-update.component.css']
+  styleUrls: ['./claim-update.component.css'],
 })
 export class ClaimUpdateComponent implements OnInit {
   loggeduser: any;
-  claim !: Claim;
+  claim!: Claim;
   selectedClaim!: Claim | null;
 
   dataSource!: ClaimDataSource;
@@ -29,9 +29,11 @@ export class ClaimUpdateComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private auth: AuthServiceService,
+  constructor(
+    private auth: AuthServiceService,
     private share: SharedService,
-    private router: Router) { }
+    private router: Router
+  ) {}
 
   /*ngOnInit() {
     this.loggeduser = this.share.getUser();
@@ -40,37 +42,47 @@ export class ClaimUpdateComponent implements OnInit {
     this.dataSource.requestData(Constants.CLAIMSTATUS_PENDING);
   }*/
 
-    ngOnInit() {
-      this.loggeduser = this.share.getUser();
-      if (this.loggeduser == null) this.router.navigate(['/signin']);
-      this.dataSource = new ClaimDataSource(this.auth);
-      this.dataSource.requestData(Constants.CLAIMSTATUS_PENDING);
-      this.dataSource.loading$.subscribe(loading => {
-        if (!loading) {
-          this.totalLength = this.dataSource.totalCount;
-        }
-      });
-    }
+  ngOnInit() {
+    this.loggeduser = this.share.getUser();
+    if (this.loggeduser == null) this.router.navigate(['/signin']);
+    this.dataSource = new ClaimDataSource(this.auth);
+    this.dataSource.requestData(Constants.CLAIMSTATUS_PENDING);
+    this.dataSource.loading$.subscribe((loading) => {
+      if (!loading) {
+        this.totalLength = this.dataSource.totalCount;
+      }
+    });
+  }
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
-    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
     merge(this.sort.sortChange, this.paginator.page)
-      .pipe(
-        tap(() => this.loadClaimPage())
-      )
+      .pipe(tap(() => this.loadClaimPage()))
       .subscribe();
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     const val = filterValue.trim().toLowerCase();
-    this.dataSource.requestData(Constants.CLAIMSTATUS_PENDING, val, this.sort.direction, this.paginator.pageIndex, this.paginator.pageSize);
+    this.dataSource.requestData(
+      Constants.CLAIMSTATUS_PENDING,
+      val,
+      this.sort.direction,
+      this.paginator.pageIndex,
+      this.paginator.pageSize
+    );
   }
 
   loadClaimPage() {
     this.selectedClaim = null;
-    this.dataSource.requestData(Constants.CLAIMSTATUS_PENDING, '', this.sort.direction, this.paginator.pageIndex, this.paginator.pageSize);
-    console.log("Claim Loaded")
+    this.dataSource.requestData(
+      Constants.CLAIMSTATUS_PENDING,
+      '',
+      this.sort.direction,
+      this.paginator.pageIndex,
+      this.paginator.pageSize
+    );
+    console.log('Claim Loaded');
   }
 
   onRowClicked(claim: Claim) {
@@ -78,10 +90,10 @@ export class ClaimUpdateComponent implements OnInit {
   }
 
   acceptClaim() {
-    if(this.selectedClaim == null) return
+    if (this.selectedClaim == null) return;
     let tobeUpdated: any = [];
     tobeUpdated.push({
-      criteria: "headaccept",
+      criteria: 'headaccept',
       id: this.selectedClaim.id,
       claimStatus: Constants.CLAIMSTATUS_HEAD_APPROVED,
       acceptedBy: this.loggeduser.id,
@@ -94,8 +106,8 @@ export class ClaimUpdateComponent implements OnInit {
       confirmButtonText: 'Accept',
       showLoaderOnConfirm: true,
       preConfirm: async () => {
-        return await this.auth.updateClaim_new(tobeUpdated)
-       /* .subscribe((a) => {
+        return await this.auth.updateClaim_new(tobeUpdated);
+        /* .subscribe((a) => {
           if (a >= 1) {
             return Swal.showValidationMessage('Accepted');
           }
@@ -109,7 +121,7 @@ export class ClaimUpdateComponent implements OnInit {
         if (result.value >= 1) {
           Swal.fire('Claim Accepted', '', 'success');
           this.loadClaimPage();
-        } else Swal.fire('Error', "Failed to Accept", 'error');
+        } else Swal.fire('Error', 'Failed to Accept', 'error');
       }
     });
   }

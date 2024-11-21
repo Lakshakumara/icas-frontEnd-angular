@@ -200,7 +200,6 @@ export class LoginV1Component implements OnInit {
               .getMemberold(this.empNoForm.value.empNo)
               .subscribe((member) => {
                 if (member) {
-                  
                   console.log('member ',member)
                   this.share.setUser(member);
                   const reg = member.memberRegistrations.find((r) => {

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { Member } from '../Model/member';
-import { map} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Dependant } from '../Model/dependant';
 import { Claim } from '../Model/claim';
 import { Utils } from '../util/utils';
@@ -15,7 +15,7 @@ export class AuthServiceService {
   private API_URL = environment.baseUrl;
 
   constructor(private http: HttpClient) {}
-  
+
   login(data: any): Observable<any> {
     return this.http.post(`${this.API_URL}/member/signin`, data);
   }
@@ -25,7 +25,7 @@ export class AuthServiceService {
   }
   getMembers(
     searchFor: string,
-    searchText: string,
+    searchText: any,
     filter: string,
     sortDirection: string,
     pageIndex: number,
@@ -34,14 +34,11 @@ export class AuthServiceService {
     return this.http
       .get(`${this.API_URL}/member/get`, {
         params: new HttpParams()
-          .set('empNo', '')
-          .set('searchText', searchText)
           .set('searchFor', searchFor)
-          .set('year', Utils.currentYear)
-          .set('memberStatus', searchFor)
+          .set('searchText', searchText)
           .set('filter', filter)
           .set('sortOrder', sortDirection)
-          .set('pageNumber', pageIndex.toString())
+          .set('pageIndex', pageIndex.toString())
           .set('pageSize', pageSize.toString()),
       })
       .pipe<Member[]>(map((res: any) => res));
@@ -65,28 +62,21 @@ export class AuthServiceService {
       .pipe<number>(map((data: any) => data));
     return x;
   }
-  // Original One
-  async updateMember(criteria: string, data: any): Promise<Observable<any>> {
-    return await fetch(`${this.API_URL}/member/update/${criteria}`, {
+  //updateMember revised woking code remove above segment
+  async updateMember(criteria: string, data: any): Promise<any> {
+    const response = await fetch(`${this.API_URL}/member/update/${criteria}`, {
       method: 'put',
       body: JSON.stringify(data), // data can be `string` or {object}!
       headers: {
         'Content-Type': 'application/json',
       },
-    })
-      .then((res) => res.json())
-      .then((responseJson) => {
-        //if it worked
-        //this.secondApiCall()
-        console.log('auth res ', responseJson);
-        return responseJson;
-      })
-      .catch((error) => {
-        return error;
-      });
+    });
+    const jsonResponse = await response.json();
+    return jsonResponse;
   }
+
   async saveOPD(claimOPD: any): Promise<Observable<any>> {
-    console.log("sent", claimOPD)
+    console.log('sent', claimOPD);
     return await fetch(`${this.API_URL}/claim/opd`, {
       method: 'POST',
       body: JSON.stringify(claimOPD),
@@ -103,14 +93,12 @@ export class AuthServiceService {
       });
   }
 
-  
-
   /**
    *
-   * @param claimType '%' for any
+   * @param claimType '' for any
    * @param year
    * @param empNo '' for any
-   * @param claimStatus '%' for any
+   * @param claimStatus '' for any
    * @param filter
    * @param sortDirection
    * @param pageIndex
@@ -118,10 +106,10 @@ export class AuthServiceService {
    * @returns
    */
   getAllClaims(
-    claimType: string = '%',
+    claimType: string = '',
     year: number = 0,
     empNo: string = '',
-    claimStatus: string = '%',
+    claimStatus: string = '',
     filter: string = '',
     sortDirection: string = 'asc',
     pageIndex: number = 0,
@@ -213,14 +201,14 @@ export class AuthServiceService {
     return await fetch(`${this.API_URL}/member/${empNo}`, {
       method: 'get',
     })
-    .then((res) => res.json())
-    .then((responseJson) => {
-      console.log('register response ', responseJson);
-      return responseJson;
-    })
-    .catch((error) => {
-      return new Error(error);
-    });
+      .then((res) => res.json())
+      .then((responseJson) => {
+        console.log('register response ', responseJson);
+        return responseJson;
+      })
+      .catch((error) => {
+        return new Error(error);
+      });
   }
 
   async addClaim(claim: any): Promise<Observable<any>> {
@@ -274,7 +262,6 @@ export class AuthServiceService {
       .pipe<Dependant>(map((data: any) => data));
   }
   download(type: number, year: any, empNo: string): Observable<any> {
-    console.log('download ', year, empNo);
     return this.http.get(
       `${this.API_URL}/download/application/${year}/${empNo}`,
       { responseType: 'blob' }
@@ -282,11 +269,9 @@ export class AuthServiceService {
   }
 
   directDownload(url: string, version: string): Observable<any> {
-    console.log('download ', url, version);
-    return this.http.get(
-      `${this.API_URL}/download/${url}/${version}`,
-      { responseType: 'blob' }
-    );
+    return this.http.get(`${this.API_URL}/download/${url}/${version}`, {
+      responseType: 'blob',
+    });
   }
 
   async downloadClaim1(claimId: number): Promise<Observable<any>> {
@@ -396,10 +381,10 @@ export class AuthServiceService {
   }
 
   getAllClaimsByPages(
-    claimType: string = '%',
+    claimType: string = '',
     year: number = 0,
     empNo: string = '',
-    claimStatus: string = '%',
+    claimStatus: string = '',
     filter: string = '',
     sortDirection: string = 'asc',
     pageIndex: number = 0,
@@ -419,5 +404,16 @@ export class AuthServiceService {
           .set('pageSize', pageSize.toString()),
       })
       .pipe<Claim[]>(map((res: any) => res));
+  }
+
+  async saveHR(data: any): Promise<any> {
+    const response = await fetch(`${this.API_URL}/hr/add`, {
+      method: 'post',
+      body: JSON.stringify(data), // data can be `string` or {object}!
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return await response.json();
   }
 }

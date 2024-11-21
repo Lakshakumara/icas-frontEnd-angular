@@ -1,0 +1,88 @@
+<div class="header-container">
+    <table mat-table class="topClass-table mat-elevation-z8" [dataSource]="dataSource" matSort matSortActive="id"
+        multiTemplateDataRows>
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="header-actions">
+                <button mat-icon-button [matMenuTriggerFor]="columnMenu">
+                    <mat-icon>view_column</mat-icon>
+                </button>
+            </th>
+            <td mat-cell *matCellDef="let element">
+
+            </td>
+        </ng-container>
+
+        <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema">
+            <th mat-header-cell *matHeaderCellDef>{{ col.label }}</th>
+            <td mat-cell *matCellDef="let element" [ngClass]="{'text-right': col.type === 'currency'}">
+                {{ col.type === 'currency' ? (element[col.key] | currency:'Rs ':'symbol':'1.2-2') : element[col.key] }}
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumn.concat('actions'); sticky: true"></tr>
+        <tr mat-row *matRowDef="let claim; columns: displayedColumn.concat('actions')"
+            [ngClass]="{'selected': claim === selectedClaim}" (click)="onRowClicked(claim)">
+        </tr>
+
+        <!-- Expanded Content Row -->
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+
+        <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumn.length">
+                <div class="element-detail"
+                    [@detailExpand]="element.claimData === expandedElement ? 'expanded' : 'collapsed'">
+                    <div *ngFor="let cd of element.claimData">
+                        <mat-card class="card">
+                            <mat-card-header>
+                                <p>Title: <b>{{cd.scheme.title}}</b></p>
+                            </mat-card-header>
+                            <mat-card-content class="mat-card-content">
+                                <p *ngIf="cd.deductionAmount >0">deductionAmount: <b>{{cd.deductionAmount}}</b></p>
+                                <p *ngIf="cd.deductionRemarks">Reason: <b>{{cd.deductionRemarks}}</b></p>
+                                <p *ngIf="cd.rejectedDate">Rejected on: <b>{{cd.rejectedDate}}</b></p>
+                                <p *ngIf="cd.rejectRemarks">Reason: <b>{{cd.rejectRemarks}}</b></p>
+                                <p *ngIf="cd.remarks">Remarks : <b>{{cd.remarks}}</b></p>
+                                <mat-divider></mat-divider>
+                            </mat-card-content>
+                        </mat-card>
+                    </div>
+                </div>
+            </td>
+        </ng-container>
+
+        <!--ng-container *ngIf="claimData" matColumnDef="claimData">
+            <th mat-header-cell *matHeaderCellDef>xxxxxx</th>
+            <td mat-cell *matCellDef="let element" [attr.colspan]="columnsSchema.length">
+                <div [@detailExpand]="element===claimData?'expanded':'collapsed'">
+                    {{claimData.values}}
+                </div>
+            </td>
+            <tr mat-header-row *matHeaderRowDef="displayedColumn.concat('actions'); sticky: true"></tr>
+
+            <tr mat-row *matRowDef="let claim; columns: displayedColumn.concat('actions')"
+                [ngClass]="{'selected': claim === selectedClaim}" (click)="onRowClicked(claim)">
+            </tr>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumn.concat('actions'); sticky: true"></tr>
+
+        </ng-container-->
+
+        <!--tr mat-header-row *matHeaderRowDef="displayedColumn.concat('actions'); sticky: true"></tr>
+        <tr mat-row *matRowDef="let claim; columns: displayedColumn.concat('actions')"
+            [ngClass]="{'selected': claim === selectedClaim}" (click)="onRowClicked(claim)">
+        </tr-->
+    </table>
+
+    <mat-menu #columnMenu="matMenu" [overlapTrigger]="false" (menuClosed)="onMenuClosed()">
+        <div class="column-selector">
+            <ng-container *ngFor="let col of columnsSchema">
+                <mat-checkbox [checked]="displayedColumn.includes(col.key)" (click)="$event.stopPropagation()"
+                    (change)="onColumnSelectionChange(col.key, $event.checked)">
+                    {{ col.label }}
+                </mat-checkbox>
+            </ng-container>
+        </div>
+    </mat-menu>
+
+    <mat-paginator #paginator [length]="totalLength" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"
+        showFirstLastButtons></mat-paginator>
+</div>

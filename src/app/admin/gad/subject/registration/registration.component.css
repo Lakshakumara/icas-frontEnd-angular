@@ -1,36 +1,108 @@
-.mat-card{
-  width: 100%;
+.content {
   height: 100%;
-  box-sizing: border-box;
-}
-.mat-mdc-table .mdc-data-table__row:hover {
-  background-color: rgba(236, 236, 236, 0.514) !important;
+  border: 1px solid #eee;
+  display: flex;
 }
 
-.mat-column-id {
-  width: 50px;
+.nav {
+  flex: 0 0 25%;
+  flex-direction: column;
+  border-right: 1px solid #eee;
 }
 
-.mat-mdc-table .mdc-data-table__header-row {
-  height: 35px;
-  background-color: lightgray;
-  text-align: left;
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-.mat-mdc-table .mdc-data-table__row {
-  height: 35px;
+.mat-card-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
 }
 
-.mySpan {
-  display: inline-block;
-  width: 30%;
+.mat-action-row {
+  display: flex;
+  justify-content: flex-start;
+  padding: 8px;
+  flex-shrink: 0;
+}
+.profile-content {
+  display: flex;
+  align-items: center;
+  padding: 10px;
 }
 
-.input {
-  padding: 4px 10px;
-  border: 1px solid #666;
-  background: #cce6ff;
+.profile-photo {
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  margin-right: 15px;
+  object-fit: cover;
 }
-.btn {
-  align-items: flex-end;
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-name {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.profile-info {
+  margin: 2px 0;
+  font-size: 0.9em;
+  color: #666;
+}
+.show-more-link {
+  margin-top: 10px;
+  font-size: 0.9em;
+  color: #3498db;
+  cursor: pointer;
+}
+
+.show-more-link:hover {
+  text-decoration: underline;
+}
+
+.profile-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+.body {
+  height: 100%;
+  flex: 1;
+  padding-left: 16px;
+}
+mat-form-field {
+  width: 100%;
+}
+.topClass-table th.mat-header-cell {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: white; /* Set the background color to match the table */
+}
+.back-button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #3498db;
+  margin-bottom: 10px;
+}
+
+.back-button mat-icon {
+  margin-right: 5px;
+}
+.back-text {
+  margin-left: 4px; /* Adjust as needed */
 }

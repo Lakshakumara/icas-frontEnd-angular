@@ -16,7 +16,7 @@ import {
   TablePaginationSettingsModel,
   ColumnSettingsModel,
 } from './table-settings.model';
-import { MyTableDataSource } from './table-dataSource';
+import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
 
 @Component({
   selector: 'app-my-table',
@@ -24,9 +24,9 @@ import { MyTableDataSource } from './table-dataSource';
   styleUrls: ['./table.component.css'],
 })
 export class TableComponent implements OnInit, AfterViewInit, OnChanges {
-  @Input() myDataSource!: MyTableDataSource;
+  //@Input() dataSource: any;
 
-  selectedRowIndex = -1;
+  selectedRow!: any;
 
   /**
    * @description Column names for the table
@@ -83,8 +83,6 @@ export class TableComponent implements OnInit, AfterViewInit, OnChanges {
   ngAfterViewInit() {
     this.dataSource.sort != this.sort;
     this.dataSource.paginator != this.paginator;
-    /*this.myDataSource.sort != this.sort;
-        this.myDataSource.paginator != this.paginator;*/
   }
   /**
    * @hidden
@@ -96,9 +94,6 @@ export class TableComponent implements OnInit, AfterViewInit, OnChanges {
     this.dataSource = new MatTableDataSource(this.rowData);
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
-
-    //this.myDataSource.sort = this.sort;
-    //this.myDataSource.paginator = this.paginator;
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -112,7 +107,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnChanges {
   masterToggle() {
     this.isAllSelected()
       ? this.selection.clear()
-      : this.dataSource.data.forEach((row) => this.selection.select(row));
+      : this.dataSource.data.forEach((row: any) => this.selection.select(row));
 
     //this.myDataSource.data?.forEach(row => this.selection.select(row));
     this.getSelectedRows.emit(this.selection.selected);
@@ -138,27 +133,24 @@ export class TableComponent implements OnInit, AfterViewInit, OnChanges {
       this.sqColumnDefinition.splice(0, 0, {
         name: 'select',
         displayName: '#',
-
       });
     }
 
     if (this.enableRowAction) {
-      this.columnNames.push( 'action');
+      this.columnNames.push('action');
       this.sqColumnDefinition.push({
         name: 'action',
         displayName: '',
-        disableSorting:true,
+        disableSorting: true,
       });
     }
-
+    console.log('this.allowMultiSelect ', this.allowMultiSelect);
     // Setting selection model
     this.selection = new SelectionModel<{}>(this.allowMultiSelect, []);
-    //this.dataSource = new MatTableDataSource(this.rowData);
   }
   /** Highlights the selected row on row click. */
   highlight(row: any) {
-    console.log('row ',row)
-    this.selectedRowIndex = row.position;
+    console.log('from table ', row);
+    this.selectedRow = row;
   }
- 
 }

@@ -42,12 +42,23 @@
             Done
           </button>
         </div>
+
         <mat-form-field class="form-input" *ngSwitchCase="'date'" appearance="fill">
           <mat-label>Choose a date</mat-label>
           <input matInput [matDatepicker]="picker" [(ngModel)]="element[col.key]" />
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
+
+        <mat-form-field class="form-input" *ngSwitchCase="'category'" appearance="fill">
+          <mat-label>Category</mat-label>
+          <mat-select formControlName="sex">
+            <mat-option value="none">none</mat-option>
+            <mat-option value="OPD">OPD</mat-option>
+            <mat-option value="Surgical & Hospital Expenses">Surgical & Hospital Expenses</mat-option>
+          </mat-select>
+        </mat-form-field>
+
         <mat-form-field class="form-input" *ngSwitchDefault>
           <input matInput [required]="col.required" [pattern]="col.pattern" [type]="col.type"
             [(ngModel)]="element[col.key]" (change)="inputHandler($event, element.id, col.key)" />

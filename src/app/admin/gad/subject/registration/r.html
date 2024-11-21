@@ -1,0 +1,177 @@
+<div class="content">
+    <div class="nav">
+        <mat-card class="card" *ngIf="selectedMember">
+            <mat-card-header>
+                <h3 class="profile-name">{{selectedMember.name}}</h3>
+            </mat-card-header>
+            <mat-card-content class="mat-card-content">
+                <div class="profile-content">
+                    <img [src]="profilePhotoUrl" alt="Profile Photo" class="profile-photo">
+                    <div class="profile-details">
+                        <p class="profile-name">{{selectedMember.empNo}}</p>
+                        <p class="profile-info">{{selectedMember.designation}}</p>
+                        <p class="profile-info">{{selectedMember.department}}</p>
+                    </div>
+                </div>
+                <p>Scheme: <b>{{selectedMember.currentRegistration.schemeType}}</b></p>
+                <p>Email: {{selectedMember.email}}</p>
+                <p>Phone: {{selectedMember.contactNo}}</p>
+                <p *ngIf="showFullProfile">Address: {{selectedMember.address}}</p>
+                <p *ngIf="showFullProfile">NIC: {{selectedMember.nic}}</p>
+                <mat-divider *ngIf="showFullProfile"></mat-divider>
+                <p *ngIf="showFullProfile">Gender: {{selectedMember.sex}}</p>
+                <p *ngIf="showFullProfile">DOB: {{selectedMember.dob}}</p>
+                <p *ngIf="showFullProfile">Civil Status: {{selectedMember.civilStatus}}</p>
+                <a class="show-more-link" (click)="toggleProfile()">
+                    {{ showFullProfile ? 'Show less \u25B2' : 'Show more \u25BC' }}
+                </a>
+                <ng-container [ngSwitch]="viewMode">
+                    <div class="profile-buttons" *ngSwitchCase="'memberDetails'">
+                        <button mat-raised-button color="primary" (click)="showClaimHistory()">Claim
+                            History</button>
+                        <button mat-raised-button color="accent" (click)="showBeneficiaryData()">Beneficiary/Dependant
+                        </button>
+                        <!---button mat-raised-button color="accent" (click)="toggleRoleUpdate()">Role Update
+                        </button>
+                        <a class="show-more-link" (click)="toggleRoleUpdate()">
+                            {{ isRoleUpdate ? 'Close \u25B2' : 'Role Update \u25BC' }}
+                        </a>
+                        <mat-card *ngIf="isRoleUpdate">
+                            <mat-card-content>
+                                <form [formGroup]="roleGroup">
+                                    <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="roleData"
+                                        formControlName="selectedRoles">
+                                    </ng-multiselect-dropdown>
+                                    <button mat-raised-button color="accent" (click)="roleUpdate()">Update</button>
+                                </form>
+                            </mat-card-content>
+                        </mat-card-->
+
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Role Update
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <form [formGroup]="roleGroup">
+                                <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="roleData"
+                                    formControlName="selectedRoles">
+                                </ng-multiselect-dropdown>
+                                <button class="profile-buttons" mat-raised-button color="accent" (click)="roleUpdate()">Update Roles</button>
+                            </form>
+                        </mat-expansion-panel>
+                    </div>
+
+                    <div *ngSwitchCase="'claimManage'">
+                        <div class="profile-buttons">
+                            <button mat-raised-button color="warn" (click)="showPaymentHistory()">Payment
+                                History</button>
+                        </div>
+                    </div>
+
+                </ng-container>
+
+            </mat-card-content>
+            <mat-action-row class="mat-action-row">
+            </mat-action-row>
+        </mat-card>
+        <ng-container [ngSwitch]="viewMode">
+            <div *ngSwitchCase="'memberDetails'">
+                <h3 *ngIf="selectedMember == null">
+                    Select Member from table
+                </h3>
+                <div class="profile-buttons">
+                    <button mat-raised-button color="warn" (click)="showMemberDetails()">Members Details</button>
+                    <button mat-raised-button color="primary" (click)="showClaimManage()">Claim Manage</button>
+                    <button mat-raised-button color="accent" (click)="showAddNewUser()">Add new User</button>
+
+                </div>
+            </div>
+
+            <div *ngSwitchCase="'claimManage'">
+                <h3 *ngIf="selectedMember == null">
+                    Select Claim from table to proceed
+                </h3>
+                <div class="profile-buttons">
+                    <button mat-raised-button color="warn" (click)="showVoucherGeneration()">Voucher Generation</button>
+                </div>
+            </div>
+            <div *ngSwitchCase="'newUser'">
+                <h3>
+                    User's Basic Data entry specially Member not in HR Database
+                </h3>
+            </div>
+        </ng-container>
+    </div>
+
+    <div class="body">
+        <ng-container>
+            <div>
+                <div class="button-container">
+                    <button mat-button class="back-button" (click)="goBack()">
+                        <mat-icon>arrow_back</mat-icon>
+                        <span class="back-text">{{panelTitle}}</span>
+                    </button>
+
+                </div>
+                <ng-container [ngSwitch]="viewMode">
+                    <app-member-data *ngSwitchCase="'memberDetails'" (getMember)="getMember($event)"></app-member-data>
+                    <app-claim-history *ngSwitchCase="'claimHistory'" [member]="selectedMember"></app-claim-history>
+                    <app-beneficiary-data *ngSwitchCase="'beneficiaryData'"
+                        [member]="selectedMember"></app-beneficiary-data>
+
+                    <app-claim-manage *ngSwitchCase="'claimManage'" (getClaim)="getClaim($event)"></app-claim-manage>
+                    <app-payment-history *ngSwitchCase="'paymentHistory'"></app-payment-history>
+                    <app-new-user *ngSwitchCase="'newUser'"></app-new-user>
+                    <app-voucher *ngSwitchCase="'voucherGeneration'"></app-voucher>
+                </ng-container>
+            </div>
+        </ng-container>
+    </div>
+    <!--div class="body">
+        <ng-container *ngIf="viewMode === 'table'; else actionContent">
+            <mat-card class=" card">
+                <mat-card-header>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Search</mat-label>
+                        <input matInput placeholder="Names or Emp No" [formControl]="searchControl">
+                    </mat-form-field>
+                </mat-card-header>
+                <mat-card-content class="mat-card-content">
+                    <table mat-table class="topClass-table mat-elevation-z8" [dataSource]="dataSource" matSort>
+
+                        <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema; let i = index">
+                            <th mat-sort-header *matHeaderCellDef> {{columnsSchema[i].label}}</th>
+                            <td mat-cell *matCellDef="let element"
+                                [align]="columnsSchema[i].type === 'number' ? 'right' : 'left'">
+                                {{ element[col.key] }}
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumn; sticky: true">
+                        </tr>
+                        <tr mat-row *matRowDef="let member; columns: displayedColumn;" (click)="onRowClicked(member)"
+                            [ngClass]="{'selected': member === selectedMember}">
+                        </tr>
+                    </table>
+                    <mat-paginator #paginator [length]="totalLength" [pageSize]="5"
+                        [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+                </mat-card-content>
+            </mat-card>
+        </ng-container>
+        <ng-template #actionContent>
+            <div>
+                <button mat-icon-button (click)="goBack()">
+                    <mat-icon>arrow_back</mat-icon>
+                    <span class="back-text">Back</span>
+                </button>
+                <ng-container [ngSwitch]="viewMode" *ngIf="selectedMember">
+                    <app-claim-history *ngSwitchCase="'claimHistory'" [member]="selectedMember"></app-claim-history>
+                    <app-beneficiary-data *ngSwitchCase="'beneficiaryData'"
+                        [member]="selectedMember"></app-beneficiary-data>
+                    <app-member-data *ngSwitchCase="'memberDetails'" (getMember)="getMember($event)"></app-member-data>
+                </ng-container>
+            </div>
+        </ng-template>
+    </div-->
+</div>

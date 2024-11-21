@@ -50,7 +50,7 @@ export class UserOPDComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.member = this.share.getUser();
-    if (this.member == null) this.router.navigate(['/signin']);
+    if (!this.member) this.router.navigate(['/signin']);
     else this.dataSource = new UserOPDDataSource(this.auth);
   }
   ngAfterViewInit() {

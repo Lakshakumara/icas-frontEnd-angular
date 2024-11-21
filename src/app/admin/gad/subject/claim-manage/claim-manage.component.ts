@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
@@ -8,7 +15,7 @@ import { Member } from 'src/app/Model/member';
 import Swal from 'sweetalert2';
 import { Claim, Claim_All } from 'src/app/Model/claim';
 import { SharedService } from 'src/app/shared/shared.service';
-import { ClaimDataSource } from 'src/app/admin/dep-head/claim-update/claim-dataSource';
+import { ClaimDataSource } from 'src/app/util/dataSource/claim-dataSource';
 import { Constants } from 'src/app/util/constants';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
@@ -17,8 +24,11 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
   templateUrl: './claim-manage.component.html',
   styleUrls: ['./claim-manage.component.css'],
 })
-export class ClaimManageComponent implements OnInit, AfterViewInit{
+export class ClaimManageComponent implements OnInit, AfterViewInit {
+  @Output() getClaim = new EventEmitter();
   status_Pending: string = new Constants().isHeadforClaim;
+  status_actual_pending: string = Constants.CLAIMSTATUS_PENDING;
+  status_head_approved: string = Constants.CLAIMSTATUS_HEAD_APPROVED;
   status_reject: string = Constants.CLAIMSTATUS_REJECTED;
   status_finance: string = Constants.CLAIMSTATUS_FINANCE;
   status_mecApproved: string = Constants.CLAIMSTATUS_MEDICAL_DECISION_APPROVED;
@@ -67,13 +77,13 @@ export class ClaimManageComponent implements OnInit, AfterViewInit{
   }
   ngOnInit() {
     this.loggeduser = this.share.getUser();
-    if (this.loggeduser == null) this.router.navigate(['/signin']);
+    //if (this.loggeduser == null) this.router.navigate(['/signin']);
     this.dataSource = new ClaimDataSource(this.auth);
   }
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
-    this.loadClaimPage()
-    this.dataSource.loading$.subscribe(loading => {
+    this.loadClaimPage();
+    this.dataSource.loading$.subscribe((loading) => {
       if (!loading) {
         this.totalLength = this.dataSource.totalCount;
       }
@@ -86,14 +96,27 @@ export class ClaimManageComponent implements OnInit, AfterViewInit{
   }
 
   applyFilter(event: Event) {
+    this.paginator.pageIndex = 0;
     const filterValue = (event.target as HTMLInputElement).value;
     const val = filterValue.trim().toLowerCase();
-    this.dataSource.requestData(this.getSelectedClaimStatus(), val, this.sort.direction, this.paginator.pageIndex, this.paginator.pageSize);
+    this.dataSource.requestData(
+      this.getSelectedClaimStatus(),
+      val,
+      this.sort.direction,
+      this.paginator.pageIndex,
+      this.paginator.pageSize
+    );
   }
 
   loadClaimPage() {
     this.selectedClaim = null;
-    this.dataSource.requestData(this.getSelectedClaimStatus(),'', this.sort.direction, this.paginator.pageIndex, this.paginator.pageSize);
+    this.dataSource.requestData(
+      this.getSelectedClaimStatus(),
+      '',
+      this.sort.direction,
+      this.paginator.pageIndex,
+      this.paginator.pageSize
+    );
   }
   getSelectedClaimStatus(): string {
     let sop: string = '';
@@ -126,6 +149,9 @@ export class ClaimManageComponent implements OnInit, AfterViewInit{
     return sop;
   }
   onRowClicked(claim: Claim) {
+    this.getClaim.emit(claim);
+    console.log(claim.claimStatus, this.status_actual_pending);
+    console.log(claim, this.status_Pending);
     this.formGroup.reset();
     this.selectedClaim = claim;
   }
@@ -233,6 +259,4 @@ export class ClaimManageComponent implements OnInit, AfterViewInit{
       }
     });
   }
-
-
 }

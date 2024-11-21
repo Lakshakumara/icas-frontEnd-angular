@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -9,11 +10,10 @@ import {
 } from '@angular/core';
 import { Member, Member_Column_Accept } from 'src/app/Model/member';
 import { Role, Access_type } from 'src/app/Model/role';
-import { MemberDataSource } from '../../../members-dataSource';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -33,43 +33,60 @@ import { Utils } from 'src/app/util/utils';
 import Swal from 'sweetalert2';
 import { Claim } from 'src/app/Model/claim';
 import { Constants } from 'src/app/util/constants';
+import { MemberDataSource } from 'src/app/util/dataSource/members-dataSource';
+import { SharedService } from 'src/app/shared/shared.service';
 
 @Component({
   selector: 'app-sub_registration',
-  templateUrl: './member-manage.html', //registration
-  styleUrls: ['./registration.component.css'],
+  templateUrl: './r.html', //member-manage//registration.component
+  styleUrls: ['./r.css'],
 })
 export class RegistrationComponent implements OnInit, AfterViewInit {
-  currentYear = Utils.currentYear;
-  member: Member | undefined;
-  claims: Claim[] | undefined;
-  dataSource!: MemberDataSource;
-  displayedColumn: string[] = Member_Column_Accept.map((col) => col.key);
-  columnsSchema: any = Member_Column_Accept;
+  showFullProfile = false;
+  //isRoleUpdate = false;
+  profilePhotoUrl: string = 'assets/images/blank-profile.webp'; // Default placeholder image
+  loggeduser: any;
+  selectedMember!: Member | null;
+  viewMode: string = 'memberDetails'; // State variable to control view
+  panelTitle: string = 'Members Data';
 
-  access = Access_type;
+  @Output() sidenavClose = new EventEmitter();
+
+  //claims: Claim[] | undefined;
+  //dataSource!: MemberDataSource;
+  //currentYear = Utils.currentYear;
+  //displayedColumn: string[] = Member_Column_Accept.map((col) => col.key);
+  //columnsSchema: any = Member_Column_Accept;
+  //access = Access_type;
   roleGroup!: FormGroup;
   roleData = [{}];
   dropdownSettings: IDropdownSettings = {};
   selectedRoles!: any[];
   tobeUpdated!: any;
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild('input') input!: ElementRef;
-
-  @Output() sidenavClose = new EventEmitter();
+  //searchControl: FormControl = new FormControl();
+  //totalLength = 0;
+  //@ViewChild(MatPaginator) paginator!: MatPaginator;
+  //@ViewChild(MatSort) sort!: MatSort;
   panelOpenState = false;
 
   constructor(
+    private share: SharedService,
+    private changeDetectorRef: ChangeDetectorRef,
     private auth: AuthServiceService,
-    private route: ActivatedRoute,
     private buildr: FormBuilder
   ) {}
 
   ngOnInit() {
-    //this.member = this.route.snapshot.data['member'];
-    this.dataSource = new MemberDataSource(this.auth);
+    this.loggeduser = this.share.getUser();
+    //if (this.loggeduser == null) this.router.navigate(['/signin']);
+    this.roleGroup = this.buildr.group({
+      selectedRoles: [''],
+    });
+    this.dropdownSettings = {
+      idField: 'item_id',
+      textField: 'role',
+      enableCheckAll: false,
+    };
     this.roleData = [
       { item_id: 1, role: Constants.ROLE_USER },
       { item_id: 2, role: Constants.ROLE_ADMIN },
@@ -79,80 +96,170 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
       { item_id: 6, role: Constants.ROLE_MEC },
       { item_id: 7, role: Constants.ROLE_SUPER_ADMIN },
     ];
+  }
+  ngAfterViewInit() {}
 
-    this.dropdownSettings = {
-      idField: 'item_id',
-      textField: 'role',
-      enableCheckAll: false,
-    };
+  getMember(member: any) {
+    
+    this.selectedMember = member;
+    this.selectedRoles = [];
+    const rr: Role[] = this.selectedMember!.roles;
+      rr.forEach((r) => {
+        if (r.role == Constants.ROLE_USER)
+          this.selectedRoles.push({ item_id: 1, role: Constants.ROLE_USER });
+        else if (r.role == Constants.ROLE_ADMIN)
+          this.selectedRoles.push({ item_id: 2, role: Constants.ROLE_ADMIN });
+        else if (r.role == Constants.ROLE_GAD_HEAD)
+          this.selectedRoles.push({
+            item_id: 3,
+            role: Constants.ROLE_GAD_HEAD,
+          });
+        else if (r.role == Constants.ROLE_DEP_HEAD)
+          this.selectedRoles.push({
+            item_id: 4,
+            role: Constants.ROLE_DEP_HEAD,
+          });
+        else if (r.role == Constants.ROLE_MO)
+          this.selectedRoles.push({ item_id: 5, role: Constants.ROLE_MO });
+        else if (r.role == Constants.ROLE_MEC)
+          this.selectedRoles.push({ item_id: 6, role: Constants.ROLE_MEC });
+        else if (r.role == Constants.ROLE_SUPER_ADMIN)
+          this.selectedRoles.push({
+            item_id: 7,
+            role: Constants.ROLE_SUPER_ADMIN,
+          });
+      });
+      console.log('selectedRoles ', this.selectedRoles);
+      this.roleGroup.patchValue({
+        selectedRoles: [this.selectedRoles],
+      });
+
+      console.log('roleGroup ', this.roleGroup);
+      /*this.roleGroup = this.buildr.group({
+        selectedRoles: [this.selectedRoles],
+      });*/
   }
 
-  ngAfterViewInit() {
-    console.log('ngAfterViewInit ');
-    // server-side search
-    fromEvent(this.input.nativeElement, 'keyup')
-      .pipe(
-        debounceTime(150),
-        distinctUntilChanged(),
-        tap(() => {
-          //this.paginator.pageIndex = 0;
-          this.loadMemberPage();
-        })
-      )
-      .subscribe();
-
-    // reset the paginator after sorting
-    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-
-    // on sort or paginate events, load a new page
-    merge(this.sort.sortChange, this.paginator?.page).pipe(
-      tap(() => this.loadMemberPage())
-    );
+  getClaim(claim: Claim) {
+    this.selectedMember = claim.member;
   }
+  toggleProfile() {
+    this.showFullProfile = !this.showFullProfile;
+  }
+  fetchProfilePhoto() {
+    // Example: Simulate fetching from an API
+    const fetchedPhotoUrl = 'path/to/fetched-profile-photo.jpg';
 
-  loadMemberPage() {
-    let filterValue = this.input.nativeElement.value;
-    if (isNaN(Number(filterValue))) {
-      this.dataSource.loadMember('name', filterValue);
-    } else {
-      this.dataSource.loadMember('empNo', filterValue);
+    if (fetchedPhotoUrl) {
+      this.profilePhotoUrl = fetchedPhotoUrl;
     }
   }
 
-  onRowClicked(member: Member) {
-    this.member = member;
-    this.selectedRoles = [];
-    const rr: Role[] = this.member.roles;
-    rr.forEach((r) => {
-      console.log(this.selectedRoles);
-      if (r.role == Constants.ROLE_USER)
-        this.selectedRoles.push({ item_id: 1, role: Constants.ROLE_USER });
-      else if (r.role == Constants.ROLE_ADMIN)
-        this.selectedRoles.push({ item_id: 2, role: Constants.ROLE_ADMIN });
-      else if (r.role == Constants.ROLE_GAD_HEAD)
-        this.selectedRoles.push({ item_id: 3, role: Constants.ROLE_GAD_HEAD });
-      else if (r.role == Constants.ROLE_DEP_HEAD)
-        this.selectedRoles.push({ item_id: 4, role: Constants.ROLE_DEP_HEAD });
-      else if (r.role == Constants.ROLE_MO)
-        this.selectedRoles.push({ item_id: 5, role: Constants.ROLE_MO });
-      else if (r.role == Constants.ROLE_MEC)
-        this.selectedRoles.push({ item_id: 6, role: Constants.ROLE_MEC });
-      else if (r.role == Constants.ROLE_SUPER_ADMIN)
-        this.selectedRoles.push({
-          item_id: 7,
-          role: Constants.ROLE_SUPER_ADMIN,
-        });
-    });
+  showClaimManage() {
+    this.viewMode = 'claimManage';
+    this.panelTitle = 'Claim Manage';
+  }
+  showVoucherGeneration() {
+    this.selectedMember = null;
+    this.viewMode = 'voucherGeneration';
+    this.panelTitle = 'Voucher Generation';
+  }
+  showClaimHistory() {
+    this.viewMode = 'claimHistory';
+    this.panelTitle = 'Claim History';
+  }
 
-    this.roleGroup = this.buildr.group({
-      selectedRoles: [this.selectedRoles],
-    });
-    this.auth
-      .getAllClaims('%', 0, this.member.empNo)
-      .subscribe((claim: any) => {
-        this.claims = claim;
-        this.claims?.sort((a, b) => a.id - b.id);
+  showPaymentHistory() {
+    this.viewMode = 'paymentHistory';
+    this.panelTitle = 'Paymeny History';
+  }
+
+  showAddNewUser() {
+    this.selectedMember = null;
+    this.viewMode = 'newUser';
+    this.panelTitle = 'New User';
+  }
+  showBeneficiaryData() {
+    this.viewMode = 'beneficiaryData';
+    this.panelTitle = 'Benificiary and Dependant details';
+  }
+
+  showMemberDetails() {
+    this.viewMode = 'memberDetails';
+    this.panelTitle = 'Members Data';
+  }
+
+  goBack() {
+    if (this.viewMode == 'memberDetails') this.selectedMember = null;
+    this.showMemberDetails();
+    this.changeDetectorRef.detectChanges();
+  }
+
+  roleUpdate() {
+    if (this.selectedMember == undefined) return;
+    const x = this.roleGroup.value.selectedRoles as Array<Role>;
+    console.log(
+      'this.roleGroup.value.selectedRoles ',
+      this.roleGroup.value.selectedRoles
+    );
+    this.tobeUpdated = {
+      criteria: 'role',
+      memberId: this.selectedMember?.id,
+      empNo: this.selectedMember?.empNo,
+      newrole: x.map((r) => {
+        return r.role;
+      }),
+    };
+
+    console.log(this.tobeUpdated);
+    this.auth.update('role', this.tobeUpdated).subscribe((data) => {
+      Swal.fire({
+        icon: 'info',
+        title: 'Roles Updated',
+        text: 'Success',
       });
+    });
+  }
+
+  /*initializeTable() {
+    this.dataSource = new MemberDataSource(this.auth);
+  }
+  
+  setupTableFeatures() {
+    this.changeDetectorRef.detectChanges();
+    this.dataSource.sort = this.sort;
+    this.loadMemberPage('');
+    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+    merge(this.sort.sortChange, this.paginator.page)
+      .pipe(tap(() => this.loadMemberPage('')))
+      .subscribe();
+
+    this.dataSource.loading$.subscribe((loading) => {
+      if (!loading) {
+        this.totalLength = this.dataSource.totalCount;
+      }
+    });
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(300), // Wait for 300ms pause in events
+        distinctUntilChanged() // Only emit when value is different from previous value
+      )
+      .subscribe((value) => {
+        this.paginator.pageIndex = 0;
+        const filterValue = value.trim().toLowerCase();
+        this.loadMemberPage(filterValue);
+      });
+  }
+
+  loadMemberPage(filter: string) {
+    this.dataSource.loadMember(
+      Constants.ALL,
+      null,
+      filter,
+      this.sort.direction,
+      this.paginator.pageIndex,
+      this.paginator.pageSize
+    );
   }
 
   reNew = this.buildr.group({
@@ -180,41 +287,16 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
       mDate: new Date(),
       status: Constants.REGISTRATION_PENDING,
     });
-    this.auth.registerold(this.formGroup.value).subscribe((response: any) => {});
+    this.auth
+      .registerold(this.formGroup.value)
+      .subscribe((response: any) => {});
   }
 
   clearReg() {
     this.formGroup.reset();
   }
 
-  roleUpdate() {
-    if (this.member == undefined) return;
-    const x = this.roleGroup.value.selectedRoles as Array<Role>;
-    console.log(
-      'this.roleGroup.value.selectedRoles ',
-      this.roleGroup.value.selectedRoles
-    );
-    this.tobeUpdated = {
-      criteria: 'role',
-      memberId: this.member?.id,
-      empNo: this.member?.empNo,
-      newrole: x.map((r) => {
-        return r.role;
-      }),
-    };
-
-    console.log(this.tobeUpdated);
-    this.auth.update('role', this.tobeUpdated).subscribe((data) => {
-      Swal.fire({
-        icon: 'info',
-        title: 'Roles Updated',
-        text: 'Success',
-      }).then((result) => {
-        this.input.nativeElement.value = this.member?.empNo;
-        this.loadMemberPage();
-      });
-    });
-  }
+ 
 
   public onSidenavClose = () => {
     this.sidenavClose.emit();
@@ -223,7 +305,7 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   registrationOpen() {
     if (this.reNew.value.selector !== 'all') {
       this.reNew.patchValue({
-        selector: this.member?.empNo,
+        selector: this.selectedMember?.empNo,
       });
     }
     this.auth.update('registerOpen', this.reNew.value).subscribe((data) => {
@@ -234,4 +316,5 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
       });
     });
   }
+*/
 }

@@ -48,8 +48,31 @@ export class VoucherDataSource extends DataSource<Claim> {
             .subscribe((receiveData: any) => this.dataSetSubject.next(receiveData));
         console.log("fetch data set ", this.dataSetSubject)
     }*/
+
+  get data() {
+    return this.dataSetSubject.getValue;
+  }
+
+  requestAllData(
+    claimStatus: string,
+    filter = '',
+    sortDirection = 'asc',
+    pageIndex = 0,
+    pageSize = 10
+  ) {
+    this.loadingSubject.next(true);
+    return this.auth.getAllClaims(
+      '',
+      0,
+      '',
+      claimStatus,
+      filter,
+      sortDirection,
+      pageIndex,
+      pageSize
+    );
+  }
   /**
-   *
    * @param claimStatus  String pattern
    * @param filter  '' to ignor
    * @param sortDirection  default asc
@@ -57,7 +80,7 @@ export class VoucherDataSource extends DataSource<Claim> {
    * @param pageSize default 10
    * @returns
    */
-  requestAllData(
+  /*requestAllData(
     claimStatus: string,
     filter = '',
     sortDirection = 'asc',
@@ -67,7 +90,7 @@ export class VoucherDataSource extends DataSource<Claim> {
     this.loadingSubject.next(true);
     return this.auth
       .getAllClaims(
-        '%',
+        '',
         0,
         '',
         claimStatus,
@@ -81,8 +104,9 @@ export class VoucherDataSource extends DataSource<Claim> {
         finalize(() => this.loadingSubject.next(false))
       )
       .subscribe((receiveData: any) => {
+        console.log(receiveData);
         this.dataSetSubject.next(receiveData.content);
         this.totalCount = receiveData.totalElements;
       });
-  }
+  }*/
 }

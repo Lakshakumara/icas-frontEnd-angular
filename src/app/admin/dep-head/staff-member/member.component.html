@@ -1,33 +1,24 @@
 <div class="topClass">
   <h1>Member Details</h1>
-  <div class="spinner-container" *ngIf="dataSource.loading$ | async">
-    <mat-progress-bar>Loading </mat-progress-bar>
-  </div>
-  <div class="extra" *ngIf="member" >
+  <mat-form-field appearance="outline">
+    <mat-label>Search By Employee No or Name</mat-label>
+    <input matInput [formControl]="searchControl" placeholder="Search Columns" />
+  </mat-form-field>
+  <div class="extra" *ngIf="member">
     <fieldset>
       <legend>CONFIRMATION OF EMPLOYMENTSHIP</legend>
       <li>
         <a>Name: {{member.name}}</a>
         <a>Department: {{member.department}}</a>
         <a>Designation: {{member.designation}}</a>
-        </li>
-        <div class="hori">
-        <mat-checkbox [checked]="regAccept" (change)="regAccept = !regAccept" >Certify working up to now</mat-checkbox>
-      <button [disabled]="!regAccept"  mat-raised-button color="primary" (click)="acceptRegistration()">Accept Registration</button>
+      </li>
+      <div class="hori">
+        <mat-checkbox [checked]="regAccept" (change)="regAccept = !regAccept">Certify working up to now</mat-checkbox>
+        <button [disabled]="!regAccept" mat-raised-button color="primary" (click)="acceptRegistration()">Accept
+          Registration</button>
       </div>
     </fieldset>
   </div>
-
-
-  <!--<mat-form-field class="example-full-width">
-    <input type="text" placeholder="Search by Employee No or Name" aria-label="text" matInput
-        [matAutocomplete]="auto">
-    <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let option of suggestEmployee" [value]="option">{{option}}
-        </mat-option>
-    </mat-autocomplete>
-</mat-form-field> -->
-
 
   <table mat-table class="topClass-table mat-elevation-z8" [dataSource]="dataSource" matSort matSortActive="id"
     matSortDirection="asc" matSortDisableClear>
@@ -42,5 +33,6 @@
     <tr mat-row *matRowDef="let member; columns: displayedColumn;" (click)="onRowClicked(member)"></tr>
   </table>
 
-  <mat-paginator #paginator [length]="totalLength" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  <mat-paginator #paginator [length]="totalLength" [pageSize]="5" [pageSizeOptions]="[5, 10, 20, 50]"
+    showFirstLastButtons></mat-paginator>
 </div>

@@ -1,0 +1,22 @@
+/* add-member.component.css */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+mat-card {
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+mat-card-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+mat-card-actions {
+  display: flex;
+  justify-content: flex-end;
+}

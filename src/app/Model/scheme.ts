@@ -29,6 +29,12 @@ export const SchemeColumns = [
     required: true,
   },
   {
+    key: 'category',
+    type: 'category',
+    label: 'Category',
+    required: true,
+  },
+  {
     key: 'title',
     type: 'text',
     label: 'Title',
@@ -49,7 +55,7 @@ export const SchemeColumns = [
   {
     key: 'descriptionta',
     type: 'text',
-    label: 'Description Samil',
+    label: 'Description Tamil',
     required: true,
   },
   {

@@ -8,7 +8,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { SchemeTitles } from 'src/app/Model/scheme';
 import { SchemeService } from 'src/app/service/scheme.service';
 import { Constants } from 'src/app/util/constants';
-import { LoadDataSource } from 'src/app/util/LoadData';
+import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';

@@ -1,22 +1,28 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
   OnInit,
   ViewChild,
 } from '@angular/core';
 import { Member, Member_Column_Accept } from 'src/app/Model/member';
-import { MemberDataSource } from './members-dataSource';
+import { MemberDataSource } from '../../../util/dataSource/members-dataSource';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
-import { merge, tap } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  merge,
+  tap,
+} from 'rxjs';
 import { SharedService } from 'src/app/shared/shared.service';
 import { Utils } from 'src/app/util/utils';
 import Swal from 'sweetalert2';
 import { Registration } from 'src/app/Model/registration';
+import { FormControl } from '@angular/forms';
+import { Constants } from 'src/app/util/constants';
 
 @Component({
   selector: 'app-member',
@@ -25,17 +31,16 @@ import { Registration } from 'src/app/Model/registration';
 })
 export class MemberComponent implements OnInit, AfterViewInit {
   loggeduser: any;
-  member!: Member;
+  member!: Member | undefined;
   columnsSchema: any = Member_Column_Accept;
   displayedColumn: string[] = Member_Column_Accept.map((col) => col.key);
   regAcceptData!: Registration;
   regAccept: boolean = false;
   dataSource!: MemberDataSource;
-
+  searchControl: FormControl = new FormControl();
   totalLength = 0;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild('input') input!: ElementRef;
 
   constructor(
     private auth: AuthServiceService,
@@ -47,47 +52,53 @@ export class MemberComponent implements OnInit, AfterViewInit {
     this.loggeduser = this.share.getUser();
     if (this.loggeduser == null) this.router.navigate(['/signin']);
     this.dataSource = new MemberDataSource(this.auth);
-    this.dataSource.loadMember('notAccept');
-    this.dataSource.loading$.subscribe(loading => {
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.loadMemberPage('');
+    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+    merge(this.sort.sortChange, this.paginator.page)
+      .pipe(tap(() => this.loadMemberPage('')))
+      .subscribe();
+
+    this.dataSource.loading$.subscribe((loading) => {
       if (!loading) {
         this.totalLength = this.dataSource.totalCount;
       }
     });
-  }
-
-  ngAfterViewInit() {
-    // server-side search
-    /*fromEvent(this.input.nativeElement, 'keyup')
+    this.searchControl.valueChanges
       .pipe(
-        debounceTime(150),
-        distinctUntilChanged(),
-        tap(() => {
-          this.paginator.pageIndex = 0;
-          this.loadMemberPage();
-        })
+        debounceTime(300), // Wait for 300ms pause in events
+        distinctUntilChanged() // Only emit when value is different from previous value
       )
-      .subscribe();*/
-
-    // reset the paginator after sorting
-    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-    merge(this.sort.sortChange, this.paginator.page)
-      .pipe(tap(() => this.loadMemberPage()))
-      .subscribe();
+      .subscribe((value) => {
+        const filterValue = value.trim().toLowerCase();
+        this.loadMemberPage(filterValue);
+      });
   }
-  loadMemberPage() {
-    this.member = <Member>{};
+
+  loadMemberPage(filter: string) {
+    this.member = undefined;
     this.regAccept = false;
-    this.dataSource.loadMember('notAccept'); // this.input.nativeElement.value
+    this.dataSource.loadMember(
+      Constants.REGISTRATION_PENDING,
+      null,
+      filter,
+      this.sort.direction,
+      this.paginator.pageIndex,
+      this.paginator.pageSize
+    );
   }
   onRowClicked(member: Member) {
     this.member = member;
   }
   acceptRegistration() {
-    this.member.currentRegistration.acceptedDate = new Date();
-    this.member.currentRegistration.acceptedBy = this.loggeduser.id;
+    this.member!.currentRegistration.acceptedDate = new Date();
+    this.member!.currentRegistration.acceptedBy = this.loggeduser.id;
     this.regAcceptData = {
       id: 0, //this.member.memberRegistrations,
-      memberId: this.member.id,
+      memberId: this.member!.id,
       acceptedBy: this.loggeduser.id,
       acceptedDate: Utils.today,
       schemeType: '',
@@ -100,24 +111,32 @@ export class MemberComponent implements OnInit, AfterViewInit {
       confirmButtonText: 'Accept',
       showLoaderOnConfirm: true,
       preConfirm: async () => {
-        const ret = this.auth
-          .update('memberAccept', this.regAcceptData)
-          .subscribe((a) => {
-            console.log('a ', a);
-            if (a >= 1) {
-              this.loadMemberPage();
-              return Swal.showValidationMessage('Accepted');
-            } else return Swal.showValidationMessage(' Not Updated Try againg');
-          });
+        try {
+          const ret = await this.auth.updateMember(
+            'memberAccept',
+            this.regAcceptData
+          ); // Convert Observable to Promise
 
-        return ret;
+          if (ret >= 1) {
+            this.loadMemberPage(''); // Reload the member page or data
+            return 'Accepted'; // Show success message
+          } else {
+            throw new Error('Not Updated, Try again'); // If no rows affected, show error
+          }
+        } catch (error) {
+          throw new Error(
+            'An error occurred while accepting the registration.'
+          ); // Show error message in case of failure
+        }
       },
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
+      console.log('result value ' + result);
       if (result.isConfirmed) {
-        Swal.fire('Accepting', '', 'success');
+        Swal.fire('Success', result.value, 'success'); // Success message
+      } else {
+        Swal.fire('Error', result.value, 'error'); // Error message if operation fails
       }
-      this.loadMemberPage();
     });
   }
 }

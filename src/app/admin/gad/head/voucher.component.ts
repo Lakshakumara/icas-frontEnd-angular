@@ -41,35 +41,39 @@ export class VoucherComponent implements OnInit {
   rowData!: Claim[];
   selectedClaims!: Claim[] | null;
   claimData!: any[] | null;
+  selectedClaimData!: any | null;
   tobeUpdated!: any[] | null;
 
   onNotifySelected(selectedRows: Claim[]) {
+    this.selectedClaimData = null;
     this.selectedClaims = selectedRows;
-    console.log(selectedRows);
+    console.log('selected Rows ', selectedRows);
     this.claimData = [];
     if (selectedRows.length === 1)
       selectedRows[selectedRows.length - 1].claimData.forEach((d: any) => {
-        console.log(d);
+        //console.log('d-> ', d);
         let status: string;
         if (d.claimDataStatus == 'Rejected')
           status = 'Rejected - ' + d.rejectRemarks;
         else if (d.claimDataStatus == 'Deducted')
           status = 'Deducted - Rs. ' + d.deductionAmount;
         else if (d.claimDataStatus == 'Approved')
-          status = d.remarks == null ? 'Approved ' : 'Approved - ' + d.remarks;
+          status = d.remarks == '' ? 'Approved ' : 'Approved - ' + d.remarks;
         else status = 'Other';
-        console.log(d.scheme);
+        //console.log(d.scheme);
         if (d.scheme != null)
           this.claimData?.push({
             id: d.id,
             title: d.scheme.title + '-' + d.scheme.idText,
             status: status,
+            scheme: d.scheme,
           });
       });
   }
 
   cData(selectedRows: any) {
-    //this.selectedClaims = selectedRows;
+    this.selectedClaimData = selectedRows[0];
+    //console.log('this.selectedClaimData ', this.selectedClaimData);
   }
 
   constructor(private auth: AuthServiceService) {
@@ -117,21 +121,30 @@ export class VoucherComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.dataSource = new VoucherDataSource(this.auth);
     this.reload();
   }
 
   reload() {
     this.selectedvoucherId = undefined;
+    this.selectedClaims = null;
+    this.tobeUpdated = null;
+    this.claimData = [];
+
     this.auth.getVouchers().then((r) => {
       this.voucherIds = r;
     });
-    this.dataSource = new VoucherDataSource(this.auth);
     this.dataSource
       .requestAllData(Constants.CLAIMSTATUS_MEDICAL_DECISION_APPROVED)
+      .subscribe((receiveData: any) => (this.rowData = receiveData.content));
   }
 
   setPaidAmount() {
     if (this.selectedClaims == null) return;
+    if (this.selectedClaims.length >= 1) {
+      console.log('more than One claim selected');
+      return;
+    }
     let tobeUpdated: any[] = [];
     let timerInterval;
     Swal.fire({
@@ -213,7 +226,9 @@ export class VoucherComponent implements OnInit {
     if (this.selectedClaims == undefined) return;
     this.tobeUpdated = [];
     let selected = this.selectedClaims.map((s) => {
-      if (s.paidAmount <= 0) {
+      //console.log('s.paidAmount ', s.paidAmount);
+      if (s.paidAmount === null) {
+        //console.log('return  ', s.paidAmount === null);
         Constants.Toast.fire('Payment not set for the Claim ' + s.id + ' ');
         return;
       }
@@ -227,6 +242,7 @@ export class VoucherComponent implements OnInit {
       });
       return s.empNo + '-' + s.paidAmount;
     });
+    console.log('selected ', selected);
     Swal.fire({
       title: selected,
       icon: 'warning',

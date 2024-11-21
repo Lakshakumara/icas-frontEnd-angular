@@ -1,5 +1,4 @@
 <div class="topClass">
-  <h1>Claims Management</h1>
   <div class="hori">
     <mat-form-field>
       <mat-label>Year</mat-label>
@@ -21,16 +20,43 @@
   </div>
 
   <div *ngIf="selectedClaim?.member" class="hori">
-    <fieldset>
-      <legend>Selected Member</legend>
-      <div class="memberData">
-        <a>EmpNo: {{ selectedClaim?.member!.empNo }}</a>
-        <a>Name: {{ selectedClaim?.member!.name }}</a>
-        <span>NIC: {{ selectedClaim?.member!.nic }}</span>
-      </div>
-    </fieldset>
     <div>
+      <!--ng-container [ngSwitch]="selectedClaim?.claimStatus">
+        <div class="hori" *ngSwitchCase="'status_actual_pending'">
+          <a>Department Approval Pending...</a>
+        </div>
+
+        <div class="hori" *ngSwitchCase="'status_head_approved'">
+          <mat-checkbox #chmec [checked]="false">Hard Copies are Correct</mat-checkbox>
+          <button mat-raised-button [disabled]="!chmec.checked" color="primary" (click)="forwordMEC()">
+            Forward to MEC
+          </button>
+        </div>
+
+        <div class="hori" *ngSwitchCase="'status_mecApproved'">
+          <a>Visit Voucher Generation Panel</a>
+          <button mat-raised-button (click)="forwordMVoucherPage()" color="primary">
+            Voucher Generation
+          </button>
+        </div>
+
+        <div *ngSwitchCase="'status_reject'">
+          <a>Rejected Date: {{ selectedClaim?.rejectedDate | date }}</a>
+          <a>Reason for Rejection: {{ selectedClaim?.rejectRemarks }}</a>
+        </div>
+
+        <div *ngSwitchCase="'status_finance'">
+          Voucher ID: <b>{{selectedClaim?.voucherId}}</b>
+          <br>
+          Date: <b>{{selectedClaim?.voucherId | date:'yyyy-MM-dd hh:mm a'}}</b>
+        </div>
+
+      </ng-container-->
+
       <ng-container *ngIf="selectedClaim?.claimStatus == status_Pending; then toMEC;">
+        <div class="hori">
+          <a>Department Approval Pending...</a>
+        </div>
       </ng-container>
 
       <ng-template #toMEC>
@@ -100,7 +126,8 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumn; sticky: true"></tr>
-    <tr mat-row *matRowDef="let claim; columns: displayedColumn" (click)="onRowClicked(claim)"></tr>
+    <tr mat-row *matRowDef="let claim; columns: displayedColumn" (click)="onRowClicked(claim)"
+      [ngClass]="{'selected': claim === selectedClaim}"></tr>
   </table>
 
   <mat-paginator #paginator [length]="totalLength" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"

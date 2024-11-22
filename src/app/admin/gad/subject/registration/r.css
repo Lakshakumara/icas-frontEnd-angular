@@ -1,14 +1,15 @@
 .content {
-  height: 100%;
-  border: 1px solid #eee;
   display: flex;
+  height: 100%;
 }
 
 .nav {
   flex: 0 0 25%;
+  display: flex;
   flex-direction: column;
   border-right: 1px solid #eee;
   height: 100%;
+  overflow: auto; 
 }
 
 .card {
@@ -77,7 +78,7 @@
   gap: 10px;
   margin-top: 10px;
   padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 10px;
   border-top: 1px solid #eee;
 }
 .body {
@@ -104,9 +105,69 @@ mat-form-field {
 }
 
 .back-button mat-icon {
-  margin-right: 4px; /* Adjust the spacing as needed */
+  margin-right: 4px; 
 }
 
 .back-text {
-  white-space: nowrap; /* Prevents line breaks within the text */
+  white-space: nowrap; 
 }
+
+/*.content {
+  display: flex;
+  height: 100%;
+}
+
+.nav {
+  flex: 0 0 25%;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #eee;
+  height: 100%;
+  overflow: auto; 
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-left: 16px;
+}
+
+.profile-content {
+  display: flex;
+  align-items: center;
+}
+
+.profile-photo {
+  width: 100px;
+  height: 100px;
+  margin-right: 16px;
+  border-radius: 50%;
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-buttons {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 16px;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+}
+
+.back-text {
+  margin-left: 8px;
+}*/

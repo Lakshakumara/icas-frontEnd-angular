@@ -43,7 +43,6 @@ import { SharedService } from 'src/app/shared/shared.service';
 })
 export class RegistrationComponent implements OnInit, AfterViewInit {
   showFullProfile = false;
-  //isRoleUpdate = false;
   profilePhotoUrl: string = 'assets/images/blank-profile.webp'; // Default placeholder image
   loggeduser: any;
   selectedMember!: Member | null;
@@ -59,7 +58,15 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   //columnsSchema: any = Member_Column_Accept;
   //access = Access_type;
   roleGroup!: FormGroup;
-  roleData = [{}];
+  roleData  =[
+    { item_id: 1, role: Constants.ROLE_USER },
+    { item_id: 2, role: Constants.ROLE_ADMIN },
+    { item_id: 3, role: Constants.ROLE_GAD_HEAD },
+    { item_id: 4, role: Constants.ROLE_DEP_HEAD },
+    { item_id: 5, role: Constants.ROLE_MO },
+    { item_id: 6, role: Constants.ROLE_MEC },
+    { item_id: 7, role: Constants.ROLE_SUPER_ADMIN },
+  ];
   dropdownSettings: IDropdownSettings = {};
   selectedRoles!: any[];
   tobeUpdated!: any;
@@ -87,7 +94,7 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
       textField: 'role',
       enableCheckAll: false,
     };
-    this.roleData = [
+    /*this.roleData = [
       { item_id: 1, role: Constants.ROLE_USER },
       { item_id: 2, role: Constants.ROLE_ADMIN },
       { item_id: 3, role: Constants.ROLE_GAD_HEAD },
@@ -95,7 +102,7 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
       { item_id: 5, role: Constants.ROLE_MO },
       { item_id: 6, role: Constants.ROLE_MEC },
       { item_id: 7, role: Constants.ROLE_SUPER_ADMIN },
-    ];
+    ];*/
   }
   ngAfterViewInit() {}
 
@@ -130,11 +137,18 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
           });
       });
       console.log('selectedRoles ', this.selectedRoles);
+      /*const selectedRoles = this.selectedMember?.roles.map(role => {
+        return this.roleData.find(item => item.role === role);
+      }).filter(role => role !== undefined);
+      
+      console.log('Selected Roles:', selectedRoles);*/
       this.roleGroup.patchValue({
         selectedRoles: [this.selectedRoles],
+        //selectedRoles: this.selectedMember!.roles.map(role => this.roleData.find(item => item.role === role))
+
       });
 
-      console.log('roleGroup ', this.roleGroup);
+      console.log('roleGroup ', this.roleGroup.value);
       /*this.roleGroup = this.buildr.group({
         selectedRoles: [this.selectedRoles],
       });*/
@@ -146,13 +160,9 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   toggleProfile() {
     this.showFullProfile = !this.showFullProfile;
   }
-  fetchProfilePhoto() {
-    // Example: Simulate fetching from an API
-    const fetchedPhotoUrl = 'path/to/fetched-profile-photo.jpg';
 
-    if (fetchedPhotoUrl) {
-      this.profilePhotoUrl = fetchedPhotoUrl;
-    }
+  onImageError(event: Event): void {
+    (event.target as HTMLImageElement).src = this.profilePhotoUrl;
   }
 
   showClaimManage() {

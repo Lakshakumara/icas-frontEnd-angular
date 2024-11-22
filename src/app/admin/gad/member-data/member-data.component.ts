@@ -47,6 +47,7 @@ export class MemberDataComponent implements OnInit, AfterViewInit {
   }
   setupTableFeatures() {
     this.changeDetectorRef.detectChanges();
+    this.sort.direction = 'asc'
     this.dataSource.sort = this.sort;
     this.loadMemberPage('');
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
@@ -66,18 +67,21 @@ export class MemberDataComponent implements OnInit, AfterViewInit {
       )
       .subscribe((value) => {
         this.paginator.pageIndex = 0;
+        
         const filterValue = value.trim().toLowerCase();
-        this.loadMemberPage(filterValue);
+       
+        this.loadMemberPage(filterValue, "empNo");
       });
   }
-  loadMemberPage(filter: string) {
+  loadMemberPage(filter: string, sortField:string = "name") {
     this.dataSource.loadMember(
       Constants.ALL,
       null,
       filter,
       this.sort.direction,
       this.paginator.pageIndex,
-      this.paginator.pageSize
+      this.paginator.pageSize,
+      sortField
     );
   }
   onRowClicked(selectedMember: Member) {

@@ -6,7 +6,7 @@
             </mat-card-header>
             <mat-card-content class="mat-card-content">
                 <div class="profile-content">
-                    <img [src]="profilePhotoUrl" alt="Profile Photo" class="profile-photo">
+                    <img [src]="selectedMember.photoUrl" alt="Profile Photo" class="profile-photo" (error)="onImageError($event)">
                     <div class="profile-details">
                         <p class="profile-name">{{selectedMember.empNo}}</p>
                         <p class="profile-info">{{selectedMember.designation}}</p>
@@ -49,17 +49,20 @@
 
                         <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
                             <mat-expansion-panel-header>
-                                <mat-panel-title>
-                                    Role Update
-                                </mat-panel-title>
+                              <mat-panel-title>
+                                Role Update
+                              </mat-panel-title>
                             </mat-expansion-panel-header>
                             <form [formGroup]="roleGroup">
-                                <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="roleData"
-                                    formControlName="selectedRoles">
-                                </ng-multiselect-dropdown>
-                                <button class="profile-buttons" mat-raised-button color="accent" (click)="roleUpdate()">Update Roles</button>
+                              <ng-multiselect-dropdown 
+                                [settings]="dropdownSettings" 
+                                [data]="roleData" 
+                                formControlName="selectedRoles">
+                              </ng-multiselect-dropdown>
+                              <button class="profile-buttons" mat-raised-button color="accent" (click)="roleUpdate()">Update Roles</button>
                             </form>
-                        </mat-expansion-panel>
+                          </mat-expansion-panel>
+                          
                     </div>
 
                     <div *ngSwitchCase="'claimManage'">

@@ -27,9 +27,10 @@ export class AuthServiceService {
     searchFor: string,
     searchText: any,
     filter: string,
-    sortDirection: string,
-    pageIndex: number,
-    pageSize: number
+    sortDirection: string = 'asc',
+    pageIndex: number = 0,
+    pageSize: number = 10,
+    sortField: string = ''
   ) {
     return this.http
       .get(`${this.API_URL}/member/get`, {
@@ -39,7 +40,8 @@ export class AuthServiceService {
           .set('filter', filter)
           .set('sortOrder', sortDirection)
           .set('pageIndex', pageIndex.toString())
-          .set('pageSize', pageSize.toString()),
+          .set('pageSize', pageSize.toString())
+          .set('sortField', sortField),
       })
       .pipe<Member[]>(map((res: any) => res));
   }
@@ -415,5 +417,20 @@ export class AuthServiceService {
       },
     });
     return await response.json();
+  }
+
+  async getHRDetailsNew(empNo: any): Promise<any> {
+    return await fetch(`${this.API_URL}/hr/${empNo}`, {
+      method: 'get',
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((responseJson) => {
+        return responseJson;
+      })
+      .catch((error) => {
+        return new Error(error);
+      });
   }
 }

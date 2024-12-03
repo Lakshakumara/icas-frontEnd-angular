@@ -6,13 +6,13 @@
   text-align: center;
 }
 
+
 .mat-column-empNo {
-  overflow: visible; /* Style for displaying checkbox center inside a cell */
-  max-width: 60px;
-  /*border-right: 1px solid currentColor;*/
+  width: 32px;
+  border-right: 1px solid black;
+  padding-right: 24px;
   text-align: center;
 }
-
 /*This fix is available in later versions of angular
  * https://github.com/angular/material2/pull/10619
  */

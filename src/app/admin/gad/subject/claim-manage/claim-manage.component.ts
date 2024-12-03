@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   EventEmitter,
+  Input,
   OnInit,
   Output,
   ViewChild,
@@ -26,7 +27,8 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 })
 export class ClaimManageComponent implements OnInit, AfterViewInit {
   @Output() getClaim = new EventEmitter();
-  status_Pending: string = new Constants().isHeadforClaim;
+  selectedClaim!: Claim | null;
+  isHeadPresent: Boolean = Constants.isHeadPresent
   status_actual_pending: string = Constants.CLAIMSTATUS_PENDING;
   status_head_approved: string = Constants.CLAIMSTATUS_HEAD_APPROVED;
   status_reject: string = Constants.CLAIMSTATUS_REJECTED;
@@ -36,12 +38,12 @@ export class ClaimManageComponent implements OnInit, AfterViewInit {
   loggeduser!: Member;
   search_year!: number;
   claim!: Claim;
-  selectedClaim!: Claim | null;
+  
   tobeUpdated!: any[];
   dataSource!: ClaimDataSource;
-  displayedColumn: string[] = Claim_All.map((col) => col.key);
   columnsSchema: any = Claim_All;
-
+  displayedColumn: string[] = this.columnsSchema.map((col:any) => col.key);
+  
   claimViewOptions: string[] = Constants.CLAIM_STATUS_VIEW;
   claimViewOptionSelected: string = 'All';
   search: any;
@@ -81,8 +83,9 @@ export class ClaimManageComponent implements OnInit, AfterViewInit {
     this.dataSource = new ClaimDataSource(this.auth);
   }
   ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-    this.loadClaimPage();
+    this.dataSource.sort = this.sort
+    this.dataSource.paginator = this.paginator
+    this.loadClaimPage()
     this.dataSource.loading$.subscribe((loading) => {
       if (!loading) {
         this.totalLength = this.dataSource.totalCount;
@@ -93,6 +96,7 @@ export class ClaimManageComponent implements OnInit, AfterViewInit {
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(tap(() => this.loadClaimPage()))
       .subscribe();
+    console.log('selectedClaim ', this.selectedClaim);
   }
 
   applyFilter(event: Event) {
@@ -113,9 +117,6 @@ export class ClaimManageComponent implements OnInit, AfterViewInit {
     this.dataSource.requestData(
       this.getSelectedClaimStatus(),
       '',
-      this.sort.direction,
-      this.paginator.pageIndex,
-      this.paginator.pageSize
     );
   }
   getSelectedClaimStatus(): string {
@@ -151,7 +152,6 @@ export class ClaimManageComponent implements OnInit, AfterViewInit {
   onRowClicked(claim: Claim) {
     this.getClaim.emit(claim);
     console.log(claim.claimStatus, this.status_actual_pending);
-    console.log(claim, this.status_Pending);
     this.formGroup.reset();
     this.selectedClaim = claim;
   }

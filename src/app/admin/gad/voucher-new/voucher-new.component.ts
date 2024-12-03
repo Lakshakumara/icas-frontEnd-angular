@@ -1,38 +1,25 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   ColumnSettingsModel,
   TablePaginationSettingsModel,
 } from 'src/app/tableFactory/tableModel/table-settings.model';
-import { VoucherDataSource } from './voucher-dataSource';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
-import { catchError, of } from 'rxjs';
 import { Claim } from 'src/app/Model/claim';
 import Swal from 'sweetalert2';
 import { Constants } from 'src/app/util/constants';
+import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
 
 @Component({
-  selector: 'app-voucher',
-  templateUrl: './voucher.component.html',
-  styleUrls: ['./voucher.component.css'],
+  selector: 'app-voucher-new',
+  templateUrl: './voucher-new.component.html',
+  styleUrls: ['./voucher-new.component.css']
 })
-export class VoucherComponent implements OnInit {
-  dataSource!: VoucherDataSource;
-  voucherIds!: number[];
-  selectedvoucherId!: number | undefined;
+export class VoucherNewComponent implements OnInit {
+  dataSource!: LoadDataSource;
+  //@Input() dVoucher:boolean =false
+  @Output() getvoucherIds = new EventEmitter();
+ // selectedvoucherId!: number | undefined;
   columnDefinition: ColumnSettingsModel[] = [];
-
-  cDataColumnDefinition = [
-    {
-      name: 'title',
-      displayName: 'Title',
-      disableSorting: true,
-    },
-    {
-      name: 'status',
-      displayName: 'Status',
-      disableSorting: true,
-    },
-  ];
 
   tablePaginationSettings: TablePaginationSettingsModel = <
     TablePaginationSettingsModel
@@ -40,40 +27,11 @@ export class VoucherComponent implements OnInit {
 
   rowData!: Claim[];
   selectedClaims!: Claim[] | null;
-  claimData!: any[] | null;
-  selectedClaimData!: any | null;
   tobeUpdated!: any[] | null;
 
   onNotifySelected(selectedRows: Claim[]) {
-    this.selectedClaimData = null;
     this.selectedClaims = selectedRows;
     console.log('selected Rows ', selectedRows);
-    this.claimData = [];
-    if (selectedRows.length === 1)
-      selectedRows[selectedRows.length - 1].claimData.forEach((d: any) => {
-        //console.log('d-> ', d);
-        let status: string;
-        if (d.claimDataStatus == 'Rejected')
-          status = 'Rejected - ' + d.rejectRemarks;
-        else if (d.claimDataStatus == 'Deducted')
-          status = 'Deducted - Rs. ' + d.deductionAmount;
-        else if (d.claimDataStatus == 'Approved')
-          status = d.remarks == '' ? 'Approved ' : 'Approved - ' + d.remarks;
-        else status = 'Other';
-        //console.log(d.scheme);
-        if (d.scheme != null)
-          this.claimData?.push({
-            id: d.id,
-            title: d.scheme.title + '-' + d.scheme.idText,
-            status: status,
-            scheme: d.scheme,
-          });
-      });
-  }
-
-  cData(selectedRows: any) {
-    this.selectedClaimData = selectedRows[0];
-    //console.log('this.selectedClaimData ', this.selectedClaimData);
   }
 
   constructor(private auth: AuthServiceService) {
@@ -121,105 +79,21 @@ export class VoucherComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dataSource = new VoucherDataSource(this.auth);
+    this.dataSource = new LoadDataSource(this.auth);
     this.reload();
   }
 
   reload() {
-    this.selectedvoucherId = undefined;
+    //this.selectedvoucherId = undefined;
     this.selectedClaims = null;
     this.tobeUpdated = null;
-    this.claimData = [];
 
     this.auth.getVouchers().then((r) => {
-      this.voucherIds = r;
+      this.getvoucherIds.emit(r);
     });
     this.dataSource
-      .requestAllData(Constants.CLAIMSTATUS_MEDICAL_DECISION_APPROVED)
+      .requestAllData(Constants.CLAIMSTATUS_VOUCHER)
       .subscribe((receiveData: any) => (this.rowData = receiveData.content));
-  }
-
-  setPaidAmount() {
-    if (this.selectedClaims == null) return;
-    if (this.selectedClaims.length >= 1) {
-      console.log('more than One claim selected');
-      return;
-    }
-    let tobeUpdated: any[] = [];
-    let timerInterval;
-    Swal.fire({
-      title: 'Update Payment Amount',
-      footer: 'Paid Amount <b></b>',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Update',
-      showLoaderOnConfirm: true,
-      input: 'number',
-      inputLabel: 'Deduction Amount',
-
-      allowOutsideClick: () => !Swal.isLoading(),
-      inputValidator: (value) => {
-        return new Promise((resolve) => {
-          if (+value <= this.selectedClaims![0].requestAmount) {
-            resolve('');
-          } else {
-            resolve(
-              'Max is Request Amount Rs. ' +
-                this.selectedClaims![0].requestAmount
-            );
-          }
-        });
-      },
-
-      /* didOpen: (deductionAmount) => {
-        const timer = Swal.getPopup()?.querySelector("b");
-        timer!.textContent = `${deductionAmount}`;
-      },*/
-
-      preConfirm: async (deductionAmount) => {
-        tobeUpdated.push({
-          criteria: 'finalize',
-          id: this.selectedClaims![0].id,
-          deductionAmount: +deductionAmount,
-          paidAmount: this.selectedClaims![0].requestAmount - deductionAmount,
-          claimStatus: Constants.CLAIMSTATUS_PAID,
-        });
-        console.log(tobeUpdated);
-        return await this.auth.updateClaim_new(tobeUpdated);
-      },
-    }).then((result) => {
-      console.log('result ', result);
-      if (result.isConfirmed) {
-        if (result.value >= 1) {
-          Swal.fire('Claim Updated', '', 'success');
-          this.reload();
-        } else Swal.fire('Error', 'Failed to Update', 'error');
-      }
-    });
-
-    /* const ipAPI = "//api.ipify.org?format=json";
- const { value: ipAddress } = Swal.fire({
-   title: "Enter your IP address",
-   input: "text",
-   inputLabel: "Your IP address",
-   inputValue,
-   showCancelButton: true,
-   inputValidator: (value) => {
-     if (!value) {
-       return "You need to write something!";
-     }
-   }
- });
- if (ipAddress) {
-   Swal.fire(`Your IP address is ${ipAddress}`);
- }*/
-
-    /*
-        this.rowData?.forEach((c) => {
-          if (this.selectedClaims?.includes(c))
-            c.paidAmount = c.requestAmount - c.deductionAmount;
-          else c.paidAmount = 0;
-        });*/
   }
 
   voucherGenerate() {
@@ -272,21 +146,20 @@ export class VoucherComponent implements OnInit {
       }
     });
   }
-  downloadVoucher() {
-    console.log('this.selectedvoucherId ', this.selectedvoucherId);
-    if (this.selectedvoucherId == undefined) {
-      return;
-    }
+  public downloadVoucher(selectedvoucherId:number):void {
+    console.log('this.selectedvoucherId ', selectedvoucherId);
+    
     Swal.fire({
       title: 'Download Voucher',
-      icon: 'info',
+      icon: 'question',
+      showCancelButton: true,
       confirmButtonText: 'Download',
       showLoaderOnConfirm: true,
       allowOutsideClick: () => false,
       preConfirm: async () => {
         try {
           let response: any = await this.auth.downloadVoucher(
-            this.selectedvoucherId!
+            selectedvoucherId
           );
           let dataType = response.type;
           let binaryData = [];

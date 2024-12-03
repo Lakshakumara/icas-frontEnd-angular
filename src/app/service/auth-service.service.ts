@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { Member } from '../Model/member';
 import { map } from 'rxjs/operators';
 import { Dependant } from '../Model/dependant';
 import { Claim } from '../Model/claim';
-import { Utils } from '../util/utils';
+import { ClaimData } from '../Model/claimData';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +14,7 @@ import { Utils } from '../util/utils';
 export class AuthServiceService {
   private API_URL = environment.baseUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   login(data: any): Observable<any> {
     return this.http.post(`${this.API_URL}/member/signin`, data);
@@ -77,99 +77,6 @@ export class AuthServiceService {
     return jsonResponse;
   }
 
-  async saveOPD(claimOPD: any): Promise<Observable<any>> {
-    console.log('sent', claimOPD);
-    return await fetch(`${this.API_URL}/claim/opd`, {
-      method: 'POST',
-      body: JSON.stringify(claimOPD),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then((responseJson) => {
-        return responseJson;
-      })
-      .catch((error) => {
-        return error;
-      });
-  }
-
-  /**
-   *
-   * @param claimType '' for any
-   * @param year
-   * @param empNo '' for any
-   * @param claimStatus '' for any
-   * @param filter
-   * @param sortDirection
-   * @param pageIndex
-   * @param pageSize
-   * @returns
-   */
-  getAllClaims(
-    claimType: string = '',
-    year: number = 0,
-    empNo: string = '',
-    claimStatus: string = '',
-    filter: string = '',
-    sortDirection: string = 'asc',
-    pageIndex: number = 0,
-    pageSize: number = 10
-  ): Observable<Claim[]> {
-    console.log('getAllClaims calls = ', claimType);
-    return this.http
-      .get(`${this.API_URL}/claim/getAll`, {
-        params: new HttpParams()
-          .set('claimType', claimType)
-          .set('year', year)
-          .set('empNo', empNo)
-          .set('claimStatus', claimStatus)
-          .set('filter', filter)
-          .set('sortOrder', sortDirection)
-          .set('pageIndex', pageIndex.toString())
-          .set('pageSize', pageSize.toString()),
-      })
-      .pipe<Claim[]>(map((res: any) => res));
-  }
-
-  /**
-   *
-   * @param claimType
-   * @param year 0 for neglect year
-   * @param empNo '' for neglect Members
-   * @param claimStatus
-   * @param filter
-   * @param sortDirection
-   * @param pageIndex
-   * @param pageSize
-   * @returns
-   */
-
-  async getClaim(claimId: number): Promise<Observable<Claim>> {
-    return await fetch(`${this.API_URL}/claim/get/${claimId}`, {
-      method: 'get',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then((responseJson: any) => {
-        /*responseJson
-        .pipe(
-          tap((receivedData: Claim) => console.log(receivedData)),
-          map((receivedData: Claim) => {
-            console.log(receivedData.claimData)
-            return receivedData;
-          }));*/
-        console.log('auth getClaims ', responseJson);
-        return responseJson;
-      })
-      .catch((error) => {
-        return null; //new Error(error);
-      });
-  }
-
   registerold(data: any): Observable<any> {
     return this.http
       .post(`${this.API_URL}/member/signup`, data)
@@ -213,6 +120,119 @@ export class AuthServiceService {
       });
   }
 
+  async saveOPD(claimOPD: any): Promise<Observable<any>> {
+    console.log('sent', claimOPD);
+    return await fetch(`${this.API_URL}/claim/opd`, {
+      method: 'POST',
+      body: JSON.stringify(claimOPD),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((responseJson) => {
+        return responseJson;
+      })
+      .catch((error) => {
+        return error;
+      });
+  }
+
+  /**
+   *
+   * @param claimType '' for any
+   * @param year
+   * @param empNo '' for any
+   * @param claimStatus '' for any
+   * @param filter
+   * @param sortDirection
+   * @param pageIndex
+   * @param pageSize
+   * @returns
+   */
+  getAllClaims(
+    claimType: string = '',
+    year: number = 0,
+    empNo: string = '',
+    claimStatus: string = '',
+    filter: string = '',
+    sortDirection: string = 'asc',
+    pageIndex: number = 0,
+    pageSize: number = 10,
+    sortField: string = '',
+  ): Observable<Claim[]> {
+    console.log('getAllClaims calls = ', claimType);
+    return this.http
+      .get(`${this.API_URL}/claim/getAll`, {
+        params: new HttpParams()
+          .set('claimType', claimType)
+          .set('year', year)
+          .set('empNo', empNo)
+          .set('claimStatus', claimStatus)
+          .set('filter', filter)
+          .set('sortOrder', sortDirection)
+          .set('pageIndex', pageIndex.toString())
+          .set('pageSize', pageSize.toString())
+          .set('sortField', sortField),
+      })
+      .pipe<Claim[]>(map((res: any) => res));
+  }
+
+  getClaimData(claimId: number,
+    pageIndex: number = 0,
+    pageSize: number = 10,
+    sortDirection: string = 'asc',
+    sortField: string = ''
+    ): Observable<ClaimData[]> {
+    return this.http
+      .get(`${this.API_URL}/claim/claimData`, {
+        params: new HttpParams()
+          .set('claimId', claimId)
+          .set('sortOrder', sortDirection)
+          .set('pageIndex', pageIndex.toString())
+          .set('pageSize', pageSize.toString())
+          .set('sortField', sortField),
+      })
+      .pipe<ClaimData[]>(map((res: any) => res));
+  }
+
+  /**
+   *
+   * @param claimType
+   * @param year 0 for neglect year
+   * @param empNo '' for neglect Members
+   * @param claimStatus
+   * @param filter
+   * @param sortDirection
+   * @param pageIndex
+   * @param pageSize
+   * @returns
+   */
+
+  async getClaim(claimId: number): Promise<Observable<Claim>> {
+    return await fetch(`${this.API_URL}/claim/get/${claimId}`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((responseJson: any) => {
+        /*responseJson
+        .pipe(
+          tap((receivedData: Claim) => console.log(receivedData)),
+          map((receivedData: Claim) => {
+            console.log(receivedData.claimData)
+            return receivedData;
+          }));*/
+        console.log('auth getClaims ', responseJson);
+        return responseJson;
+      })
+      .catch((error) => {
+        return null; //new Error(error);
+      });
+  }
+
   async addClaim(claim: any): Promise<Observable<any>> {
     return await fetch(`${this.API_URL}/claim/add`, {
       method: 'post',
@@ -242,12 +262,43 @@ export class AuthServiceService {
     return response.json();
   }
 
+  async deleteClaimData(id: number): Promise<boolean> {
+    try {
+      const response = await fetch(`${this.API_URL}/claim/claimData/delete/${id}`, {
+        method: 'delete',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) return response.json();
+      else throw Error('Error deleting Item');
+    } catch (error) {
+      throw Error('Failed to communicate');
+    }
+  }
+
   getDashboardData(year: number, empNo: string): any {
     return this.http
       .get(`${this.API_URL}/claim/dashboard/${year}/${empNo}`)
       .pipe<Claim[]>(map((data: any) => data));
   }
 
+  async getVouchers(): Promise<number[]> {
+    try {
+      const response = await fetch(`${this.API_URL}/claim/voucherIds`);
+      if (response.ok) return response.json();
+      else throw Error('Error getting Voucher');
+    } catch (error) {
+      throw Error('Failed to Fetch data');
+    }
+  }
+
+/**
+ * 
+ * @param year Guest
+ * @param empNo 
+ * @returns 
+ */
   isGuest(year: any, empNo: any): Observable<Map<String, Object>> {
     return this.http
       .get(`${this.API_URL}/guest/${year}/${empNo}`)
@@ -256,6 +307,32 @@ export class AuthServiceService {
 
   getHRDetails(empNo: any): Observable<any> {
     return this.http.get(`${this.API_URL}/hr/${empNo}`);
+  }
+
+  async saveHR(data: any): Promise<any> {
+    const response = await fetch(`${this.API_URL}/hr/add`, {
+      method: 'post',
+      body: JSON.stringify(data), // data can be `string` or {object}!
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return await response.json();
+  }
+
+  async getHRDetailsNew(empNo: any): Promise<any> {
+    return await fetch(`${this.API_URL}/hr/${empNo}`, {
+      method: 'get',
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((responseJson) => {
+        return responseJson;
+      })
+      .catch((error) => {
+        return new Error(error);
+      });
   }
 
   getDependant(name: any): Observable<any> {
@@ -304,15 +381,7 @@ export class AuthServiceService {
         return error;
       });
   }
-  async getVouchers(): Promise<number[]> {
-    try {
-      const response = await fetch(`${this.API_URL}/claim/voucherIds`);
-      if (response.ok) return response.json();
-      else throw Error('Error getting Voucher');
-    } catch (error) {
-      throw Error('Failed to Fetch data');
-    }
-  }
+  
   async downloadClaim(claimId: number) {
     try {
       const response = await fetch(
@@ -334,21 +403,6 @@ export class AuthServiceService {
       else throw Error('Error generating pdf');
     } catch (error) {
       throw Error('Failed to Fetch data');
-    }
-  }
-
-  async deleteClaimData(id: number): Promise<boolean> {
-    try {
-      const response = await fetch(`${this.API_URL}/claim/delete/${id}`, {
-        method: 'delete',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      if (response.ok) return response.json();
-      else throw Error('Error deleting Item');
-    } catch (error) {
-      throw Error('Failed to communicate');
     }
   }
 
@@ -406,31 +460,5 @@ export class AuthServiceService {
           .set('pageSize', pageSize.toString()),
       })
       .pipe<Claim[]>(map((res: any) => res));
-  }
-
-  async saveHR(data: any): Promise<any> {
-    const response = await fetch(`${this.API_URL}/hr/add`, {
-      method: 'post',
-      body: JSON.stringify(data), // data can be `string` or {object}!
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    return await response.json();
-  }
-
-  async getHRDetailsNew(empNo: any): Promise<any> {
-    return await fetch(`${this.API_URL}/hr/${empNo}`, {
-      method: 'get',
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((responseJson) => {
-        return responseJson;
-      })
-      .catch((error) => {
-        return new Error(error);
-      });
   }
 }

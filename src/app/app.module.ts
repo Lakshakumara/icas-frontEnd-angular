@@ -15,7 +15,6 @@ import { HeaderComponent } from './navigation/header/header.component';
 import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
 import { LoginV1Component } from './login-v1/login-v1.component';
 import { DependantComponent } from './register/dependant/dependant.component';
-import { TestComponent } from './test/test.component';
 import { ConfirmDialogComponent } from './pop/confirm-dialog/confirm-dialog.component';
 import { OpdComponent } from './pop/opd/opd.component';
 import { HospitalComponent } from './pop/hospital/hospital.component';
@@ -47,9 +46,12 @@ import { MyTableModule } from './tableFactory/tableModel/table.module';
 import { MemberDataComponent } from './admin/gad/member-data/member-data.component';
 import { NewUserComponent } from './admin/gad/new-user/new-user.component';
 import { PaymentHistoryComponent } from './admin/gad/payment-history/payment-history.component';
+import { SetPaymentComponent } from './admin/gad/set-payment/set-payment.component';
+import { VoucherNewComponent } from './admin/gad/voucher-new/voucher-new.component';
 
 @NgModule({
   declarations: [
+    LoadingSpinnerComponent,
     OnlyNumberDirective,
     AppComponent,
     RegisterComponent,
@@ -58,18 +60,15 @@ import { PaymentHistoryComponent } from './admin/gad/payment-history/payment-his
     SidenavListComponent,
     LoginV1Component,
     DependantComponent,
-    TestComponent,
     ConfirmDialogComponent,
     OpdComponent,
     HospitalComponent,
     SchemePlanComponent,
-    LoadingSpinnerComponent,
     UserOPDComponent,
     ClaimUpdateComponent,
     AdminPanelComponent,
     VoucherComponent,
     AccessComponent,
-    MecHsComponent,
     BeneficiaryComponent,
     DownloadComponent,
     MemberComponent,
@@ -84,6 +83,8 @@ import { PaymentHistoryComponent } from './admin/gad/payment-history/payment-his
     MemberDataComponent,
     NewUserComponent,
     PaymentHistoryComponent,
+    SetPaymentComponent,
+    VoucherNewComponent,
   ],
   imports: [
     BrowserModule,

@@ -46,15 +46,16 @@ export class ClaimUpdateComponent implements OnInit {
     this.loggeduser = this.share.getUser();
     if (this.loggeduser == null) this.router.navigate(['/signin']);
     this.dataSource = new ClaimDataSource(this.auth);
+  }
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator
     this.dataSource.requestData(Constants.CLAIMSTATUS_PENDING);
     this.dataSource.loading$.subscribe((loading) => {
       if (!loading) {
         this.totalLength = this.dataSource.totalCount;
       }
     });
-  }
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(tap(() => this.loadClaimPage()))

@@ -35,9 +35,8 @@ export class MemberDataComponent implements OnInit, AfterViewInit {
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
-    private auth: AuthServiceService,
-    private buildr: FormBuilder
-  ) {}
+    private auth: AuthServiceService
+  ) { }
 
   ngOnInit() {
     this.dataSource = new MemberDataSource(this.auth);
@@ -46,11 +45,10 @@ export class MemberDataComponent implements OnInit, AfterViewInit {
     this.setupTableFeatures();
   }
   setupTableFeatures() {
-    this.changeDetectorRef.detectChanges();
-    this.sort.direction = 'asc'
     this.dataSource.sort = this.sort;
-    this.loadMemberPage('');
+    this.sort.direction = 'asc';
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+    this.changeDetectorRef.detectChanges();
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(tap(() => this.loadMemberPage('')))
       .subscribe();
@@ -67,21 +65,21 @@ export class MemberDataComponent implements OnInit, AfterViewInit {
       )
       .subscribe((value) => {
         this.paginator.pageIndex = 0;
-        
+
         const filterValue = value.trim().toLowerCase();
-       
-        this.loadMemberPage(filterValue, "empNo");
+        this.sort.active = 'name';
+        this.loadMemberPage(filterValue);
       });
+    this.loadMemberPage('');
   }
-  loadMemberPage(filter: string, sortField:string = "name") {
+  loadMemberPage(filter: string) {
+    console.log('this.sort.direction ', this.sort.direction);
     this.dataSource.loadMember(
       Constants.ALL,
       null,
       filter,
-      this.sort.direction,
       this.paginator.pageIndex,
-      this.paginator.pageSize,
-      sortField
+      this.paginator.pageSize
     );
   }
   onRowClicked(selectedMember: Member) {

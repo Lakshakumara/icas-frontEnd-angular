@@ -1,7 +1,7 @@
 import Swal from 'sweetalert2';
 
 export class Constants {
-  headPresent: boolean = false;
+  static isHeadPresent: boolean = false
   static REGISTRATION_PENDING: string = 'pending';
   static REGISTRATION_HEAD_APPROVED: string = 'accepted';
   static REGISTRATION_REJECTED: string = 'Rejected';
@@ -58,14 +58,18 @@ export class Constants {
   static CLAIMSTATUS_REJECTED: string = 'rejected';
   static CLAIMSTATUS_MEDICAL_DECISION_PENDING: string = 'mec';
   static CLAIMSTATUS_MEDICAL_DECISION_APPROVED: string = 'mec_approved';
+  static CLAIMSTATUS_VOUCHER: string = 'voucher';
   static CLAIMSTATUS_FINANCE: string = 'finance';
   static CLAIMSTATUS_PAID: string = 'paid';
+  
+  static CRITERIA_CLAIMDATA_ADD: string = 'claimdata'
+  static CRITERIA_CLAIMDATA_UPDATE: string = 'claimdataupdate'
 
-  get isHeadforClaim(): string {
+  /*get isHeadforClaim(): string {
     return this.headPresent
       ? Constants.CLAIMSTATUS_PENDING
-      : Constants.CLAIMSTATUS_HEAD_APPROVED;
-  }
+      : Constants.CLAIMSTATUS_HEAD_APPROVED
+  }*/
   static Toast = Swal.mixin({
     toast: true,
     position: 'top-end',

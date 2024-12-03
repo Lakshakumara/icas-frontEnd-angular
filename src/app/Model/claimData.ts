@@ -6,8 +6,11 @@ export interface ClaimData{
     claimdatastatus:string,
     requestAmount: number,
     deductionAmount: number,
+    deductionRemarks: string,
     paidAmount: number,
     remarks: string,
     rejectedDate: Date,
     rejectRemarks: string
+    adjustAmount: number,
+    adjustRemarks: number,
 }

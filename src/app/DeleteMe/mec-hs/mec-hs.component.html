@@ -1,4 +1,4 @@
-<div style="height: 85%; border: 1px solid #eee">
+<!--div style="height: 85%; border: 1px solid #eee">
     <as-split [useTransition]="true" unit="percent" [gutterSize]="10" [direction]="'horizontal'">
 
         <as-split-area [size]="30" [order]="1" [visible]="true">
@@ -39,22 +39,7 @@
         <as-split-area [size]="50" [order]="2" [visible]="true">
             <mat-card>
                 <mat-card-title>Claim History</mat-card-title>
-                <!--<mat-form-field>
-                    <mat-chip-grid #myChipGrid [(ngModel)]="mySelection"
-                      aria-label="enter sandwich fillings">
-                      @for (filling of claimCategories; track filling) {
-                        <mat-chip-row (removed)="remove(filling)">
-                          {{filling.name}}
-                          <button matChipRemove>
-                            <mat-icon>cancel</mat-icon>
-                          </button>
-                        </mat-chip-row>
-                      }
-                      <input [matChipInputFor]="myChipGrid"
-                             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                             (matChipInputTokenEnd)="add($event)" />
-                    </mat-chip-grid>
-                  </mat-form-field>-->
+               
                 <p>Body</p>
                 <mat-divider></mat-divider>
                 <mat-divider inset vertical></mat-divider>
@@ -77,11 +62,7 @@
                     </mat-card>
                 </as-split-area>
                 <as-split-area [size]="50" [order]="2" [visible]="true">
-                    <!--<button
-                mat-button
-                class="collapse-btn"
-                (click)="keepLeft=!keepLeft"
-              ></button>-->
+                   
                     <Details>
                         <summary>Member Details</summary>
                         {{selectedMember | json}}
@@ -90,4 +71,4 @@
             </as-split>
         </as-split-area>
     </as-split>
-</div>
+</div-->

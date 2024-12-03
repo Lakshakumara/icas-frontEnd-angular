@@ -150,3 +150,56 @@ export const Claim_Head_Accept = [
     label: 'Request Amount',
   },
 ];
+
+export const Claim_Data_Review = [
+  {
+    key: 'id',
+    type: 'number',
+    label: 'ID',
+  },
+  {
+    key: 'title',
+    type: 'text',
+    label: 'Title',
+  },
+  {
+    key: 'claimDataStatus',
+    type: 'text',
+    label: 'MEC Status',
+  },
+  {
+    key: 'requestAmount',
+    type: 'currency',
+    label: 'Request Amount',
+  },
+  {
+    key: 'deductionAmount',
+    type: 'currency',
+    label: 'Deduction',
+  },
+  {
+    key: 'deductionRemarks',
+    type: 'text',
+    label: 'Deduction Remarks',
+  },
+  {
+    key: 'rejectedDate',
+    type: 'Date',
+    label: 'Rejected Date',
+  },
+  {
+    key: 'rejectRemarks',
+    type: 'text',
+    label: 'Rejected Remarks',
+  },
+  {
+    key: 'paidAmount',
+    type: 'currency',
+    label: 'Elligible Amount',
+  },
+  {
+    key: 'remarks',
+    type: 'text',
+    label: 'Remarks',
+  },
+];

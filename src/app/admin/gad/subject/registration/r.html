@@ -6,7 +6,8 @@
             </mat-card-header>
             <mat-card-content class="mat-card-content">
                 <div class="profile-content">
-                    <img [src]="selectedMember.photoUrl" alt="Profile Photo" class="profile-photo" (error)="onImageError($event)">
+                    <img [src]="selectedMember.photoUrl" alt="Profile Photo" class="profile-photo"
+                        (error)="onImageError($event)">
                     <div class="profile-details">
                         <p class="profile-name">{{selectedMember.empNo}}</p>
                         <p class="profile-info">{{selectedMember.designation}}</p>
@@ -31,52 +32,38 @@
                             History</button>
                         <button mat-raised-button color="accent" (click)="showBeneficiaryData()">Beneficiary/Dependant
                         </button>
-                        <!---button mat-raised-button color="accent" (click)="toggleRoleUpdate()">Role Update
-                        </button>
-                        <a class="show-more-link" (click)="toggleRoleUpdate()">
-                            {{ isRoleUpdate ? 'Close \u25B2' : 'Role Update \u25BC' }}
-                        </a>
-                        <mat-card *ngIf="isRoleUpdate">
-                            <mat-card-content>
-                                <form [formGroup]="roleGroup">
-                                    <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="roleData"
-                                        formControlName="selectedRoles">
-                                    </ng-multiselect-dropdown>
-                                    <button mat-raised-button color="accent" (click)="roleUpdate()">Update</button>
-                                </form>
-                            </mat-card-content>
-                        </mat-card-->
 
-                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                        <!--mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
                             <mat-expansion-panel-header>
-                              <mat-panel-title>
-                                Role Update
-                              </mat-panel-title>
+                                <mat-panel-title>
+                                    Role Update
+                                </mat-panel-title>
                             </mat-expansion-panel-header>
                             <form [formGroup]="roleGroup">
-                              <ng-multiselect-dropdown 
-                                [settings]="dropdownSettings" 
-                                [data]="roleData" 
-                                formControlName="selectedRoles">
-                              </ng-multiselect-dropdown>
-                              <button class="profile-buttons" mat-raised-button color="accent" (click)="roleUpdate()">Update Roles</button>
+                                <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="roleData"
+                                    formControlName="selectedRoles">
+                                </ng-multiselect-dropdown>
+                                <button class="profile-buttons" mat-raised-button color="accent"
+                                    (click)="roleUpdate()">Update Roles</button>
                             </form>
-                          </mat-expansion-panel>
-                          
+                        </mat-expansion-panel-->
+
                     </div>
 
                     <div *ngSwitchCase="'claimManage'">
                         <div class="profile-buttons">
+                            <button *ngIf="selectedClaim && selectedClaim.claimStatus === status_mecApproved"
+                                mat-raised-button color="warn" (click)="showSetPayment()">Set Claim ID:
+                                {{selectedClaim.id}} Payments</button>
+
                             <button mat-raised-button color="warn" (click)="showPaymentHistory()">Payment
-                                History</button>
+                                History EmpNo: {{selectedMember.empNo}}</button>
                         </div>
                     </div>
 
                 </ng-container>
 
             </mat-card-content>
-            <mat-action-row class="mat-action-row">
-            </mat-action-row>
         </mat-card>
         <ng-container [ngSwitch]="viewMode">
             <div *ngSwitchCase="'memberDetails'">
@@ -85,8 +72,8 @@
                 </h3>
                 <div class="profile-buttons">
                     <button mat-raised-button color="warn" (click)="showMemberDetails()">Members Details</button>
-                    <button mat-raised-button color="primary" (click)="showClaimManage()">Claim Manage</button>
                     <button mat-raised-button color="accent" (click)="showAddNewUser()">Add new User</button>
+                    <button mat-raised-button color="primary" (click)="showClaimManage()">Claim Manage</button>
 
                 </div>
             </div>
@@ -104,6 +91,28 @@
                     User's Basic Data entry specially Member not in HR Database
                 </h3>
             </div>
+
+            <div class="card" *ngSwitchCase="'voucherGeneration'">
+                <mat-card class="card">
+                    <mat-card-header>
+                        <mat-form-field class="example-full-width" appearance="outline">
+                            <mat-label>Previous vouchers</mat-label>
+                            <mat-select [(ngModel)]="selectedvoucherId">
+                                <mat-option [value]="v" *ngFor="let v of voucherIds">{{v | date:'yyyy-MM-dd hh:mm a' }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-card-header>
+                    <mat-card-content class="mat-card-content">
+                        <button [disabled]="selectedvoucherId == null" mat-raised-button color="accent"
+                            (click)="downloadVoucher()">
+                            Download Voucher
+                        </button>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+
+
         </ng-container>
     </div>
 
@@ -113,6 +122,9 @@
                 <div class="button-container">
                     <button mat-button class="back-button" (click)="goBack()">
                         <mat-icon>arrow_back</mat-icon>
+                        <!--a class="show-more-link" (click)="toggleProfile()">
+                            {{panelTitle}}
+                        </a-->
                         <span class="back-text">{{panelTitle}}</span>
                     </button>
 
@@ -124,9 +136,11 @@
                         [member]="selectedMember"></app-beneficiary-data>
 
                     <app-claim-manage *ngSwitchCase="'claimManage'" (getClaim)="getClaim($event)"></app-claim-manage>
+                    <app-set-payment *ngSwitchCase="'setPayment'" [selectedClaim]="selectedClaim"></app-set-payment>
                     <app-payment-history *ngSwitchCase="'paymentHistory'"></app-payment-history>
                     <app-new-user *ngSwitchCase="'newUser'"></app-new-user>
-                    <app-voucher *ngSwitchCase="'voucherGeneration'"></app-voucher>
+                    <app-voucher-new *ngSwitchCase="'voucherGeneration'"
+                        (getvoucherIds)="getvoucherIds($event)"></app-voucher-new>
                 </ng-container>
             </div>
         </ng-container>

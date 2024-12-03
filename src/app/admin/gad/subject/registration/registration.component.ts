@@ -2,39 +2,25 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
-  ElementRef,
   EventEmitter,
+  Input,
   OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
-import { Member, Member_Column_Accept } from 'src/app/Model/member';
-import { Role, Access_type } from 'src/app/Model/role';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { Member } from 'src/app/Model/member';
+import { Role } from 'src/app/Model/role';
+
 import { AuthServiceService } from 'src/app/service/auth-service.service';
-import { Router } from '@angular/router';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  fromEvent,
-  merge,
-  tap,
-} from 'rxjs';
-import {
-  FormBuilder,
-  FormControl,
-  Validators,
-  FormGroup,
-} from '@angular/forms';
+
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
-import { Utils } from 'src/app/util/utils';
 import Swal from 'sweetalert2';
 import { Claim } from 'src/app/Model/claim';
 import { Constants } from 'src/app/util/constants';
-import { MemberDataSource } from 'src/app/util/dataSource/members-dataSource';
 import { SharedService } from 'src/app/shared/shared.service';
+import { VoucherNewComponent } from '../../voucher-new/voucher-new.component';
 
 @Component({
   selector: 'app-sub_registration',
@@ -42,14 +28,18 @@ import { SharedService } from 'src/app/shared/shared.service';
   styleUrls: ['./r.css'],
 })
 export class RegistrationComponent implements OnInit, AfterViewInit {
+  @Input() voucherIds!: number[];
+  @Output() doVoucher = new EventEmitter();
   showFullProfile = false;
   profilePhotoUrl: string = 'assets/images/blank-profile.webp'; // Default placeholder image
   loggeduser: any;
   selectedMember!: Member | null;
+  selectedClaim!: Claim | null;
   viewMode: string = 'memberDetails'; // State variable to control view
   panelTitle: string = 'Members Data';
-
-  @Output() sidenavClose = new EventEmitter();
+  status_mecApproved: string = Constants.CLAIMSTATUS_MEDICAL_DECISION_APPROVED;
+  
+ // @Output() sidenavClose = new EventEmitter();
 
   //claims: Claim[] | undefined;
   //dataSource!: MemberDataSource;
@@ -58,7 +48,7 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   //columnsSchema: any = Member_Column_Accept;
   //access = Access_type;
   roleGroup!: FormGroup;
-  roleData  =[
+  roleData = [
     { item_id: 1, role: Constants.ROLE_USER },
     { item_id: 2, role: Constants.ROLE_ADMIN },
     { item_id: 3, role: Constants.ROLE_GAD_HEAD },
@@ -76,6 +66,10 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   //@ViewChild(MatSort) sort!: MatSort;
   panelOpenState = false;
 
+  
+  selectedvoucherId!: number | undefined;
+  @ViewChild(VoucherNewComponent) voucherNewComponent!: VoucherNewComponent;
+  
   constructor(
     private share: SharedService,
     private changeDetectorRef: ChangeDetectorRef,
@@ -107,54 +101,53 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {}
 
   getMember(member: any) {
-    
     this.selectedMember = member;
     this.selectedRoles = [];
     const rr: Role[] = this.selectedMember!.roles;
-      rr.forEach((r) => {
-        if (r.role == Constants.ROLE_USER)
-          this.selectedRoles.push({ item_id: 1, role: Constants.ROLE_USER });
-        else if (r.role == Constants.ROLE_ADMIN)
-          this.selectedRoles.push({ item_id: 2, role: Constants.ROLE_ADMIN });
-        else if (r.role == Constants.ROLE_GAD_HEAD)
-          this.selectedRoles.push({
-            item_id: 3,
-            role: Constants.ROLE_GAD_HEAD,
-          });
-        else if (r.role == Constants.ROLE_DEP_HEAD)
-          this.selectedRoles.push({
-            item_id: 4,
-            role: Constants.ROLE_DEP_HEAD,
-          });
-        else if (r.role == Constants.ROLE_MO)
-          this.selectedRoles.push({ item_id: 5, role: Constants.ROLE_MO });
-        else if (r.role == Constants.ROLE_MEC)
-          this.selectedRoles.push({ item_id: 6, role: Constants.ROLE_MEC });
-        else if (r.role == Constants.ROLE_SUPER_ADMIN)
-          this.selectedRoles.push({
-            item_id: 7,
-            role: Constants.ROLE_SUPER_ADMIN,
-          });
-      });
-      console.log('selectedRoles ', this.selectedRoles);
-      /*const selectedRoles = this.selectedMember?.roles.map(role => {
+    rr.forEach((r) => {
+      if (r.role == Constants.ROLE_USER)
+        this.selectedRoles.push({ item_id: 1, role: Constants.ROLE_USER });
+      else if (r.role == Constants.ROLE_ADMIN)
+        this.selectedRoles.push({ item_id: 2, role: Constants.ROLE_ADMIN });
+      else if (r.role == Constants.ROLE_GAD_HEAD)
+        this.selectedRoles.push({
+          item_id: 3,
+          role: Constants.ROLE_GAD_HEAD,
+        });
+      else if (r.role == Constants.ROLE_DEP_HEAD)
+        this.selectedRoles.push({
+          item_id: 4,
+          role: Constants.ROLE_DEP_HEAD,
+        });
+      else if (r.role == Constants.ROLE_MO)
+        this.selectedRoles.push({ item_id: 5, role: Constants.ROLE_MO });
+      else if (r.role == Constants.ROLE_MEC)
+        this.selectedRoles.push({ item_id: 6, role: Constants.ROLE_MEC });
+      else if (r.role == Constants.ROLE_SUPER_ADMIN)
+        this.selectedRoles.push({
+          item_id: 7,
+          role: Constants.ROLE_SUPER_ADMIN,
+        });
+    });
+    console.log('selectedRoles ', this.selectedRoles);
+    /*const selectedRoles = this.selectedMember?.roles.map(role => {
         return this.roleData.find(item => item.role === role);
       }).filter(role => role !== undefined);
       
       console.log('Selected Roles:', selectedRoles);*/
-      this.roleGroup.patchValue({
-        selectedRoles: [this.selectedRoles],
-        //selectedRoles: this.selectedMember!.roles.map(role => this.roleData.find(item => item.role === role))
+    this.roleGroup.patchValue({
+      selectedRoles: [this.selectedRoles],
+      //selectedRoles: this.selectedMember!.roles.map(role => this.roleData.find(item => item.role === role))
+    });
 
-      });
-
-      console.log('roleGroup ', this.roleGroup.value);
-      /*this.roleGroup = this.buildr.group({
+    console.log('roleGroup ', this.roleGroup.value);
+    /*this.roleGroup = this.buildr.group({
         selectedRoles: [this.selectedRoles],
       });*/
   }
 
   getClaim(claim: Claim) {
+    this.selectedClaim = claim;
     this.selectedMember = claim.member;
   }
   toggleProfile() {
@@ -166,8 +159,14 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   }
 
   showClaimManage() {
+    this.selectedClaim = null
     this.viewMode = 'claimManage';
     this.panelTitle = 'Claim Manage';
+  }
+
+  showSetPayment(){
+    this.viewMode = 'setPayment';
+    this.panelTitle = `Claim ID ${this.selectedClaim!.id}`;
   }
   showVoucherGeneration() {
     this.selectedMember = null;
@@ -230,7 +229,24 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
       });
     });
   }
-
+  getvoucherIds(id:number[]){
+    this.voucherIds = id
+  }
+  showVoucher() {
+    Constants.Toast.fire('Under Construction');
+  }
+  /*downloadVoucher():any{
+    Constants.Toast.fire('Under Construction');
+    this.doVoucher.emit(true);
+    return null;
+  }*/
+  public downloadVoucher(): void {
+    if (this.voucherNewComponent) {
+      this.voucherNewComponent.downloadVoucher(this.selectedvoucherId!);
+    } else {
+      console.error('VoucherNewComponent not available');
+    }
+  }
   /*initializeTable() {
     this.dataSource = new MemberDataSource(this.auth);
   }

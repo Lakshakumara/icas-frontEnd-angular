@@ -36,7 +36,7 @@ export class MemberDataSource extends DataSource<Member> {
     }
 
 
-    loadMember(searchFor: string, searchText:any, filter = '', sortDirection = 'asc', pageIndex = 0, pageSize = 10, sortField = '') {
+    loadMember(searchFor: string, searchText:any, filter = '', pageIndex = 0, pageSize = 10, sortDirection = this.sort?.direction, sortField = this.sort?.active) {
         this.loadingSubject.next(true);
         this.auth.getMembers(searchFor, searchText, filter, sortDirection, pageIndex, pageSize, sortField)
             .pipe(

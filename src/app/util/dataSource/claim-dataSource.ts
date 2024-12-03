@@ -4,17 +4,16 @@ import { MatSort } from '@angular/material/sort';
 import { catchError, finalize } from 'rxjs/operators';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
-import { Claim } from 'src/app/Model/claim';
 
-export class ClaimDataSource extends DataSource<Claim> {
-  data: Claim[] | undefined;
+export class ClaimDataSource extends DataSource<any> {
   paginator: MatPaginator | undefined;
   sort: MatSort | undefined;
 
-  private claimSubject = new BehaviorSubject<Claim[]>([]);
+  private dataSubject = new BehaviorSubject<any[]>([]);
   private loadingSubject = new BehaviorSubject<boolean>(false);
   public loading$ = this.loadingSubject.asObservable();
   public totalCount = 0;
+  public data:any;
 
   constructor(private auth: AuthServiceService) {
     super();
@@ -25,8 +24,8 @@ export class ClaimDataSource extends DataSource<Claim> {
    * the returned stream emits new items.
    * @returns A stream of the items to be rendered.
    */
-  connect(collectionViewer: CollectionViewer): Observable<Claim[]> {
-    return this.claimSubject.asObservable();
+  connect(collectionViewer: CollectionViewer): Observable<any[]> {
+    return this.dataSubject.asObservable();
   }
 
   /**
@@ -34,7 +33,7 @@ export class ClaimDataSource extends DataSource<Claim> {
    * any open connections or free any held resources that were set up during connect.
    */
   disconnect(collectionViewer: CollectionViewer): void {
-    this.claimSubject.complete();
+    this.dataSubject.complete();
     this.loadingSubject.complete();
   }
 
@@ -46,6 +45,7 @@ export class ClaimDataSource extends DataSource<Claim> {
     pageSize = 10
   ) {
     this.loadingSubject.next(true);
+    //console.log(this.sort!.direction, this.paginator!.pageIndex,this.paginator!.pageSize,this.sort!.active)
     this.auth
       .getAllClaims(
         '',
@@ -53,16 +53,35 @@ export class ClaimDataSource extends DataSource<Claim> {
         '',
         claimStatus,
         filter,
-        sortDirection,
-        pageIndex,
-        pageSize
+        this.sort!.direction,
+        this.paginator!.pageIndex,
+        this.paginator!.pageSize,
+        this.sort!.active
       )
       .pipe(
         catchError(() => of([])),
         finalize(() => this.loadingSubject.next(false))
       )
       .subscribe((receiveData: any) => {
-        this.claimSubject.next(receiveData.content);
+        this.dataSubject.next(receiveData.content);
+        this.totalCount = receiveData.totalElements;
+      });
+  }
+
+  getClaimData(
+    claimId: number
+  ) {
+    this.loadingSubject.next(true);
+    this.auth
+      .getClaimData(claimId
+      )
+      .pipe(
+        catchError(() => of([])),
+        finalize(() => this.loadingSubject.next(false))
+      )
+      .subscribe((receiveData: any) => {
+        this.data = receiveData.content
+        this.dataSubject.next(receiveData.content);
         this.totalCount = receiveData.totalElements;
       });
   }

@@ -31,7 +31,7 @@
                 <div class="element-detail"
                     [@detailExpand]="element.claimData === expandedElement ? 'expanded' : 'collapsed'">
                     <div *ngFor="let cd of element.claimData">
-                        <mat-card class="card">
+                        <mat-card>
                             <mat-card-header>
                                 <p>Title: <b>{{cd.scheme.title}}</b></p>
                             </mat-card-header>
@@ -41,7 +41,7 @@
                                 <p *ngIf="cd.rejectedDate">Rejected on: <b>{{cd.rejectedDate}}</b></p>
                                 <p *ngIf="cd.rejectRemarks">Reason: <b>{{cd.rejectRemarks}}</b></p>
                                 <p *ngIf="cd.remarks">Remarks : <b>{{cd.remarks}}</b></p>
-                                <mat-divider></mat-divider>
+                                
                             </mat-card-content>
                         </mat-card>
                     </div>

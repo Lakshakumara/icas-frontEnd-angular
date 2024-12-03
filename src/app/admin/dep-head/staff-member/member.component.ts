@@ -74,6 +74,7 @@ export class MemberComponent implements OnInit, AfterViewInit {
       )
       .subscribe((value) => {
         const filterValue = value.trim().toLowerCase();
+        this.sort.active = 'member.name'
         this.loadMemberPage(filterValue);
       });
   }
@@ -85,7 +86,6 @@ export class MemberComponent implements OnInit, AfterViewInit {
       Constants.REGISTRATION_PENDING,
       null,
       filter,
-      this.sort.direction,
       this.paginator.pageIndex,
       this.paginator.pageSize
     );

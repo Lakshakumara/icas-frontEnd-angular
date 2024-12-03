@@ -117,6 +117,14 @@
       </mat-form-field>
 
       <div *ngIf="formGroup.value.stateGroup != ''">
+
+        <mat-form-field class="fullWith">
+          <mat-label>Request Amount for title </mat-label>
+          <input matInput type="number" class="example-right-align"
+            formControlName="requestAmount" />
+          <span matTextSuffix>.00</span>
+        </mat-form-field>
+
         <mat-radio-group class="example-radio-group" aria-label="Select an option"
           (change)="onRadioButtonChange($event)">
           <div class="hori">
@@ -143,7 +151,7 @@
           <div class="hori">
             <mat-radio-button value="Approved">Approved as it is</mat-radio-button>
             <mat-form-field class="fullWith">
-              <mat-label>Approval remarks if any </mat-label>
+              <mat-label>Massage for subject clerk</mat-label>
               <input matInput formControlName="remarks" />
             </mat-form-field>
             <button mat-raised-button color="accent" [disabled]="!formGroup.valid" (click)="addClaimTitle()">

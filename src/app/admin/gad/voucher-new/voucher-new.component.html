@@ -1,0 +1,22 @@
+<div class="container fullWith">
+    <mat-card >
+      <mat-card-content>
+        <app-my-table [enableCheckbox]="true" [allowMultiSelect]="true" [rowData]="rowData"
+          (getSelectedRows)="onNotifySelected($event)" [sqPaginationConfig]="tablePaginationSettings"
+          [sqColumnDefinition]="columnDefinition">
+        </app-my-table>
+  
+      </mat-card-content>
+      <mat-card-footer class="btn">
+        <div class="hori">
+          <button mat-raised-button color="accent" (click)="reload()">
+            Reload
+          </button>
+  
+          <button mat-raised-button color="accent" (click)="voucherGenerate()">
+            Voucher Generate
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>

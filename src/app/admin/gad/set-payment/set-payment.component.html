@@ -1,0 +1,117 @@
+<mat-card >
+  <mat-card-content >
+    <table mat-table class="topClass-table mat-elevation-z8" [dataSource]="dataSource" matSort>
+      <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema; let i = index">
+        <th mat-sort-header *matHeaderCellDef> {{columnsSchema[i].label}}</th>
+        <td mat-cell *matCellDef="let element" [ngClass]="{'text-right': col.type === 'currency'}">
+          {{ col.type === 'currency' ? (element[col.key] | currency:'Rs ':'symbol':'1.2-2') :
+          col.type === 'object' ? element[col.key] :element[col.key] }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumn; sticky: true">
+      </tr>
+      <tr mat-row *matRowDef="let cd; columns: displayedColumn;" (click)="cData(cd)"
+        [ngClass]="{'selected': cd === selectedClaimData}">
+      </tr>
+    </table>
+    <mat-paginator #paginator [length]="totalLength" [pageSize]="10" [pageSizeOptions]="[10, 20]"></mat-paginator>
+
+    <ng-container  *ngIf="selectedClaimData">
+      <mat-expansion-panel class="vert">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Scheme Details</mat-panel-title>
+        </mat-expansion-panel-header>
+        <ul>
+          <p>Title ID: {{selectedClaimData!.scheme.idText}}</p>
+          <p>Max Amount: {{selectedClaimData!.scheme.maxAmount}}</p>
+          <p>Rate: {{selectedClaimData!.scheme.rate}}</p>
+          <p>Description: {{selectedClaimData!.scheme.descriptionen}}</p>
+        </ul>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel class="vert">
+        <mat-expansion-panel-header>
+          <mat-panel-title>History on {{selectedClaimData!.scheme.idText}}</mat-panel-title>
+        </mat-expansion-panel-header>
+        <ul>
+          <p>Title ID: {{selectedClaimData!.scheme.idText}}</p>
+          <p>Max Amount: {{selectedClaimData!.scheme.maxAmount}}</p>
+          <p>Rate: {{selectedClaimData!.scheme.rate}}</p>
+          <p>Description: {{selectedClaimData!.scheme.descriptionen}}</p>
+        </ul>
+      </mat-expansion-panel>
+
+      <form class="vert" [formGroup]="formGroup" *ngIf="selectedClaimData">
+        <!--mat-radio-group class="example-radio-group" aria-label="Select an option"
+          (change)="onRadioButtonChange($event)">
+          <div class="hori">
+            <mat-radio-button value="Rejected">Reject because</mat-radio-button>
+            <mat-form-field class="fullWith" appearance="outline">
+              <mat-label>Reason for rejection</mat-label>
+              <input matInput formControlName="rejectRemarks" />
+            </mat-form-field>
+          </div>
+
+          <div class="hori">
+            <mat-radio-button value="Deducted">Accept with Deduction</mat-radio-button>
+            <mat-form-field appearance="outline">
+              <mat-label>Deduction Amount</mat-label>
+              <input matInput type="number" placeholder="0" formControlName="adjustAmount" />
+            </mat-form-field>
+            <mat-form-field class="fullWith" appearance="outline">
+              <mat-label>Reason for deduction</mat-label>
+              <input matInput formControlName="adjustRemarks" />
+            </mat-form-field>
+          </div>
+        </mat-radio-group-->
+        <div class="hori">
+          <mat-form-field class="halfWithx" appearance="outline">
+            <mat-label>Change Request Amount</mat-label>
+            <input matInput type="number" formControlName="requestAmount" />
+          </mat-form-field>
+
+          <mat-form-field class="halfWith"  appearance="outline">
+            <mat-label>Deduction Amount</mat-label>
+            <input matInput type="number" formControlName="adjustAmount" />
+          </mat-form-field>
+
+          <mat-form-field class="fullWith" appearance="outline">
+            <mat-label>Reason for deduction</mat-label>
+            <input matInput formControlName="adjustRemarks" />
+          </mat-form-field>
+
+          <mat-form-field class="halfWith" appearance="outline">
+            <mat-label>Eligible Amount</mat-label>
+            <input matInput type="number" placeholder="0" formControlName="paidAmount" />
+          </mat-form-field>
+        </div>
+
+        <button mat-raised-button color="accent" (click)="updateClaimData()" [disabled]="!formGroup.valid">
+          Update {{selectedClaimData!.scheme.idText}}
+        </button>
+      </form>
+
+
+    </ng-container>
+  </mat-card-content>
+
+  <mat-action-row>
+    <mat-form-field class="halfWith" appearance="outline" >
+      <mat-label>Total Request Amount</mat-label>
+      <input matInput type="number" [value]="selectedClaim.requestAmount" [disabled]="true"/>
+    </mat-form-field>
+    <mat-form-field class="halfWith" appearance="outline" >
+      <mat-label>Total Deduction Amount</mat-label>
+      <input matInput type="number" [value]="totalDeduction" [disabled]="true"/>
+    </mat-form-field>
+    <mat-form-field class="halfWith" appearance="outline" >
+      <mat-label>Net Payment</mat-label>
+      <input matInput type="number" [value]="netPayment" [disabled]="true"/>
+    </mat-form-field>
+    <button class="halfWith" mat-raised-button [disabled]="btnClaimUpdateEnable" color="accent"
+      (click)="completeClaim()">
+      Complete Claim ID {{selectedClaim!.id}}
+    </button>
+  </mat-action-row>
+</mat-card>

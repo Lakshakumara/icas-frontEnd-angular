@@ -35,10 +35,6 @@ export class LoadDataSource extends DataSource<any> {
     this.loadingSubject.complete();
   }
 
-  /*data() {
-    return 'dataset';
-  }*/
-
   requestData(
     claimType: string,
     claimStatus: string,
@@ -69,7 +65,25 @@ export class LoadDataSource extends DataSource<any> {
         this.totalCount = receiveData.totalElements;
       });
   }
-
+  requestAllData(
+    claimStatus: string,
+    filter = '',
+    sortDirection = 'asc',
+    pageIndex = 0,
+    pageSize = 10
+  ) {
+    this.loadingSubject.next(true);
+    return this.auth.getAllClaims(
+      '',
+      0,
+      '',
+      claimStatus,
+      filter,
+      sortDirection,
+      pageIndex,
+      pageSize
+    );
+  }
   async loadCurrentClaimData(claimId: number) {
     console.log('claimId ', claimId);
     this.loadingSubject.next(true);
@@ -98,37 +112,8 @@ export class LoadDataSource extends DataSource<any> {
       return currentClaimData;
     });
   }
-
-  /**
-   *
-   * @param claimStatus  String pattern
-   * @param filter  '' to ignor
-   * @param sortDirection  default asc
-   * @param pageIndex  default 0
-   * @param pageSize default 10
-   * @returns
-   */
-  /* requestAllData(
-    claimStatus: string,
-    filter = '',
-    sortDirection = 'asc',
-    pageIndex = 0,
-    pageSize = 10
-  ) {
-    this.loadingSubject.next(true);
-    return this.auth.getAllClaims(
-      '',
-      0,
-      '',
-      claimStatus,
-      filter,
-      sortDirection,
-      pageIndex,
-      pageSize
-    );
-  }
     
-  filterData(
+  /*filterData(
     claimType: string,
     year = 0,
     empNo: string = '',

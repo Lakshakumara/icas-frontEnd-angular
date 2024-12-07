@@ -19,9 +19,10 @@ export class SchemeService {
       .get(`${this.serviceUrl}/titles/${category}`)
       .pipe<SchemeTitles[]>(map((data: any) => data));
   }
-  getScheme(): Observable<Scheme[]> {
+  getScheme(category: string): Observable<Scheme[]> {
+    console.log("getScheme ", category)
     return this.http
-      .get(this.serviceUrl)
+      .get(`${this.serviceUrl}/${category}`)
       .pipe<Scheme[]>(map((data: any) => data));
   }
 

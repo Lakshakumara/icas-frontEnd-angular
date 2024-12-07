@@ -4,7 +4,9 @@ export interface Beneficiary {
     nic: string,
     relationship: string,
     registerDate:any,
+    registrationYear:any,
     percent: any,
+    deleted:boolean
 }
 export const BeneficiaryColumns = [
     {

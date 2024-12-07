@@ -1,5 +1,5 @@
 <div>
-  <h1>Member Registration</h1>
+  <h1>Member Registration - {{registerYear}}</h1>
   <label>
     <input [value]="'Individual'" [(ngModel)]="schemeType" name="schemeType" type="radio"
       [checked]="schemeType == 'Individual'" />
@@ -88,51 +88,13 @@
         </ul>
       </mat-card-content>
     </mat-card>
-    <!--
-      <mat-card class="mat-elevation-z4" fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="33%">
-        <mat-card-header></mat-card-header>
-        <mat-card-content>
-          <mat-form-field class="example-full-width">
-            <mat-label>Natinal Identity Card Number</mat-label>
-            <input matInput placeholder="Natinal Identity Card Number" formControlName="nic">
-          </mat-form-field>
-
-          <mat-form-field class="example-full-width">
-            <mat-label>Gender</mat-label>
-            <mat-select formControlName="sex">
-              <mat-option [value]="sex" *ngFor="let sex of Sex">{{sex}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field class="example-full-width">
-            <mat-label>Date of Birth</mat-label>
-            <input matInput [matDatepicker]="picker" placeholder="DOB" formControlName="dob">
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-            <mat-hint>dd/mm/yyyy</mat-hint>
-          </mat-form-field>
-
-          <mat-form-field class="example-full-width">
-            <mat-label>Designation</mat-label>
-            <input matInput placeholder="Designation" formControlName="designation">
-          </mat-form-field>
-
-          <mat-form-field class="example-full-width">
-            <mat-label>Name of the Department/Division</mat-label>
-            <input matInput placeholder="Name of the Department/Division" formControlName="department">
-          </mat-form-field>
-
-        </mat-card-content>
-      </mat-card> -->
-
     <!--Beneficiary data-->
     <mat-card fxFlex="60%" fxFlex.xs="100%" fxFlex.sm="100%">
       <mat-card-header>
         <mat-card-title>Beneficiary Details</mat-card-title>
         <div fxFlex></div>
         <button class="btn" mat-raised-button (click)="popupBenificiary()" color="primary">
-          Add
+          <mat-icon>add</mat-icon>New benificiary
         </button>
       </mat-card-header>
       <mat-card-content>
@@ -195,7 +157,7 @@
           <mat-card-title>Dependant Details</mat-card-title>
           <div fxFlex></div>
           <button mat-raised-button (click)="popupDependant()" color="primary">
-            Add
+            <mat-icon>add</mat-icon> New Dependant
           </button>
         </mat-card-header>
         <mat-card-content>
@@ -259,7 +221,7 @@
     </mat-card>
   </div>
 </form>
-<mat-menu #menu="matMenu">
+<mat-menu #menu="matMenu" >
   <button mat-menu-item>
     <mat-icon>edit</mat-icon>
     <span>Edit</span>

@@ -12,7 +12,7 @@
   </div>
   <div fxFlex fxLayout fxLayoutAlign="end" fxHide.xs>
     <ul fxLayout fxLayoutGap="15px" class="navigation-items">
-      <li>
+      <li *ngIf="roles.length > 1">
         <button mat-button [matMenuTriggerFor]="switch">Roles</button>
       </li>
 
@@ -37,6 +37,11 @@
         </button>
       </li>
       <li>
+        <button mat-button (click)="toggleTheme()">
+          <mat-icon>{{ isDarkTheme ? 'brightness_7' : 'brightness_2' }}</mat-icon>
+        </button>
+      </li>
+      <li>
         <button *ngIf="isDepHead || isAdmin || isSuperAdmin || isGADHead || isMec || isMo" mat-button
           matBadgeColor="accent" [matMenuTriggerFor]="admin">
           Admin
@@ -53,12 +58,14 @@
         Department Head
       </button>
       <button *ngIf="isAdmin" mat-menu-item [matMenuTriggerFor]="subject_cleark">
-        Claim Management
+        Management
       </button>
       <button *ngIf="isMo || isMec" mat-menu-item [matMenuTriggerFor]="mec">MEC</button>
       <button *ngIf="isSuperAdmin" mat-menu-item [matMenuTriggerFor]="super_admin">
         Super Admin
       </button>
+      <button *ngIf="isAdmin || isSuperAdmin" mat-menu-item 
+      routerLink="admin/settings">Setting</button>
     </mat-menu>
 
     <mat-menu #dep_head="matMenu">
@@ -95,12 +102,3 @@
     </mat-menu>
   </div>
 </mat-toolbar>
-<!-- logic && operator 
-<div *ngIf="isLoggedIn && !isNewUser">
-    Welcome back, friend.
-  </div>-->
-
-<!-- logic OR operator 
-  <div *ngIf="isLoggedIn || isNewUser">
-    Welcome!
-  </div>-->

@@ -1,0 +1,45 @@
+/* src/app/settings/settings.component.css */
+.settings-container {
+    height: 100%;
+  }
+  
+  .settings-sidenav {
+    width: 250px;
+  }
+  
+  .settings-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .settings-content h2 {
+    margin-bottom: 20px;
+  }
+  
+  .form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .save-button {
+    align-self: flex-end;
+    margin-top: 20px;
+  }
+  
+  mat-list-item.selected {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  @media (max-width: 600px) {
+    .settings-sidenav {
+      width: 200px;
+    }
+  }
+  

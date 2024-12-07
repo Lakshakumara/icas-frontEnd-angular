@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -26,6 +26,7 @@ import { Constants } from '../util/constants';
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent implements OnInit {
+  @Input() registerYear: number = Utils.currentYear
   formGroup!: FormGroup;
   schemeType: string = Constants.SCHEME_INDIVIDUAL;
   member!: Member;
@@ -122,14 +123,11 @@ export class RegisterComponent implements OnInit {
         beneficiaries: this.fb.array([]),
         mDate: new FormControl(this.member.mDate),
         status: new FormControl(this.member.status),
+        photoUrl: new FormControl(this.member.photoUrl),
+        deleted: new FormControl(false),
       });
     } else this.router.navigate(['/signin']);
   }
-
-  popupDependant() {
-    this.Openpopup(1, '', 'Add Dependants details', DependantComponent);
-  }
-
   Openpopup(forWhat: number, name: string, title: any, component: any) {
     var _popup = this.dialog.open(component, {
       //width: '40%',
@@ -165,6 +163,12 @@ export class RegisterComponent implements OnInit {
         }
     });
   }
+  popupDependant() {
+    this.Openpopup(1, '', 'Add Dependants details', DependantComponent);
+  }
+  popupBenificiary() {
+    this.Openpopup(2, '', 'Add Beneficiary details', BeneficiaryComponent);
+  }
 
   private newDependant(data: FormGroup): FormGroup {
     const newRow: Dependant = {
@@ -173,64 +177,14 @@ export class RegisterComponent implements OnInit {
       nic: data.value.nic,
       dob: data.value.dob,
       relationship: data.value.relationship,
+      registerDate: new Date(),
+      registrationYear: this.registerYear,
+      deleted: false
     };
     this.dependantData.data = [newRow, ...this.dependantData.data];
     return data;
   }
 
-  private setDep() {
-    //TODO when register click populate the dependane unnesessarily
-    const userCtrl = this.formGroup.get('dependants') as FormArray;
-    this.dependantData.data.forEach((user) => {
-      userCtrl.push(this.setDepFormArray(user));
-    });
-  }
-
-  private setBen() {
-    const userCtrlBen = this.formGroup.get('beneficiaries') as FormArray;
-    this.beneficiaryData.data.forEach((user) => {
-      userCtrlBen.push(this.setBenFormArray(user));
-    });
-  }
-  private isBenPercents() {}
-
-  downloadMembershipApplication(year: number, empNo: string) {
-    this.authService.download(1, year, empNo).subscribe((response: any) => {
-      let dataType = response.type;
-      let binaryData = [];
-      binaryData.push(response);
-      //let fname = response.get("file name").ToString();
-      //console.log(fname);
-      let downloadLink = document.createElement('a');
-      downloadLink.href = window.URL.createObjectURL(
-        new Blob(binaryData, { type: dataType })
-      );
-      downloadLink.setAttribute('download', 'Application.pdf');
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-    });
-  }
-
-  private setBenFormArray(x: any) {
-    return this.fb.group({
-      id: this.fb.control(x.id),
-      name: this.fb.control(x.name),
-      nic: this.fb.control(x.nic),
-      registerDate: this.fb.control(new Date()),
-      percent: new FormControl(x.percent),
-      relationship: this.fb.control(x.relationship),
-    });
-  }
-
-  private setDepFormArray(x: any) {
-    return this.fb.group({
-      id: this.fb.control(x.id),
-      name: this.fb.control(x.name),
-      nic: this.fb.control(x.nic),
-      dob: this.fb.control(x.dob),
-      relationship: this.fb.control(x.relationship),
-    });
-  }
   editDependant(name: string) {
     this.Openpopup(1, name, 'Add Dependants details', DependantComponent);
     this.dependantData.data = this.dependantData.data.filter((u: Dependant) => {
@@ -239,7 +193,7 @@ export class RegisterComponent implements OnInit {
   }
 
   removeDependant(name: string) {
-    console.log('before removing  ', this.dependantData.data);
+    console.log('before removing Dependant ', this.dependantData.data);
     Swal.fire({
       title: `Confirm to delete ${name} ?`,
       text: "You won't be able to revert this!",
@@ -250,9 +204,7 @@ export class RegisterComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        /*a= this.dependantData.data.filter((u) => u.name !== name);
-        this.dependantData.data = this.a ;
-        */
+
         this.dependantData.data = this.dependantData.data.filter(
           (u: Dependant) => {
             //splice
@@ -261,57 +213,34 @@ export class RegisterComponent implements OnInit {
           }
         );
         Swal.fire('Deleted!', 'Dependant has been deleted.', 'success');
-        console.log('after removing  ', this.dependantData.data);
+        console.log('after removing Dependant ', this.dependantData.data);
       }
     });
 
-    /*Swal.fire({
-      title: `Confirm to delete ${name} ?`,
-      showDenyButton: true,
-      showCancelButton: true,
-      confirmButtonText: 'Delete',
-      denyButtonText: `Don't delete`,
-    }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
-    /*if (result.isConfirmed) {
-      
-      Swal.fire('Deleted!', '', 'success')
-
-    } else if (result.isDenied) {
-      Swal.fire('Changes are not discarded', '', 'info')
-    }
-  })*/
-    /*this.dependantData.filter((u) => u.name != name);
-    console.log("after removal ", this.dependantData);
-    this.dialog
-      .open(ConfirmDialogComponent, {
-        enterAnimationDuration: '1000ms',
-        exitAnimationDuration: '1000ms',
-        data: {
-          formGroup: this.formGroup,
-          massage: `Remove Dependant ${name}`,
-        }
-      })
-      .afterClosed()
-      .subscribe((confirm) => {
-        if (confirm) {
-          this.dependantData.filter((u) => u.name !== name);
-          //this.dependantData = this.dependantData.filter((u: any) => !u.isSelected);
-        }
-      });*/
   }
 
-  popupBenificiary() {
-    this.Openpopup(2, '', 'Add Beneficiary details', BeneficiaryComponent);
+  private setDepFormArray(x: any) {
+    return this.fb.group({
+      id: this.fb.control(x.id),
+      name: this.fb.control(x.name),
+      nic: this.fb.control(x.nic),
+      dob: this.fb.control(x.dob),
+      relationship: this.fb.control(x.relationship),
+      registerDate: this.fb.control(new Date()),
+      registerYear: this.fb.control(this.registerYear),
+    });
   }
+
   private newBeneficiary(data: FormGroup): FormGroup {
     const newRow: Beneficiary = {
       id: data.value.id,
       name: data.value.name,
       nic: data.value.nic,
-      registerDate: data.value.registerDate,
+      registerDate: new Date(),
+      registrationYear: this.registerYear,
       relationship: data.value.relationship,
       percent: data.value.percent,
+      deleted: false
     };
 
     this.beneficiaryData.data = [newRow, ...this.beneficiaryData.data];
@@ -328,7 +257,19 @@ export class RegisterComponent implements OnInit {
         u.name !== name;
       }
     );
-    console.log('after removing  ', this.beneficiaryData.data);
+    console.log('after removing Beneficiary ', this.beneficiaryData.data);
+  }
+
+  private setBenFormArray(x: any) {
+    return this.fb.group({
+      id: this.fb.control(x.id),
+      name: this.fb.control(x.name),
+      nic: this.fb.control(x.nic),
+      registerDate: this.fb.control(new Date()),
+      registerYear: this.fb.control(this.registerYear),
+      percent: new FormControl(x.percent),
+      relationship: this.fb.control(x.relationship),
+    });
   }
 
   showThis(title: any, subtitle: any) {
@@ -339,6 +280,7 @@ export class RegisterComponent implements OnInit {
       footer: `<a href="">${JSON.stringify(subtitle)}</a>`,
     });
   }
+
   registerProcess() {
     let sum: number = 0;
     this.beneficiaryData.data.forEach((a) => (sum += Number(a.percent)));
@@ -358,170 +300,328 @@ export class RegisterComponent implements OnInit {
       btn = `Submit anyway`;
     }
 
-    Swal.fire({
-      title: msg,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: btn,
-      showLoaderOnConfirm: true,
-      preConfirm: async () => {
-        this.setDep();
-        this.setBen();
-        this.formGroup.patchValue({
-          roles: [{ role: Constants.ROLE_USER }],
-          memberRegistrations: [
-            {
-              id: null,
-              year: Utils.currentYear,
-              schemeType: this.schemeType,
-            },
-          ],
-          mDate: Utils.today,
-          registrationOpen: 0,
-          status: Constants.REGISTRATION_PENDING,
-          password: Constants.DEFAULT_PASSWORD,
-          scheme: this.schemeType,
-        });
-        console.log('tobe insert ', this.formGroup.value);
-        return this.authService
-          .registerold(this.formGroup.value)
-          .subscribe((reg) => {
-            console.log('saved', reg);
-            return this.authService
-              .getMemberold(this.formGroup.value.empNo)
-              .subscribe((m) => {
-                this.share.setUser(m);
-                Swal.fire({
-                  title: `Download pdf`,
-                  icon: 'question',
-                  showCancelButton: true,
-                  confirmButtonText: 'Save',
-                  allowOutsideClick: () => false,
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    this.downloadMembershipApplication(
-                      Utils.currentYear,
-                      m.empNo
-                    );
-                  }
 
-                  const reg = m.memberRegistrations.find((r) => {
-                    return (
-                      r.year == Utils.currentYear && r.acceptedDate != null
-                    );
-                  });
-                  if (reg !== undefined) {
-                    this.router.navigate(['/home']);
-                  } else {
-                    Swal.fire(
-                      'Membership acceptace is required',
-                      `Contact Department Head`,
-                      'warning'
-                    ).then(() => {
-                      this.router.navigate(['/signin']);
-                    });
-                  }
-                });
-                this.formGroup.reset();
-                return m;
-              });
-          });
-      },
-      allowOutsideClick: () => !Swal.isLoading(),
-    }).then((result) => {
-      if (result.isConfirmed) {
-      }
+    const steps = ['1', '2', '3'];
+    const Queue = Swal.mixin({
+      progressSteps: steps,
+      showCancelButton: true,
+      cancelButtonText: 'Cancel',
+      // optional classes to avoid backdrop blinking between steps
+      showClass: { backdrop: 'swal2-noanimation' },
+      hideClass: { backdrop: 'swal2-noanimation' },
     });
+
+    (async () => {
+      let result = await Queue.fire({
+        title: msg,
+        icon: 'warning',
+        currentProgressStep: 0,
+        confirmButtonText: btn,
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => false,
+        preConfirm: async () => {
+          let res: any;
+          try {
+            const userCtrl = this.formGroup.get('dependants') as FormArray;
+            this.dependantData.data.forEach((user) => {
+              userCtrl.push(this.setDepFormArray(user));
+            });
+            const userCtrlBen = this.formGroup.get('beneficiaries') as FormArray;
+            this.beneficiaryData.data.forEach((user) => {
+              userCtrlBen.push(this.setBenFormArray(user));
+            });
+            this.formGroup.patchValue({
+              roles: [{ role: Constants.ROLE_USER }],
+              memberRegistrations: [
+                {
+                  id: null,
+                  year: this.registerYear,
+                  schemeType: this.schemeType,
+                },
+              ],
+              mDate: Utils.today,
+              registrationOpen: 0,
+              status: Constants.REGISTRATION_PENDING,
+              password: Constants.DEFAULT_PASSWORD,
+              scheme: this.schemeType,
+            });
+            console.log('tobe insert registerProcess ', this.formGroup.value);
+            res = await this.authService.registerNew(this.formGroup.value)
+            console.log('saved registerProcess ', res);
+          } catch (error) {
+            Swal.showValidationMessage(`Request failed: ${error}`);
+          }
+          return res;
+        },
+      });
+
+      if (result.isConfirmed) {
+        await Queue.fire({
+          title: 'Download Registration Application',
+          text: `Employee: ${result.value.name}`,
+          currentProgressStep: 1,
+          confirmButtonText: 'Download',
+          showLoaderOnConfirm: true,
+          allowOutsideClick: () => false,
+          preConfirm: async () => {
+            try {
+              let response: any = await this.authService.downloadNew(1,
+                this.registerYear,
+                result.value.empNo
+              );
+              let dataType = response.type;
+              let binaryData = [];
+              binaryData.push(response);
+              let downloadLink = document.createElement('a');
+              downloadLink.href = window.URL.createObjectURL(
+                new Blob(binaryData, { type: dataType })
+              );
+              downloadLink.setAttribute('download', 'Application.pdf');
+              document.body.appendChild(downloadLink);
+              downloadLink.click();
+            } catch (error) {
+              Swal.showValidationMessage(` ${error} `);
+            }
+            return result.value;
+          },
+        });
+        /*if (result1.isConfirmed) {
+          // return success user
+        }*/
+
+        this.formGroup.reset();
+      }
+
+      await Queue.fire({
+        title: 'Finish',
+        icon: 'success',
+        showCancelButton: false,
+        currentProgressStep: 2,
+        confirmButtonText: 'OK',
+      }).then((resultLast) => {
+        //redirect page
+        const reg = result.value?.memberRegistrations.find((r: any) => {
+          return r.year == Utils.currentYear && r.acceptedDate != null;
+        });
+        if (reg !== undefined) {
+          this.router.navigate(['/home']);
+        } else {
+          Swal.fire(
+            'Membership acceptace is required',
+            `Contact Department Head`,
+            'warning'
+          ).then(() => {
+            this.router.navigate(['/signin']);
+          });
+        }
+      });
+
+    })();
+  }
+}
+
+
+/*registerProcess() {
+  let sum: number = 0;
+  this.beneficiaryData.data.forEach((a) => (sum += Number(a.percent)));
+
+  let msg = `Confirm to submit Data ?`;
+  let btn = 'Yes, Submit!';
+  if (sum > 100) {
+    Swal.fire({
+      title: `Beneficiary percentage is ${sum}% not acceptable`,
+      icon: 'error',
+      showCancelButton: false,
+      confirmButtonText: 'Retry !',
+    });
+    return;
+  } else if (sum < 100) {
+    msg = `Beneficiary percentage is ${sum}%`;
+    btn = `Submit anyway`;
   }
 
-  /*registerProcess() {
-    let sum: number = 0;
-    this.beneficiaryData.data.forEach((a) => (sum += Number(a.percent)));
-
-    let msg = `Confirm to submit Data ?`;
-    let btn = 'Yes, Submit!';
-    if (sum > 100) {
-      Swal.fire({
-        title: `Beneficiary percentage is ${sum}% not acceptable`,
-        icon: 'error',
-        showCancelButton: false,
-        confirmButtonText: 'Retry !',
+  Swal.fire({
+    title: msg,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: btn,
+    showLoaderOnConfirm: true,
+    preConfirm: async () => {
+      this.setDep();
+      this.setBen();
+      this.formGroup.patchValue({
+        roles: [{ role: Constants.ROLE_USER }],
+        memberRegistrations: [
+          {
+            id: null,
+            year: this.registerYear,
+            schemeType: this.schemeType,
+          },
+        ],
+        mDate: Utils.today,
+        registrationOpen: 0,
+        status: Constants.REGISTRATION_PENDING,
+        password: Constants.DEFAULT_PASSWORD,
+        scheme: this.schemeType,
       });
-      return;
-    } else if (sum < 100) {
-      msg = `Beneficiary percentage is ${sum}%`;
-      btn = `Submit anyway`;
-    } else if (sum == 100) {
-      msg = `Confirm for Registration`;
-      btn = `Confirm`;
-    }
+      console.log('tobe insert ', this.formGroup.value);
+      return this.authService
+        .registerold(this.formGroup.value)
+        .subscribe((reg) => {
+          console.log('saved', reg);
+          return this.authService
+            .getMemberold(this.formGroup.value.empNo)
+            .subscribe((m) => {
+              this.share.setUser(m);
+              Swal.fire({
+                title: `Download pdf`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+                allowOutsideClick: () => false,
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  this.downloadMembershipApplication(
+                    this.registerYear,
+                    m.empNo
+                  );
+                }
 
-    const swalResult = await Swal.fire({
-      title: msg,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: btn,
-      showLoaderOnConfirm: true,
-      preConfirm: async () => {
-        this.setDep();
-        this.setBen();
-        this.formGroup.patchValue({
-          roles: [{ role: Constants.ROLE_USER }],
-          memberRegistrations: [
-            {
-              id: null,
-              year: Utils.currentYear,
-              schemeType: this.schemeType,
-            },
-          ],
-          mDate: Utils.today,
-          registrationOpen: 0,
-          status: Constants.REGISTRATION_PENDING,
-          password: Constants.DEFAULT_PASSWORD,
-          scheme: this.schemeType,
-        });
-        Swal.showValidationMessage('Processing');
-        console.log('tobe insert ', this.formGroup.value);
-        let res = await this.authService.register(this.formGroup.value);
-
-        let res1 = await this.authService.getMember(this.formGroup.value.empNo);
-
-        res1.subscribe((m) => {
-          this.share.setUser(m);
-          Swal.fire({
-            title: `Download pdf`,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Save',
-            allowOutsideClick: () => false,
-          }).then((result) => {
-            if (result.isConfirmed) {
-              this.downloadMembershipApplication(Utils.currentYear, m.empNo);
-            }
-
-            const reg = m.memberRegistrations.find((r) => {
-              return r.year == Utils.currentYear && r.acceptedDate != null;
-            });
-            if (reg !== undefined) {
-              this.router.navigate(['/home']);
-            } else {
-              Swal.fire(
-                'Membership acceptace is required',
-                `Contact Department Head`,
-                'warning'
-              ).then(() => {
-                this.router.navigate(['/signin']);
+                const reg = m.memberRegistrations.find((r) => {
+                  return (
+                    r.year == Utils.currentYear && r.acceptedDate != null
+                  );
+                });
+                if (reg !== undefined) {
+                  this.router.navigate(['/home']);
+                } else {
+                  Swal.fire(
+                    'Membership acceptace is required',
+                    `Contact Department Head`,
+                    'warning'
+                  ).then(() => {
+                    this.router.navigate(['/signin']);
+                  });
+                }
               });
-            }
-          });
-          this.formGroup.reset();
+              this.formGroup.reset();
+              return m;
+            });
         });
-        return res;
-      },
-      allowOutsideClick: () => !Swal.isLoading(),
-    }).then((result) => {
-      if (result.isConfirmed) {
-      }
-    });
-  }*/
+    },
+    allowOutsideClick: () => !Swal.isLoading(),
+  }).then((result) => {
+    if (result.isConfirmed) {
+    }
+  });
 }
+*/
+
+
+/*downloadMembershipApplication(year: number, empNo: string) {
+  this.authService.download(1, year, empNo).subscribe((response: any) => {
+    let dataType = response.type;
+    let binaryData = [];
+    binaryData.push(response);
+    //let fname = response.get("file name").ToString();
+    //console.log(fname);
+    let downloadLink = document.createElement('a');
+    downloadLink.href = window.URL.createObjectURL(
+      new Blob(binaryData, { type: dataType })
+    );
+    downloadLink.setAttribute('download', 'Application.pdf');
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+  });
+}*/
+
+/*registerProcess() {
+  let sum: number = 0;
+  this.beneficiaryData.data.forEach((a) => (sum += Number(a.percent)));
+
+  let msg = `Confirm to submit Data ?`;
+  let btn = 'Yes, Submit!';
+  if (sum > 100) {
+    Swal.fire({
+      title: `Beneficiary percentage is ${sum}% not acceptable`,
+      icon: 'error',
+      showCancelButton: false,
+      confirmButtonText: 'Retry !',
+    });
+    return;
+  } else if (sum < 100) {
+    msg = `Beneficiary percentage is ${sum}%`;
+    btn = `Submit anyway`;
+  } else if (sum == 100) {
+    msg = `Confirm for Registration`;
+    btn = `Confirm`;
+  }
+
+  const swalResult = await Swal.fire({
+    title: msg,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: btn,
+    showLoaderOnConfirm: true,
+    preConfirm: async () => {
+      this.setDep();
+      this.setBen();
+      this.formGroup.patchValue({
+        roles: [{ role: Constants.ROLE_USER }],
+        memberRegistrations: [
+          {
+            id: null,
+            year: Utils.currentYear,
+            schemeType: this.schemeType,
+          },
+        ],
+        mDate: Utils.today,
+        registrationOpen: 0,
+        status: Constants.REGISTRATION_PENDING,
+        password: Constants.DEFAULT_PASSWORD,
+        scheme: this.schemeType,
+      });
+      Swal.showValidationMessage('Processing');
+      console.log('tobe insert ', this.formGroup.value);
+      let res = await this.authService.register(this.formGroup.value);
+
+      let res1 = await this.authService.getMember(this.formGroup.value.empNo);
+
+      res1.subscribe((m) => {
+        this.share.setUser(m);
+        Swal.fire({
+          title: `Download pdf`,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Save',
+          allowOutsideClick: () => false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.downloadMembershipApplication(Utils.currentYear, m.empNo);
+          }
+
+          const reg = m.memberRegistrations.find((r) => {
+            return r.year == Utils.currentYear && r.acceptedDate != null;
+          });
+          if (reg !== undefined) {
+            this.router.navigate(['/home']);
+          } else {
+            Swal.fire(
+              'Membership acceptace is required',
+              `Contact Department Head`,
+              'warning'
+            ).then(() => {
+              this.router.navigate(['/signin']);
+            });
+          }
+        });
+        this.formGroup.reset();
+      });
+      return res;
+    },
+    allowOutsideClick: () => !Swal.isLoading(),
+  }).then((result) => {
+    if (result.isConfirmed) {
+    }
+  });
+}*/

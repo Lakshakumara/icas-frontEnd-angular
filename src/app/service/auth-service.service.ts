@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, lastValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { Member } from '../Model/member';
 import { map } from 'rxjs/operators';
 import { Dependant } from '../Model/dependant';
 import { Claim } from '../Model/claim';
 import { ClaimData } from '../Model/claimData';
+import { Utils } from '../util/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -16,13 +17,6 @@ export class AuthServiceService {
 
   constructor(private http: HttpClient) { }
 
-  login(data: any): Observable<any> {
-    return this.http.post(`${this.API_URL}/member/signin`, data);
-  }
-
-  getUser(data: any): Observable<any> {
-    return this.http.get(`${this.API_URL}/member/data`, data);
-  }
   getMembers(
     searchFor: string,
     searchText: any,
@@ -43,8 +37,9 @@ export class AuthServiceService {
           .set('pageSize', pageSize.toString())
           .set('sortField', sortField),
       })
-      .pipe<Member[]>(map((res: any) => res));
+      .pipe<any[]>(map((res: any) => res));
   }
+
 
   getRelationShip(rs: string): Observable<string[]> {
     return this.http
@@ -52,12 +47,6 @@ export class AuthServiceService {
       .pipe<string[]>(map((data: any) => data));
   }
 
-  /**
-   *
-   * @param criteria Member Details
-   * @param data
-   * @returns
-   */
   update(criteria: string, data: any): Observable<number> {
     const x = this.http
       .put(`${this.API_URL}/member/update/${criteria}`, data)
@@ -73,69 +62,44 @@ export class AuthServiceService {
         'Content-Type': 'application/json',
       },
     });
-    const jsonResponse = await response.json();
-    return jsonResponse;
+    return await response.json();
   }
 
-  registerold(data: any): Observable<any> {
-    return this.http
-      .post(`${this.API_URL}/member/signup`, data)
-      .pipe<any>(map((data: any) => data));
-  }
-
-  async register(data: any): Promise<Observable<any>> {
-    return await fetch(`${this.API_URL}/member/signup`, {
+  async registerNew(data: any): Promise<any> {
+    const response = await fetch(`${this.API_URL}/member/signup`, {
       method: 'post',
       body: JSON.stringify(data),
       headers: {
         'Content-Type': 'application/json',
       },
     })
-      .then((res) => res.json())
-      .then((responseJson) => {
-        console.log('register response ', responseJson);
-        return responseJson;
-      })
-      .catch((error) => {
-        return new Error(error);
-      });
-  }
-  getMemberold(empNo: any): Observable<Member> {
-    return this.http
-      .get(`${this.API_URL}/member/${empNo}`)
-      .pipe<Member>(map((data: any) => data));
+    return await response.json();
   }
 
-  async getMember(empNo: any): Promise<Observable<Member>> {
-    return await fetch(`${this.API_URL}/member/${empNo}`, {
+  async getMemberNew(empNo: any): Promise<Member> {
+    const response = await fetch(`${this.API_URL}/member/${empNo}`, {
       method: 'get',
     })
-      .then((res) => res.json())
-      .then((responseJson) => {
-        console.log('register response ', responseJson);
-        return responseJson;
-      })
-      .catch((error) => {
-        return new Error(error);
-      });
+    return await response.json();
+  }
+  async getMemberDependants(empNo: string, year: number = Utils.currentYear): Promise<any> {
+    const response = await fetch(`${this.API_URL}/dependant/${year}/${empNo}`, {
+      method: 'get',
+    })
+    return await response.json();
+  }
+  async getMemberBeneficiaries(empNo: string, year: number = Utils.currentYear): Promise<any> {
+    const response = await fetch(`${this.API_URL}/member/beneficiaries/${year}/${empNo}`, {
+      method: 'get',
+    })
+    return await response.json();
   }
 
-  async saveOPD(claimOPD: any): Promise<Observable<any>> {
-    console.log('sent', claimOPD);
-    return await fetch(`${this.API_URL}/claim/opd`, {
-      method: 'POST',
-      body: JSON.stringify(claimOPD),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+  async getHRDetailsNew(empNo: any): Promise<any> {
+    const response = await fetch(`${this.API_URL}/hr/${empNo}`, {
+      method: 'get',
     })
-      .then((res) => res.json())
-      .then((responseJson) => {
-        return responseJson;
-      })
-      .catch((error) => {
-        return error;
-      });
+    return await response.json();
   }
 
   /**
@@ -160,8 +124,7 @@ export class AuthServiceService {
     pageIndex: number = 0,
     pageSize: number = 10,
     sortField: string = '',
-  ): Observable<Claim[]> {
-    console.log('getAllClaims calls = ', claimType);
+  ): Observable<any> {
     return this.http
       .get(`${this.API_URL}/claim/getAll`, {
         params: new HttpParams()
@@ -175,7 +138,7 @@ export class AuthServiceService {
           .set('pageSize', pageSize.toString())
           .set('sortField', sortField),
       })
-      .pipe<Claim[]>(map((res: any) => res));
+      .pipe<any>(map((res: any) => res));
   }
 
   getClaimData(claimId: number,
@@ -183,7 +146,7 @@ export class AuthServiceService {
     pageSize: number = 10,
     sortDirection: string = 'asc',
     sortField: string = ''
-    ): Observable<ClaimData[]> {
+  ): Observable<ClaimData[]> {
     return this.http
       .get(`${this.API_URL}/claim/claimData`, {
         params: new HttpParams()
@@ -293,22 +256,6 @@ export class AuthServiceService {
     }
   }
 
-/**
- * 
- * @param year Guest
- * @param empNo 
- * @returns 
- */
-  isGuest(year: any, empNo: any): Observable<Map<String, Object>> {
-    return this.http
-      .get(`${this.API_URL}/guest/${year}/${empNo}`)
-      .pipe<Map<string, Object>>(map((data: any) => data));
-  }
-
-  getHRDetails(empNo: any): Observable<any> {
-    return this.http.get(`${this.API_URL}/hr/${empNo}`);
-  }
-
   async saveHR(data: any): Promise<any> {
     const response = await fetch(`${this.API_URL}/hr/add`, {
       method: 'post',
@@ -318,21 +265,6 @@ export class AuthServiceService {
       },
     });
     return await response.json();
-  }
-
-  async getHRDetailsNew(empNo: any): Promise<any> {
-    return await fetch(`${this.API_URL}/hr/${empNo}`, {
-      method: 'get',
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((responseJson) => {
-        return responseJson;
-      })
-      .catch((error) => {
-        return new Error(error);
-      });
   }
 
   getDependant(name: any): Observable<any> {
@@ -347,41 +279,27 @@ export class AuthServiceService {
     );
   }
 
+  async downloadNew(type: number, year: any, empNo: string): Promise<any> {
+    const response = await fetch(`${this.API_URL}/download/application/${year}/${empNo}`, {
+      method: 'get',
+    })
+    return await response.blob();
+  }
+
+
   directDownload(url: string, version: string): Observable<any> {
     return this.http.get(`${this.API_URL}/download/${url}/${version}`, {
       responseType: 'blob',
     });
   }
-
-  async downloadClaim1(claimId: number): Promise<Observable<any>> {
-    return await fetch(`${this.API_URL}/download/application/opd/${claimId}`, {
-      method: 'get',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.blob())
-      .then((response) => {
-        console.log(response);
-        let dataType = response.type;
-        let binaryData = [];
-        binaryData.push(response);
-        //let fname = response.get("file name").ToString();
-        //console.log(fname);
-        let downloadLink = document.createElement('a');
-        downloadLink.href = window.URL.createObjectURL(
-          new Blob(binaryData, { type: dataType })
-        );
-        downloadLink.setAttribute('download', 'Application.pdf');
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        return true;
+  directDownloadx(url: string, version: string): Promise<any> {
+    return lastValueFrom(
+      this.http.get(`${this.API_URL}/download/${url}/${version}`, {
+        responseType: 'blob',
       })
-      .catch((error) => {
-        return error;
-      });
+    );
   }
-  
+
   async downloadClaim(claimId: number) {
     try {
       const response = await fetch(
@@ -406,59 +324,165 @@ export class AuthServiceService {
     }
   }
 
-  async waiter(claim: any = '') {
-    setTimeout(function () {
-      return 100;
-    }, 10000);
-  }
-
-  /**
-   * testing codes bellow
-   */
-  getMembersByPages(
-    page: number,
-    size: number,
-    search: string = ''
-  ): Observable<any> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
-
-    if (search) {
-      params = params.set('search', search);
-    }
-    return this.http
-      .get(`${this.API_URL}/member`, { params })
-      .pipe<Member[]>(map((res: any) => res));
-  }
-
   updateRoles(memberId: number, roles: string[]): Observable<any> {
     return this.http.put(`${this.API_URL}/member/${memberId}/roles`, { roles });
   }
-
-  getAllClaimsByPages(
-    claimType: string = '',
-    year: number = 0,
-    empNo: string = '',
-    claimStatus: string = '',
-    filter: string = '',
-    sortDirection: string = 'asc',
-    pageIndex: number = 0,
-    pageSize: number = 10
-  ): Observable<Claim[]> {
-    console.log('getAllClaims calls claimType= ', claimType);
-    return this.http
-      .get(`${this.API_URL}/claim/getAll`, {
-        params: new HttpParams()
-          .set('claimType', claimType)
-          .set('year', year)
-          .set('empNo', empNo)
-          .set('claimStatus', claimStatus)
-          .set('filter', filter)
-          .set('sortOrder', sortDirection)
-          .set('pageNumber', pageIndex.toString())
-          .set('pageSize', pageSize.toString()),
-      })
-      .pipe<Claim[]>(map((res: any) => res));
-  }
 }
+/*
+
+@deleted getMembersByPages(
+  page: number,
+  size: number,
+  search: string = ''
+): Observable<any> {
+  let params = new HttpParams()
+    .set('page', page.toString())
+    .set('size', size.toString());
+
+  if (search) {
+    params = params.set('search', search);
+  }
+  return this.http
+    .get(`${this.API_URL}/member`, { params })
+    .pipe<Member[]>(map((res: any) => res));
+}
+
+getAllClaimsByPages(
+  claimType: string = '',
+  year: number = 0,
+  empNo: string = '',
+  claimStatus: string = '',
+  filter: string = '',
+  sortDirection: string = 'asc',
+  pageIndex: number = 0,
+  pageSize: number = 10
+): Observable<Claim[]> {
+  console.log('getAllClaims calls claimType= ', claimType);
+  return this.http
+    .get(`${this.API_URL}/claim/getAll`, {
+      params: new HttpParams()
+        .set('claimType', claimType)
+        .set('year', year)
+        .set('empNo', empNo)
+        .set('claimStatus', claimStatus)
+        .set('filter', filter)
+        .set('sortOrder', sortDirection)
+        .set('pageNumber', pageIndex.toString())
+        .set('pageSize', pageSize.toString()),
+    })
+    .pipe<Claim[]>(map((res: any) => res));
+}
+
+async waiter(claim: any = '') {
+  setTimeout(function () {
+    return 100;
+  }, 10000);
+}
+
+async downloadClaim1(claimId: number): Promise<Observable<any>> {
+  return await fetch(`${this.API_URL}/download/application/opd/${claimId}`, {
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((res) => res.blob())
+    .then((response) => {
+      console.log(response);
+      let dataType = response.type;
+      let binaryData = [];
+      binaryData.push(response);
+      //let fname = response.get("file name").ToString();
+      //console.log(fname);
+      let downloadLink = document.createElement('a');
+      downloadLink.href = window.URL.createObjectURL(
+        new Blob(binaryData, { type: dataType })
+      );
+      downloadLink.setAttribute('download', 'Application.pdf');
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      return true;
+    })
+    .catch((error) => {
+      return error;
+    });
+}
+
+isGuest(year: any, empNo: any): Observable<Map<String, Object>> {
+  return this.http
+    .get(`${this.API_URL}/guest/${year}/${empNo}`)
+    .pipe<Map<string, Object>>(map((data: any) => data));
+}
+
+getHRDetails(empNo: any): Observable<any> {
+  return this.http.get(`${this.API_URL}/hr/${empNo}`);
+}
+
+async getMember(empNo: any): Promise<Observable<Member>> {
+  return await fetch(`${this.API_URL}/member/${empNo}`, {
+    method: 'get',
+  })
+    .then((res) => res.json())
+    .then((responseJson) => {
+      console.log('register response ', responseJson);
+      return responseJson;
+    })
+    .catch((error) => {
+      //return new Error(error);
+    });
+}
+getMemberold(empNo: any): Observable<Member> {
+  return this.http
+    .get(`${this.API_URL}/member/${empNo}`)
+    .pipe<Member>(map((data: any) => data));
+}
+ 
+async register(data: any): Promise<Observable<any>> {
+  return await fetch(`${this.API_URL}/member/signup`, {
+    method: 'post',
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((res) => res.json())
+    .then((responseJson) => {
+      console.log('register response ', responseJson);
+      return responseJson;
+    })
+    .catch((error) => {
+      return new Error(error);
+    });
+}
+
+registerold(data: any): Observable<any> {
+  console.log("Auth receive", data)
+  return this.http
+    .post(`${this.API_URL}/member/signup`, data)
+    .pipe<any>(map((data: any) => data));
+}
+login(data: any): Observable<any> {
+  return this.http.post(`${this.API_URL}/member/signin`, data);
+}
+
+getUser(data: any): Observable<any> {
+  return this.http.get(`${this.API_URL}/member/data`, data);
+}
+
+async saveOPD(claimOPD: any): Promise<Observable<any>> {
+  console.log('sent', claimOPD);
+  return await fetch(`${this.API_URL}/claim/opd`, {
+    method: 'POST',
+    body: JSON.stringify(claimOPD),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((res) => res.json())
+    .then((responseJson) => {
+      return responseJson;
+    })
+    .catch((error) => {
+      return error;
+    });
+}*/

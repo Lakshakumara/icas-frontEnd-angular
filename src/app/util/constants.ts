@@ -46,7 +46,7 @@ export class Constants {
     'All',
     'Pending',
     'Head Approved',
-    'MEC',
+    'MEC Pending',
     'MEC Approved',
     'Rejected',
     'Finance',

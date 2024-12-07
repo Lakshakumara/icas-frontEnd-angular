@@ -55,7 +55,7 @@ export class MecHsComponent implements OnInit {
   }
 
   loadClaimPage() {
-    this.dataSource.requestData(
+    this.dataSource.loadClaims(
       Constants.CATEGORY_SHE,
       Constants.CLAIMSTATUS_MEDICAL_DECISION_PENDING
     );

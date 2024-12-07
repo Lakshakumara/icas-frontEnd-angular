@@ -131,7 +131,7 @@ export class ClaimManageComponent implements OnInit, AfterViewInit {
       case 'Head Approved':
         sop = Constants.CLAIMSTATUS_HEAD_APPROVED;
         break;
-      case 'MEC':
+      case 'MEC Pending':
         sop = Constants.CLAIMSTATUS_MEDICAL_DECISION_PENDING;
         break;
       case 'MEC Approved':

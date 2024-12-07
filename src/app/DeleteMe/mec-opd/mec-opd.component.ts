@@ -75,7 +75,7 @@ export class MecOpdComponent implements OnInit {
     this.dataSource = new LoadDataSource(this.auth);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.dataSource.requestData(
+    this.dataSource.loadClaims(
       Constants.CATEGORY_OPD,
       Constants.CLAIMSTATUS_MEDICAL_DECISION_PENDING
     );
@@ -109,7 +109,7 @@ export class MecOpdComponent implements OnInit {
   loadClaimPage() {
     this.selectedMember = <Member[]>[{}];
     this.selectedClaim = null; //<Claim>{};
-    this.dataSource.requestData(
+    this.dataSource.loadClaims(
       Constants.CATEGORY_OPD,
       Constants.CLAIMSTATUS_MEDICAL_DECISION_PENDING
     );

@@ -1,1 +1,12 @@
-<p>payment-history works!</p>
+<div class="hori">
+    <mat-form-field class="quater-width" appearance="outline">
+        <mat-label>Claim Category</mat-label>
+        <mat-select [(ngModel)]="selectedCategory">
+            <mat-option [value]="cat" *ngFor="let cat of claimCategory">{{cat}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <app-chip-selector class="full-width"  [category]="selectedCategory" (getScheme)="onNotifySelectedScheme($event)"></app-chip-selector>
+    <button mat-raised-button color="accent" (click)="search()">Search</button>
+</div>

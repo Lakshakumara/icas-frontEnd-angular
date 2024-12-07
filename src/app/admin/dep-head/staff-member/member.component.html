@@ -1,6 +1,6 @@
 <div class="topClass">
   <h1>Member Details</h1>
-  <mat-form-field appearance="outline">
+  <mat-form-field class="full-with" appearance="outline">
     <mat-label>Search By Employee No or Name</mat-label>
     <input matInput [formControl]="searchControl" placeholder="Search Columns" />
   </mat-form-field>
@@ -30,7 +30,8 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumn; sticky:true"></tr>
-    <tr mat-row *matRowDef="let member; columns: displayedColumn;" (click)="onRowClicked(member)"></tr>
+    <tr mat-row *matRowDef="let m; columns: displayedColumn;" (click)="onRowClicked(m)"
+    [ngClass]="{'selected': m === member}"></tr>
   </table>
 
   <mat-paginator #paginator [length]="totalLength" [pageSize]="5" [pageSizeOptions]="[5, 10, 20, 50]"

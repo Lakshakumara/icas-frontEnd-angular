@@ -29,6 +29,7 @@ export interface Member {
   memberRegistrations: Registration[];
   dependants: Dependant[];
   beneficiaries: Beneficiary[];
+  registrationOpen:number
 }
 
 export const Member_Column_Accept = [

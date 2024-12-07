@@ -9,6 +9,7 @@ import { ConfirmDialogComponent } from 'src/app/pop/confirm-dialog/confirm-dialo
 import { LoaderService } from 'src/app/service/loader.service';
 import { SchemeService } from 'src/app/service/scheme.service';
 import { SharedService } from 'src/app/shared/shared.service';
+import { Constants } from 'src/app/util/constants';
 
 @Component({
   selector: 'app-scheme-plan',
@@ -35,7 +36,7 @@ export class SchemePlanComponent implements OnInit {
     this.loader.showLoader();
     this.member = this.share.getUser();
     if (this.member) {
-      this.schemeService.getScheme().subscribe((res: any) => {
+      this.schemeService.getScheme(Constants.ALL).subscribe((res: any) => {
         console.log(res)
         this.dataSource.data = res;
       });

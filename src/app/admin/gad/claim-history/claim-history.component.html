@@ -7,9 +7,7 @@
                     <mat-icon>view_column</mat-icon>
                 </button>
             </th>
-            <td mat-cell *matCellDef="let element">
-
-            </td>
+            <td mat-cell *matCellDef="let element"></td>
         </ng-container>
 
         <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema">
@@ -41,35 +39,12 @@
                                 <p *ngIf="cd.rejectedDate">Rejected on: <b>{{cd.rejectedDate}}</b></p>
                                 <p *ngIf="cd.rejectRemarks">Reason: <b>{{cd.rejectRemarks}}</b></p>
                                 <p *ngIf="cd.remarks">Remarks : <b>{{cd.remarks}}</b></p>
-                                
                             </mat-card-content>
                         </mat-card>
                     </div>
                 </div>
             </td>
         </ng-container>
-
-        <!--ng-container *ngIf="claimData" matColumnDef="claimData">
-            <th mat-header-cell *matHeaderCellDef>xxxxxx</th>
-            <td mat-cell *matCellDef="let element" [attr.colspan]="columnsSchema.length">
-                <div [@detailExpand]="element===claimData?'expanded':'collapsed'">
-                    {{claimData.values}}
-                </div>
-            </td>
-            <tr mat-header-row *matHeaderRowDef="displayedColumn.concat('actions'); sticky: true"></tr>
-
-            <tr mat-row *matRowDef="let claim; columns: displayedColumn.concat('actions')"
-                [ngClass]="{'selected': claim === selectedClaim}" (click)="onRowClicked(claim)">
-            </tr>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumn.concat('actions'); sticky: true"></tr>
-
-        </ng-container-->
-
-        <!--tr mat-header-row *matHeaderRowDef="displayedColumn.concat('actions'); sticky: true"></tr>
-        <tr mat-row *matRowDef="let claim; columns: displayedColumn.concat('actions')"
-            [ngClass]="{'selected': claim === selectedClaim}" (click)="onRowClicked(claim)">
-        </tr-->
     </table>
 
     <mat-menu #columnMenu="matMenu" [overlapTrigger]="false" (menuClosed)="onMenuClosed()">

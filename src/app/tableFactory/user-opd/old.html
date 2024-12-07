@@ -1,0 +1,72 @@
+<div class="hori">
+    <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Claim Category</mat-label>
+        <mat-select [(ngModel)]="selectedCategory">
+            <mat-option [value]="cat" *ngFor="let cat of claimCategory">{{cat}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Claim Status</mat-label>
+        <mat-select [(ngModel)]="selectedStatus">
+            <mat-option [value]="cStatus" *ngFor="let cStatus of claimStatus">{{cStatus}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Year</mat-label>
+        <input type="text" onlyNumber matInput [(ngModel)]="year">
+    </mat-form-field>
+    <button mat-raised-button color="accent" (click)="search()">Search</button>
+</div>
+
+<table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="asc" matSortDisableClear>
+
+    <!-- Id Column -->
+    <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Claim No</th>
+        <td mat-cell *matCellDef="let claim">{{claim.id}}</td>
+    </ng-container>
+
+    <!-- Category Column -->
+    <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
+        <td mat-cell *matCellDef="let claim">{{claim.category}}</td>
+    </ng-container>
+
+    <!-- Request For Column -->
+    <ng-container matColumnDef="requestFor">
+        <th mat-header-cell *matHeaderCellDef>Request For</th>
+        <td mat-cell *matCellDef="let claim">{{claim.requestFor}}</td>
+    </ng-container>
+
+    <!-- Date Column -->
+    <ng-container matColumnDef="claimDate">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let claim">{{claim.claimDate}}</td>
+    </ng-container>
+
+    <!-- Status Column -->
+    <ng-container matColumnDef="claimStatus">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let claim">{{claim.claimStatus}}</td>
+    </ng-container>
+
+    <!-- Request Amount Column -->
+    <ng-container matColumnDef="requestAmount">
+        <th mat-header-cell *matHeaderCellDef>Request Amount</th>
+        <td mat-cell *matCellDef="let claim">{{claim.requestAmount | currency : "Rs. "}}</td>
+    </ng-container>
+    <ng-container matColumnDef="paidAmount">
+        <th mat-header-cell *matHeaderCellDef>Paid Amount</th>
+        <td mat-cell *matCellDef="let claim">{{claim.paidAmount | currency : "Rs. "}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+    <tr mat-row *matRowDef="let claim; columns: displayedColumns;" (click)="onRowClicked(claim)"></tr>
+</table>
+
+<mat-paginator #paginator [length]="totalLength" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons></mat-paginator>

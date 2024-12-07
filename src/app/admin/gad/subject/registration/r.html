@@ -74,7 +74,7 @@
                     <button mat-raised-button color="warn" (click)="showMemberDetails()">Members Details</button>
                     <button mat-raised-button color="accent" (click)="showAddNewUser()">Add new User</button>
                     <button mat-raised-button color="primary" (click)="showClaimManage()">Claim Manage</button>
-
+                    <button mat-raised-button color="primary" (click)="showReRegistration()">Re Registration</button>
                 </div>
             </div>
 
@@ -86,6 +86,15 @@
                     <button mat-raised-button color="warn" (click)="showVoucherGeneration()">Voucher Generation</button>
                 </div>
             </div>
+            <div *ngSwitchCase="'reReg'">
+                <h3 >
+                    Re Registration for the next Year
+                </h3>
+                <!--div class="profile-buttons">
+                    <button mat-raised-button color="warn" (click)="showVoucherGeneration()">Voucher Generation</button>
+                </div-->
+            </div>
+
             <div *ngSwitchCase="'newUser'">
                 <h3>
                     User's Basic Data entry specially Member not in HR Database
@@ -137,10 +146,12 @@
 
                     <app-claim-manage *ngSwitchCase="'claimManage'" (getClaim)="getClaim($event)"></app-claim-manage>
                     <app-set-payment *ngSwitchCase="'setPayment'" [selectedClaim]="selectedClaim"></app-set-payment>
-                    <app-payment-history *ngSwitchCase="'paymentHistory'"></app-payment-history>
+                    <app-payment-history *ngSwitchCase="'paymentHistory'" [member]="selectedMember"></app-payment-history>
                     <app-new-user *ngSwitchCase="'newUser'"></app-new-user>
                     <app-voucher-new *ngSwitchCase="'voucherGeneration'"
                         (getvoucherIds)="getvoucherIds($event)"></app-voucher-new>
+                    <app-re-reg *ngSwitchCase="'reReg'" [member]="selectedMember"></app-re-reg>
+
                 </ng-container>
             </div>
         </ng-container>

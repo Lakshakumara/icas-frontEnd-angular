@@ -68,21 +68,5 @@ export class ClaimDataSource extends DataSource<any> {
       });
   }
 
-  getClaimData(
-    claimId: number
-  ) {
-    this.loadingSubject.next(true);
-    this.auth
-      .getClaimData(claimId
-      )
-      .pipe(
-        catchError(() => of([])),
-        finalize(() => this.loadingSubject.next(false))
-      )
-      .subscribe((receiveData: any) => {
-        this.data = receiveData.content
-        this.dataSubject.next(receiveData.content);
-        this.totalCount = receiveData.totalElements;
-      });
-  }
+  
 }

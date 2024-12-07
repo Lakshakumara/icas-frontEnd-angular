@@ -1,12 +1,6 @@
-
-mat-card{
-    margin: 2%;
-    text-align: left;
-}
-
 .mat-mdc-form-field {
     width: 98%;
-    margin: 1%;
+    margin-top: 8px;
 }
 
 .mat-50{
@@ -14,7 +8,7 @@ mat-card{
     margin: 1%;
 }
 
-.button{
+button{
     margin: 2px;
 }
 .example-full-width {

@@ -7,14 +7,14 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { merge, tap, debounceTime, distinctUntilChanged } from 'rxjs';
-import { Claim } from 'src/app/Model/claim';
 import { Member, Member_Column_Accept } from 'src/app/Model/member';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Constants } from 'src/app/util/constants';
+import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
 import { MemberDataSource } from 'src/app/util/dataSource/members-dataSource';
 
 @Component({
@@ -25,7 +25,7 @@ import { MemberDataSource } from 'src/app/util/dataSource/members-dataSource';
 export class MemberDataComponent implements OnInit, AfterViewInit {
   @Output() getMember = new EventEmitter();
   selectedMember!: Member | null;
-  dataSource!: MemberDataSource;
+  dataSource!: LoadDataSource;
   totalLength = 0;
   searchControl: FormControl = new FormControl();
   displayedColumn: string[] = Member_Column_Accept.map((col) => col.key);
@@ -39,7 +39,7 @@ export class MemberDataComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit() {
-    this.dataSource = new MemberDataSource(this.auth);
+    this.dataSource = new LoadDataSource(this.auth);
   }
   ngAfterViewInit() {
     this.setupTableFeatures();
@@ -83,6 +83,7 @@ export class MemberDataComponent implements OnInit, AfterViewInit {
     );
   }
   onRowClicked(selectedMember: Member) {
+    this.selectedMember = selectedMember
     this.getMember.emit(selectedMember);
   }
 }

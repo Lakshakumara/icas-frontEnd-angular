@@ -1,8 +1,25 @@
 <form [formGroup]="dForm">
+  <!--mat-card>
+    <mat-card-title>
+      {{ inputdata.title }}
+    </mat-card-title>
+    <mat-card-content>
+      <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Name</mat-label>
+        <input type="text" formControlName="name" matInput />
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" [disabled]="!dForm.valid" (click)="addBeneficiaryDetails()">
+        Add
+      </button>
+      <button mat-raised-button color="warn" (click)="closePopup()">Close</button>
+    </mat-card-actions>
+  </mat-card-->
   <h1 mat-dialog-title>{{ inputdata.title }}</h1>
 
   <div mat-dialog-content>
-    <mat-form-field class="example-full-width" appearance="outline">
+    <mat-form-field class="example-full-width title" appearance="outline">
       <mat-label>Name</mat-label>
       <input type="text" formControlName="name" matInput />
     </mat-form-field>

@@ -36,15 +36,22 @@ export class AccessComponent implements OnInit {
 
   loadMembers(): void {
     this.authService
-      .getMembersByPages(
+      .getMembers(Constants.ALL,
+        '',
+        this.formGroup.get('memberSearch')!.value,
+        'asc',
         this.currentPage,
         this.pageSize,
-        this.formGroup.get('memberSearch')!.value
       )
-      .subscribe((data) => {
-        this.members = data.content;
-        this.totalMembers = data.totalElements;
-      });
+      .subscribe((member: any) => {
+        if (member && member.content) {
+          this.members = member.content;
+          this.totalMembers = member.totalElements;
+        } else {
+          this.members =[]; // Set to empty array if member or member.content is null
+          this.totalMembers = 0; // Set totalCount to 0 if there's an error
+        }
+    });
   }
 
   setupMemberSearch(): void {
@@ -56,18 +63,25 @@ export class AccessComponent implements OnInit {
         switchMap((searchText) => {
           this.currentPage = 0; // Reset to the first page on search
           return searchText
-            ? this.authService.getMembersByPages(
-                this.currentPage,
-                this.pageSize,
-                searchText
-              )
+            ? this.authService.getMembers(Constants.ALL,
+              '',
+              searchText,
+              'asc',
+              this.currentPage,
+              this.pageSize,
+            )
             : of({ members: [], total: 0 });
         })
       )
-      .subscribe((data) => {
-        this.members = data.content;
-        this.totalMembers = data.totalElements;
-      });
+      .subscribe((member: any) => {
+        if (member && member.content) {
+          this.members = member.content;
+          this.totalMembers = member.totalElements;
+        } else {
+          this.members =[]; // Set to empty array if member or member.content is null
+          this.totalMembers = 0; // Set totalCount to 0 if there's an error
+        }
+    });
   }
 
   selectMember(member: any): void {

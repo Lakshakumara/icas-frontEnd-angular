@@ -29,6 +29,7 @@ import { MatExpansionModule} from '@angular/material/expansion';
 import { MatTabsModule} from '@angular/material/tabs';
 import { MatChipsModule} from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 const materialComponent = [
   FlexLayoutModule,
@@ -62,7 +63,8 @@ const materialComponent = [
   MatTabsModule,
   MatChipsModule,
   MatTooltipModule,
-  MatDividerModule
+  MatDividerModule,
+  MatSlideToggleModule,
   ]
 @NgModule({
   imports: [materialComponent],

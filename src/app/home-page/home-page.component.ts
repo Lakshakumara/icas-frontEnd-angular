@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { OpdComponent } from '../pop/opd/opd.component';
 import { AuthServiceService } from '../service/auth-service.service';
 import { SharedService } from '../shared/shared.service';
 import { Router } from '@angular/router';
@@ -9,6 +8,8 @@ import { Member } from '../Model/member';
 import { Claim } from '../Model/claim';
 import { Utils } from '../util/utils';
 import { Constants } from '../util/constants';
+import { OpdNewComponent } from '../pop/opd-new/opd-new.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-home-page',
@@ -37,6 +38,28 @@ export class HomePageComponent implements OnInit {
     }
   }
   ngOnInit(): void {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 5000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+    Toast.fire({
+      icon: "success",
+      title: `New Registration is available`,
+      showConfirmButton:true,
+      showCloseButton:true,
+      confirmButtonText:`Register Now`
+    }).then((result) => {
+      if (result.isConfirmed) {
+       Swal.fire("Redirecting!", "", "success");
+     }
+ });
     this.auth
       .getDashboardData(Utils.currentYear, this.member.empNo)
       .subscribe((receiveData: any) => {
@@ -58,8 +81,9 @@ export class HomePageComponent implements OnInit {
   }
 
   opdClaim() {
-    this.Openpopup(0, 'New OPD Reimbursement', OpdComponent, HomePageComponent);
+    this.Openpopup(0, 'OPD Reimbursement', OpdNewComponent, HomePageComponent);
   }
+  
   Openpopup(id: any, title: any, component: any, parent: any) {
     var _popup = this.dialog.open(component, {
       panelClass: 'fullscreen-dialog',

@@ -34,6 +34,7 @@ export class DownloadComponent implements OnInit {
 
   ngOnInit() {
     this.member = this.share.getUser();
+    console.log(this.member)
     if (this.member != null) {
       this.appForm = new FormGroup({
         empNo: new FormControl(this.member.empNo, [Validators.required]),
@@ -45,9 +46,10 @@ export class DownloadComponent implements OnInit {
       this.router.navigate(['/signin']);
     }
     this.auth
-      .getAllClaims('%,', 0, this.member.empNo, Constants.CLAIMSTATUS_PENDING)
+      .getAllClaims('', 0, this.member.empNo, Constants.CLAIMSTATUS_PENDING)
       .subscribe((c) => {
-        this.claimList = c;
+        console.log(c.content)
+        this.claimList = c.content;
       });
   }
   public onSidenavClose = () => {
@@ -109,8 +111,34 @@ export class DownloadComponent implements OnInit {
       },
     });
   }
-
   schemeRegulation() {
-    Constants.Toast.fire('Under Construction');
+    Swal.fire({
+      title: 'Download Scheme',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Download',
+      showLoaderOnConfirm: true,
+      allowOutsideClick: () => false,
+      preConfirm: async () => {
+        try {
+          let response: any = await this.auth.directDownloadx('scheme', '2023');
+          const blob = new Blob([response], { type: 'application/pdf' });
+          const downloadUrl = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = downloadUrl;
+          link.download = 'scheme.pdf';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } catch (error) {
+          Swal.showValidationMessage(`Download failed: ${error}`);
+        }
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire('Downloaded!', 'Your file has been downloaded.', 'success');
+      }
+    });
   }
+  
 }

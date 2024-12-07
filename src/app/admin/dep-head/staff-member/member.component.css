@@ -1,6 +1,9 @@
 .extra {
   display: flex;
 }
+.full-with{
+  width: 100%;
+}
 a {
   list-style: none;
   display: inline-block;

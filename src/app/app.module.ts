@@ -48,6 +48,9 @@ import { NewUserComponent } from './admin/gad/new-user/new-user.component';
 import { PaymentHistoryComponent } from './admin/gad/payment-history/payment-history.component';
 import { SetPaymentComponent } from './admin/gad/set-payment/set-payment.component';
 import { VoucherNewComponent } from './admin/gad/voucher-new/voucher-new.component';
+import { OpdNewComponent } from './pop/opd-new/opd-new.component';
+import { SettingsComponent } from './admin/settings/settings.component';
+import { ReRegComponent } from './admin/gad/re-reg/re-reg.component';
 
 @NgModule({
   declarations: [
@@ -85,6 +88,9 @@ import { VoucherNewComponent } from './admin/gad/voucher-new/voucher-new.compone
     PaymentHistoryComponent,
     SetPaymentComponent,
     VoucherNewComponent,
+    OpdNewComponent,
+    SettingsComponent,
+    ReRegComponent
   ],
   imports: [
     BrowserModule,

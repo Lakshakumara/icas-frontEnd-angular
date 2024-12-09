@@ -9,7 +9,6 @@ import { Constants } from 'src/app/util/constants';
 })
 export class HeaderComponent implements OnInit {
   @Output() public sidenavToggle = new EventEmitter();
-  //"user", "admin", "GADHead", "DepHead", "mo", "mec", "superAdmin"
   roles: string[] = [];
   @Input() member!: Member;
   isUser: boolean = false;
@@ -19,10 +18,18 @@ export class HeaderComponent implements OnInit {
   isMo: boolean = false;
   isMec: boolean = false;
   isSuperAdmin: boolean = false;
+  isDarkTheme = false;
 
-  constructor() {}
+
+  constructor() { }
 
   ngOnInit() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      this.isDarkTheme = savedTheme === 'dark';
+      this.updateTheme();
+    }
+
     if (this.member)
       if (this.member.roles)
         this.member.roles.forEach((val, key) => {
@@ -60,4 +67,21 @@ export class HeaderComponent implements OnInit {
   public onToggleSidenav = () => {
     this.sidenavToggle.emit();
   };
+  
+  toggleTheme() {
+    this.isDarkTheme = !this.isDarkTheme;
+    this.updateTheme();
+  }
+
+  private updateTheme() {
+    if (this.isDarkTheme) {
+      document.body.classList.add('dark-theme');
+      document.body.classList.remove('light-theme');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.body.classList.add('light-theme');
+      document.body.classList.remove('dark-theme');
+      localStorage.setItem('theme', 'light');
+    }
+  }
 }

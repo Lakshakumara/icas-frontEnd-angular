@@ -1,0 +1,17 @@
+<form [formGroup]="settingsForm" class="form-section">
+    <mat-radio-group aria-label="Select an option">
+        <mat-label>
+            <input #allMember type="radio" value="all" formControlName="selector"> All
+            Members
+        </mat-label>
+        <mat-label *ngIf="member">
+
+            <input type="radio" value="single" formControlName="selector">{{member.name}}
+        </mat-label>
+    </mat-radio-group>
+    <mat-form-field appearance="fill">
+        <mat-label>Registration Year</mat-label>
+        <input matInput matInput type="number" formControlName="year">
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="registrationOpen()">update</button>
+</form>

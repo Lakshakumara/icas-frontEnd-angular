@@ -11,6 +11,9 @@ mat-list {
 mat-list-item {
   cursor: pointer;
 }
+mat-list-item:hover {
+  background-color: #d1ecf1;
+}
 
 h2 {
   margin-top: 20px;

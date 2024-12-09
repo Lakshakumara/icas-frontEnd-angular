@@ -17,3 +17,28 @@
     width: 100%;
     height: 100%;
   }
+
+  .custom-card {
+    background-color: #ffffff;
+    /* Light background */
+    border-radius: 8px;
+    /* Smooth corners */
+    padding: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Soft shadow */
+  }
+
+  mat-card-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #4e4e4e;
+  }
+
+  button.mat-raised-button {
+    transition: all 0.3s ease;
+  }
+  
+  button.mat-raised-button:hover {
+    background-color: #3f51b5; /* Primary color */
+    transform: scale(1.05);
+  }

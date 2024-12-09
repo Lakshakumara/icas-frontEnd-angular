@@ -167,7 +167,7 @@ export class MecComponent implements OnInit {
 
   loadClaimPage() {
     this.selectedClaim = null;
-    this.dataSource.requestData(
+    this.dataSource.loadClaims(
       this.claim_category,
       Constants.CLAIMSTATUS_MEDICAL_DECISION_PENDING
     );

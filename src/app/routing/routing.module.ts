@@ -18,6 +18,7 @@ import { MecComponent } from '../admin/mec/mec/mec.component';
 import { Constants } from '../util/constants';
 import { DirectDownloadComponent } from '../download/directdownload.component';
 import { DownloadGuard } from '../download.guard';
+import { SettingsComponent } from '../admin/settings/settings.component';
 const routes: Routes = [
   { path: 'home', component: HomePageComponent },
   {
@@ -53,7 +54,9 @@ const routes: Routes = [
 
   { path: 'admin/super/scheme', component: SchemePlanComponent },
   { path: 'admin/super/access', component: AccessComponent },
+  { path: 'admin/settings', component: SettingsComponent},
   { path: '**', component: LoginV1Component },
+  
 ];
 
 @NgModule({

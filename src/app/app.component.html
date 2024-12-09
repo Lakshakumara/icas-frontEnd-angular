@@ -6,16 +6,16 @@
 
   <mat-sidenav-content>
     <app-header [member]="member" *ngIf="isMenuShow" (sidenavToggle)="sidenav.toggle()"></app-header>
-    <div *ngIf="myLoader | async as showLoading">
+    <!--div *ngIf="myLoader | async as showLoading">
       <app-loading-spinner *ngIf="showLoading"></app-loading-spinner>
-    </div>
+    </div-->
     <!--in here all the content must reside. We will add a navigation header as well-->
-    <div class="content">
+    <div  class="content">
       <router-outlet></router-outlet>
+      <app-loading-spinner *ngIf="loading$ | async" [message]="message$ | async"></app-loading-spinner>
     </div>
     <footer class="footer">
-      <span> Software Training component by YML Kumara @OUSL 2024 Under supervision of Dr.LSK Udugama</span>
+      <span> Software Training component by YML Kumara &#64;OUSL 2024 Under supervision of Dr.LSK Udugama</span>
     </footer>
   </mat-sidenav-content>
-
 </mat-sidenav-container>

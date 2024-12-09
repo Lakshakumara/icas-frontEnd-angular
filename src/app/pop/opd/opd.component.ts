@@ -34,13 +34,7 @@ export class OpdComponent implements OnInit {
   dForm = this.buildr.group({
     id: this.buildr.control(''),
     memberId: this.buildr.control(0),
-    /**
-     * OPD or SHE(Surgical &Hospital Expenses)
-     */
     category: this.buildr.control(Constants.CATEGORY_OPD),
-    /**
-     * Outdoor, Spectacles, covid test etc..
-     */
     requestFor: this.buildr.control('', Validators.required),
     incidentDate: this.buildr.control(Utils.today, Validators.required),
     claimDate: this.buildr.control(Utils.today, Validators.required),
@@ -101,7 +95,7 @@ export class OpdComponent implements OnInit {
         preConfirm: async () => {
           let claimId;
           try {
-            claimId = await this.auth.saveOPD(this.dForm.value);
+            claimId = await this.auth.addClaim(this.dForm.value);
             this.dForm.reset();
           } catch (error) {
             return Swal.showValidationMessage(` ${error} `);

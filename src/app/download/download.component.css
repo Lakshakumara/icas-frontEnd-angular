@@ -1,5 +1,8 @@
-.app_dld{
+.app_dld {
     margin-left: 20dp;
+}
+.example-full-width {
+    width: 100%;
 }
 .hori {
     display: flex;
@@ -8,4 +11,4 @@
     width: 100%;
     align-items: baseline;
     gap: 20px;
-  }
+}

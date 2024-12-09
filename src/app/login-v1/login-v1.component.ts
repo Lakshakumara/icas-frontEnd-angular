@@ -7,6 +7,7 @@ import { LoaderService } from '../service/loader.service';
 import { Utils } from '../util/utils';
 import Swal from 'sweetalert2';
 import { Scheme } from '../Model/scheme';
+import { Observable, of, delay, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-login-v1',
@@ -16,173 +17,183 @@ import { Scheme } from '../Model/scheme';
 export class LoginV1Component implements OnInit {
   empNoForm!: FormGroup;
   schemas!: Scheme[];
+  loader: any;
 
   constructor(
     private authService: AuthServiceService,
     private router: Router,
     private share: SharedService,
-    private loader: LoaderService
+    private loaderService: LoaderService
   ) {
     this.share.setUser(null);
   }
 
   ngOnInit(): void {
     this.initForm();
+
   }
   initForm() {
     this.empNoForm = new FormGroup({
       empNo: new FormControl('', [Validators.required]),
     });
   }
+  async isMemberNew() {
+    try {
+      // Show loader with initial message
+      this.loaderService.showLoader('Fetching member details...');
+      await this.delay(100);
+      // Fetch member details
+      let member = await this.authService.getMemberNew(this.empNoForm.value.empNo);
 
-  getDetails() {
-    if (this.empNoForm.valid) {
-      /* this.authService.getMember(this.empNoForm.value.empNo).subscribe({
-        next: (member) => {
-          //member.memberRegistrations.
-          if (member.status == 'pending') {
-            console.log('new User redirected to user Sign up');
-            this.router.navigate(['/signup']);
-          } else alert(member.status);
-        },
-        error: (error) => {
-          Swal.fire('Error' + `${error.Reason}`, 'error');
-        },
-      });*/
-    }
-  }
-  isMember1() {
-    /* Constants.Toast.fire({
-       icon: "success",
-       title: "Signed in successfully"
-     });*/
+      if (member.id != null) {
+        // Member found
+        this.loaderService.updateMessage('Checking registration status...');
+        await this.delay(100);
+        const reg = member.memberRegistrations.find((r) => r.year == Utils.currentYear && r.acceptedDate != null);
 
-    const steps = ['1', '2', '3'];
-    const Queue = Swal.mixin({
-      progressSteps: steps,
-      showCancelButton: true,
-      cancelButtonText: 'Cancel',
-      // optional classes to avoid backdrop blinking between steps
-      showClass: { backdrop: 'swal2-noanimation' },
-      hideClass: { backdrop: 'swal2-noanimation' },
-    });
-
-    (async () => {
-      let result = await Queue.fire({
-        title: 'Save Claim Details',
-        icon: 'warning',
-        currentProgressStep: 0,
-        confirmButtonText: 'Save',
-        showLoaderOnConfirm: true,
-        allowOutsideClick: () => false,
-        preConfirm: async () => {
-          let response = await this.authService.updateMember('memberAccept', {
-            name: 'manjula',
-          });
-
-          return response;
-        },
-      });
-
-      if (result.isConfirmed) {
-        await Queue.fire({
-          title: 'Download Claim Application',
-          text: `Claim Saved ref Number: ${result.value}`,
-          currentProgressStep: 1,
-          confirmButtonText: 'Download',
-          showLoaderOnConfirm: true,
-          allowOutsideClick: () => false,
-          preConfirm: async () => {
-            try {
-              let response: any = await this.authService.downloadClaim(2);
-              let dataType = response.type;
-              let binaryData = [];
-              binaryData.push(response);
-              let downloadLink = document.createElement('a');
-              downloadLink.href = window.URL.createObjectURL(
-                new Blob(binaryData, { type: dataType })
-              );
-              downloadLink.setAttribute('download', 'Claim form.pdf');
-              document.body.appendChild(downloadLink);
-              downloadLink.click();
-            } catch (error) {
-              Swal.showValidationMessage(` ${error} `);
-            }
-          },
-        });
-      }
-
-      await Queue.fire({
-        title: 'Finish',
-        icon: 'success',
-        showCancelButton: false,
-        currentProgressStep: 2,
-        confirmButtonText: 'OK',
-      });
-    })();
-
-    /*Swal.fire({
-      title: 'Update Claim Data',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Update',
-      showLoaderOnConfirm: true,
-      preConfirm: async () => {
-        try {
-          let res = await this.authService.updateMember('memberAccept', {
-            name: 'manjula',
-          });
-          console.log('Claim Saved ref Number ', res);
-          Swal.showValidationMessage(`Claim Saved ref Number: ${res}`);
- 
-          let down = await this.authService.downloadClaim(1);
-          console.log('received from backend ', down);
-          Swal.showValidationMessage(`Claim form downing..`);
-        } catch (error) {
-          Swal.showValidationMessage(`
-          Request failed: ${error}
-        `);
+        if (reg !== undefined) {
+          // Registration OK, navigate to home
+          this.loaderService.updateMessage('Registration found. Redirecting to home page...');
+          await this.delay(100);
+          this.share.setUser(member);
+          this.router.navigate(['/home']);
+        } else {
+          const regnext = member.memberRegistrations.find((r) => r.year == Utils.currentYear + 1);
+          if (regnext !== undefined) {
+            // Registered for next year, navigate to signin
+            Swal.fire(`Registered for year ${Utils.currentYear + 1}`, `No access for current Year ${Utils.currentYear}`, 'warning');
+            this.router.navigate(['/signin']);
+          } else {
+            // Registration process ongoing, navigate to signin
+            Swal.fire('Membership accept pending', 'Contact Department Head', 'warning');
+            this.router.navigate(['/signin']);
+          }
         }
-      },
-      allowOutsideClick: () => !Swal.isLoading(),
-    }).then((result) => {
-      console.log('result ', result.value);
-      if (result.isConfirmed) {
-        Swal.fire('Saving', '', 'success');
-        this.loadMemberPage();
       } else {
-        console.log('error');
+        // Member not found, check HR database
+        this.loaderService.updateMessage('Member not found. Checking HR database...');
+        await this.delay(100);
+        const hr = await this.authService.getHRDetailsNew(this.empNoForm.value.empNo);
+        if (hr.empNo != null) {
+          // Employee found in HR, navigate to signup
+          this.loaderService.updateMessage('Employee found in HR. Redirecting to signup...');
+          await this.delay(100);
+          this.share.setUser(hr);
+          this.router.navigate(['/signup']);
+        } else {
+          // Invalid employee number, show error
+          Swal.fire({
+            title: 'Employee Number is Wrong',
+            icon: 'error',
+            confirmButtonText: 'Exit',
+          });
+          this.resetEmpNoForm();
+          this.router.navigate(['/signin']);
+        }
       }
-    });*/
-  }
-  loadMemberPage() {
-    console.log('finished');
-  }
-  isMember() {
-    /**
-     * try with stepper
-     */
-    if (!this.empNoForm.valid) {
-      Swal.fire('Please Enter Employee Number');
-      this.empNoForm.reset();
-      return;
+    } catch (error) {
+      console.error('Error performing tasks', error);
+      Swal.fire({
+        title: 'Error',
+        text: 'An error occurred while processing your request.',
+        icon: 'error',
+        confirmButtonText: 'Ok',
+      });
+    } finally {
+      // Hide loader after all tasks are complete
+      this.loaderService.hideLoader();
     }
+  }
+
+  private delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  resetEmpNoForm(): void {
+    this.empNoForm.reset();
+    this.empNoForm.markAsPristine();
+    this.empNoForm.markAsUntouched();
+    this.empNoForm.updateValueAndValidity();
+  }
+}
+
+ /* isMemberNewdelete() {
+
+    let member = await this.authService.getMemberNew(this.empNoForm.value.empNo)
+
+    if (member.id != null) {
+      //member found
+      const reg = member.memberRegistrations.find((r) => {
+        return (
+          r.year == Utils.currentYear && r.acceptedDate != null
+        );
+      });
+      if (reg !== undefined) {
+        //registration ok visit home page
+        this.share.setUser(member);
+        this.router.navigate(['/home']);
+      } else {
+        const regnext = member.memberRegistrations.find((r) => {
+          return (
+            r.year == Utils.currentYear + 1
+          );
+        });
+        if (regnext !== undefined) {
+          //register for next year back to signin
+          Swal.fire(
+            `Registered for year ${Utils.currentYear + 1}`,
+            `No access for current Year ${Utils.currentYear}`,
+            'warning'
+          );
+          this.router.navigate(['/signin']);
+        }
+        //rejct login registration precees is on going
+        Swal.fire(
+          'Membership accept pending',
+          `Contact Department Head`,
+          'warning'
+        );
+      }
+
+    } else {
+      //not the member check Hr database
+      const hr = await this.authService.getHRDetailsNew(this.empNoForm.value.empNo)
+      if (hr.empNo != null) {
+        //employee found in hr registration page
+        this.share.setUser(hr);
+        this.router.navigate(['/signup']);
+      } else {
+        //error not a valid employee number
+        Swal.fire({
+          title: 'Employee Number is Wrong',
+          icon: 'error',
+          confirmButtonText: 'Exit',
+        });
+        this.resetEmpNoForm()
+        this.loader.hideLoader();
+        this.router.navigate(['/signin']);
+      }
+    }
+    this.loader.hideLoader();
+  }*/
+
+   /*isMember() {
     this.authService
       .isGuest(Utils.currentYear, this.empNoForm.value.empNo)
       .subscribe({
         next: (user: any) => {
+
           if (user.isMember == false) {
-            this.authService
-              .getHRDetails(this.empNoForm.value.empNo)
+            this.authService.getHRDetails(this.empNoForm.value.empNo)
               .subscribe({
                 next: (user) => {
-                  if (user == null) {
+                  if (user.id == null) {
                     Swal.fire({
                       title: 'Employee Number is Wrong',
                       icon: 'error',
                       confirmButtonText: 'Exit',
                     });
-                    this.empNoForm.reset();
+                    this.resetEmpNoForm()
                     return;
                   } else {
                     this.share.setUser(user);
@@ -194,13 +205,11 @@ export class LoginV1Component implements OnInit {
                 },
               });
           } else {
-            //Is a Valid Staff Member check for current year registration
-
             this.authService
               .getMemberold(this.empNoForm.value.empNo)
               .subscribe((member) => {
                 if (member) {
-                  console.log('member ',member)
+                  console.log('member ', member)
                   this.share.setUser(member);
                   const reg = member.memberRegistrations.find((r) => {
                     return (
@@ -226,9 +235,9 @@ export class LoginV1Component implements OnInit {
         },
       });
     this.loader.hideLoader();
-  }
+  }*/
 
-  getHrDetails(empNo: string) {
+  /*getHrDetails(empNo: string) {
     this.authService.getHRDetails(empNo).subscribe((result) => {
       if (result == null) {
         console.log('not in Hr Details');
@@ -236,175 +245,75 @@ export class LoginV1Component implements OnInit {
         this.isMember();
       }
     });
+  }*/
+  
+  /*delayx() {
+    // Simulate a delay of 3 seconds (3000 milliseconds)
+    setTimeout(() => {
+      // Simulate fetching data
+      this.simulateDataFetching().subscribe(data => {
+        // Handle data (this example just logs the data)
+        console.log(data);
+        // Hide loader after data is fetched
+        this.loader.hideLoader();
+      });
+    }, 5000);
   }
+  // Simulate data fetching method
+  simulateDataFetching(): Observable<any> {
+    return of({ data: 'Sample data' }).pipe(delay(5000)); // Simulate a delay in data fetching
+  }
+*/
 
-  stepperMsg() {
-    const steps = ['1', '2', '3'];
+  /*isMember1() {
+    const steps = ['Checking', '2', '3'];
     const Queue = Swal.mixin({
       progressSteps: steps,
-      showCancelButton: true,
-      cancelButtonText: 'Cancel',
-      // optional classes to avoid backdrop blinking between steps
       showClass: { backdrop: 'swal2-noanimation' },
       hideClass: { backdrop: 'swal2-noanimation' },
     });
 
     (async () => {
       let result = await Queue.fire({
-        title: 'Save Claim Details',
+        title: 'Checking',
         icon: 'warning',
         currentProgressStep: 0,
-        confirmButtonText: 'Save',
-        showLoaderOnConfirm: true,
+        //showLoaderOnConfirm: true,
         allowOutsideClick: () => false,
         preConfirm: async () => {
-          let response = await this.authService.updateMember('memberAccept', {
-            name: 'manjula',
-          });
-
-          return response;
-        },
-      });
-
-      if (result.isConfirmed) {
-        await Queue.fire({
-          title: 'Download Claim Application',
-          text: `Claim Saved ref Number: ${result.value}`,
-          currentProgressStep: 1,
-          confirmButtonText: 'Download',
-          showLoaderOnConfirm: true,
-          allowOutsideClick: () => false,
-          preConfirm: async () => {
-            try {
-              let response: any = await this.authService.downloadClaim(1);
-              console.log('received from backend ', response);
-
-              let dataType = response.type;
-              let binaryData = [];
-              binaryData.push(response);
-              let downloadLink = document.createElement('a');
-              downloadLink.href = window.URL.createObjectURL(
-                new Blob(binaryData, { type: dataType })
+          let response = await this.authService
+            .getMember(this.empNoForm.value.empNo);
+          if (response) {
+            console.log('member ', response)
+            this.share.setUser(response);
+            /*const reg = response.memberRegistrations.find((r) => {
+              return (
+                r.year == Utils.currentYear && r.acceptedDate != null
               );
-              downloadLink.setAttribute('download', 'Claim form.pdf');
-              document.body.appendChild(downloadLink);
-              downloadLink.click();
-            } catch (error) {
-              Swal.showValidationMessage(` ${error} `);
-            }
-          },
-        });
-      }
-
-      await Queue.fire({
-        title: 'Finish',
-        icon: 'success',
-        showCancelButton: false,
-        currentProgressStep: 2,
-        confirmButtonText: 'OK',
-      });
-    })()
-  }
-
-}
-/*
-//loading logo and success
-Swal.fire({
-  title: 'Update Details',
-  icon: 'question',
-  showCancelButton: true,
-  confirmButtonText: 'Update',
-  showLoaderOnConfirm: true,
-  preConfirm: async () => {
-    try {
-      let res = await this.authService.updateMember('memberAccept', {
-        name: 'manjula',
-      });
-      console.log('received from backend ', res);
-      //return res;
-    } catch (error) {
-      Swal.showValidationMessage(`
-      Request failed: ${error}
-    `);
-    }
-  },
-  allowOutsideClick: () => !Swal.isLoading(),
-}).then((result) => {
-  console.log('result ', result.value);
-  if (result.isConfirmed) {
-    Swal.fire('Saving', '', 'success');
-    this.loadMemberPage();
-  } else {
-    console.log('error');
-  }
-});
-
-
-end*/
-
-/*registerProcess() {
-  Swal.fire({
-    title: `Download pdf`,
-    icon: 'success',
-    showCancelButton: true,
-    confirmButtonText: 'Save',
-    showLoaderOnConfirm: true,
-    preConfirm: async () => {
-      console.log('preConfirm');
-      this.authService.registert('Manjula').subscribe((result) => {
-        console.log(result);
-        this.authService.getMember('100').subscribe((m) => {
-          this.share.setUser(m);
-          //this.formGroup.reset();
-          //this.router.navigate(['/home']);
-
-          Swal.fire({
-            title: `Download preConfirm`,
-            icon: 'success',
-            showCancelButton: true,
-            confirmButtonText: 'Save',
-            allowOutsideClick: () => false,
-          }).then((result) => {
-            if (result.isConfirmed) {
-              console.log('preConfirm result.isConfirmed ');
-            } else {
-              console.log('preConfirm result.isConfirmed else ');
-            }
-          });
-        });
-        this.home();
-      });
-    },
-    allowOutsideClick: () => false,
-  }).then((result) => {
-    if (result.isConfirmed) {
-      console.log('result.isConfirmed ');
-      this.authService.registert('Manjula').subscribe((result) => {
-        console.log(result);
-
-        Swal.fire({
-          title: `registert Download clicked`,
-          icon: 'success',
-          showCancelButton: true,
-          confirmButtonText: 'Save',
-          allowOutsideClick: () => false,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            console.log('registert result.isConfirmed ');
-            this.authService.registert('Manjula').subscribe((result) => {
-              console.log(result);
-              this.home();
             });
-          } else {
-            console.log('registert result.isConfirmed else ');
-          }
-        });
-      });
-    } else {
-      console.log('then result.isConfirmed else ');
-    }
-  });
-  console.log('after swal ');*/
+            if (reg !== undefined) {
+              this.router.navigate(['/home']);
+            } else {
+              Swal.fire(
+                'Membership is not accepted',
+                `Contact Department Head`,
+                'warning'
+              );
+            }*/
+  /*  }
+    return response;
+  },
+});
+await Queue.fire({
+  title: 'Finish',
+  icon: 'success',
+  showCancelButton: false,
+  currentProgressStep: 2,
+  confirmButtonText: 'OK',
+});
+})();
+}*/
+
 /*Swal.fire({
   title: 'Auto close alert!',
   text: 'I will close in 2 seconds.',
@@ -455,49 +364,3 @@ Swal.fire({
     console.log('result not confirm')
   }
 });*/
-/*
-
-Swal.fire({
-  title: `Confirm to submit Data ?`,
-  icon: 'warning',
-  showCancelButton: true,
-  confirmButtonColor: '#3085d6',
-  cancelButtonColor: '#d33',
-  confirmButtonText: 'Yes, Submit!'
-}).then((result) => {
-  if (result.isConfirmed) {
-    this.setDep();
-    this.setBen();
-    this.formGroup.patchValue({
-      roles: [{ role: "user" }],
-      memberRegistrations: [{ id: null, year: Utils.currentYear, schemeType: this.schemeType }],
-      mDate: Utils.today,
-      registrationOpen: 0,
-      status: "pending",
-      password:"user",
-      scheme: this.schemeType,
-    });
-
-    console.log("form generated values ", this.formGroup.value);
-    this.authService.register(this.formGroup.value).subscribe(
-      (response: any) => {
-        let dataType = response.type;
-        let binaryData = [];
-        binaryData.push(response);
-        let downloadLink = document.createElement('a');
-        downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: dataType }));
-        downloadLink.setAttribute('download', "Application.pdf");
-        document.body.appendChild(downloadLink);
-        console.log(downloadLink)
-        downloadLink.click();
-      }
-    );
-  }
-});
-}*/
-/*
-  onNotifySelected(scheme: any) {
-    this.schemas = scheme;
-
-    console.log(scheme)
-  }*/

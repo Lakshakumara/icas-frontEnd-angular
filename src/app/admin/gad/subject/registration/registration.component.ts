@@ -21,6 +21,7 @@ import { Claim } from 'src/app/Model/claim';
 import { Constants } from 'src/app/util/constants';
 import { SharedService } from 'src/app/shared/shared.service';
 import { VoucherNewComponent } from '../../voucher-new/voucher-new.component';
+import { Utils } from 'src/app/util/utils';
 
 @Component({
   selector: 'app-sub_registration',
@@ -28,6 +29,7 @@ import { VoucherNewComponent } from '../../voucher-new/voucher-new.component';
   styleUrls: ['./r.css'],
 })
 export class RegistrationComponent implements OnInit, AfterViewInit {
+
   @Input() voucherIds!: number[];
   @Output() doVoucher = new EventEmitter();
   showFullProfile = false;
@@ -65,9 +67,9 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   //@ViewChild(MatPaginator) paginator!: MatPaginator;
   //@ViewChild(MatSort) sort!: MatSort;
   panelOpenState = false;
-
-  
   selectedvoucherId!: number | undefined;
+  currentYear:number = Utils.currentYear
+
   @ViewChild(VoucherNewComponent) voucherNewComponent!: VoucherNewComponent;
   
   constructor(
@@ -129,12 +131,7 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
           role: Constants.ROLE_SUPER_ADMIN,
         });
     });
-    console.log('selectedRoles ', this.selectedRoles);
-    /*const selectedRoles = this.selectedMember?.roles.map(role => {
-        return this.roleData.find(item => item.role === role);
-      }).filter(role => role !== undefined);
-      
-      console.log('Selected Roles:', selectedRoles);*/
+   
     this.roleGroup.patchValue({
       selectedRoles: [this.selectedRoles],
       //selectedRoles: this.selectedMember!.roles.map(role => this.roleData.find(item => item.role === role))
@@ -163,7 +160,10 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
     this.viewMode = 'claimManage';
     this.panelTitle = 'Claim Manage';
   }
-
+  showReRegistration() {
+    this.viewMode = 'reReg';
+    this.panelTitle = `Re Registration -${this.currentYear+1} `;
+    }
   showSetPayment(){
     this.viewMode = 'setPayment';
     this.panelTitle = `Claim ID ${this.selectedClaim!.id}`;

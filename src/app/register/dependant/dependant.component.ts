@@ -66,7 +66,7 @@ export class DependantComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.log('Error  dep search like ' + error);
+        console.log('Error dep search like ' + error);
       },
     });
   }

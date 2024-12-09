@@ -78,14 +78,11 @@ export class ClaimHistoryComponent implements OnInit, AfterViewInit {
 
   loadClaimPage() {
     console.log(this.member.empNo);
-    this.dataSource.requestData(
+    this.dataSource.loadClaims(
       '',
       '',
       '',
-      this.sort.direction,
-      this.paginator.pageIndex,
-      this.paginator.pageSize,
-      this.member.empNo
+      this.member.empNo,
     );
   }
 

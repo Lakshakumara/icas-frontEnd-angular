@@ -2,7 +2,9 @@
 .example-full-width {
     width: 98%;
 }
-
+.title{
+    margin-top: 8px;
+}
 .mat-input-element {
     position: relative;
     top: -0.3em;

@@ -24,7 +24,7 @@ export class HospitalComponent implements OnInit {
   today = Utils.today;
   beforeThreeMonth = Utils.threeMonthbeforetoday;
   SCHEME_INDIVIDUAL: string = Constants.SCHEME_INDIVIDUAL;
-
+  she: string = Constants.CATEGORY_SHE
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private ref: MatDialogRef<HospitalComponent>,
@@ -126,19 +126,23 @@ export class HospitalComponent implements OnInit {
 
   ngOnInit(): void {
     this.member = this.share.getUser();
-    //console.log('Member ', this.member);
     if (this.member) {
-      this,
-        this.member.dependants.forEach((b) => {
+      this.authService.getMemberDependants(this.member.empNo,)
+      .then((dep:any)=>{
+        this.member.dependants=dep
+        dep.forEach((b:any) => {
+          console.log(b)
           this.claimers.push(b.relationship + '-' + b.name);
         });
+      })
+      
     } else {
       this.router.navigate(['/signin']);
     }
   }
-  onNotifySelected(schemeTitles: string[]) {
+  /*onNotifySelected(schemeTitles: string[]) {
     this.schemeTitles = schemeTitles;
-  }
+  }*/
   onNotifySelectedScheme(schemeTitles: Scheme[]) {
     if (schemeTitles.length >= 1) this.schemeTitles = [schemeTitles[0].title];
   }
@@ -234,6 +238,7 @@ export class HospitalComponent implements OnInit {
           this.closePopup();
         }
       });
-    })();
+    }
+    )();
   }
 }

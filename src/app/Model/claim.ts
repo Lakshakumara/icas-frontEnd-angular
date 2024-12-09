@@ -203,3 +203,25 @@ export const Claim_Data_Review = [
     label: 'Remarks',
   },
 ];
+export const Claim_History = [
+  {
+    key: 'category',
+    type: 'text',
+    label: 'Category',
+  },
+  {
+    key: 'maxAmount',
+    type: 'currency',
+    label: 'Max Amount',
+  },
+  {
+    key: 'claimDate',
+    type: 'Date',
+    label: 'Claim Date',
+  },
+  {
+    key: 'paidAmount',
+    type: 'currency',
+    label: 'Paid Amount',
+  },
+];

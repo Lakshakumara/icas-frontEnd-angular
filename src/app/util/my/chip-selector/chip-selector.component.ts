@@ -1,16 +1,20 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
+  Input,
+  OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
   inject,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { startWith, map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -27,44 +31,58 @@ export const _filter = (opt: Scheme[], value: string): Scheme[] => {
   );
 };
 
-/**
- * @title Adding and removing data when using an observable-based datasource.
- */
 @Component({
   selector: 'app-chip-selector',
   templateUrl: './chip-selector.component.html',
   styleUrls: ['./chip-selector.component.css'],
 })
-export class ChipSelectorComponent implements OnInit {
+export class ChipSelectorComponent implements OnInit, OnChanges  {
+  @Input() category: any
   formGroup: FormGroup;
   separatorKeysCodes: number[] = [ENTER, COMMA];
-  allScheme: Scheme[] = [];
+  allScheme: any[] = [];
   selectedScheme: Scheme[] = [];
-  titlesSc!: Observable<Scheme[]>;
-
+  titlesSc!: Observable<Scheme[]>
   @ViewChild('titleInput') titleInput!: ElementRef<HTMLInputElement>;
-
   @Output() getScheme = new EventEmitter<Scheme[]>();
 
   announcer = inject(LiveAnnouncer);
-
   constructor(private fb: FormBuilder, private schemeService: SchemeService) {
     this.formGroup = this.fb.group({
       schemeTitles: this.fb.control('', [Validators.required]),
     });
 
-    this.schemeService.getScheme().subscribe((res: any[]) => {
-      res.forEach((s) => {
-        if (s.title != '') this.allScheme.push(s);
-      });
-    });
   }
 
   ngOnInit() {
+    console.log("selected Category ", this.category)
+    this.setupData(this.category)
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['category']) {
+      this.handleCategoryChange(changes['category'].currentValue);
+    }
+  }
+  setupData(cat:any){
+    this.allScheme = []
+    this.schemeService.getScheme(cat)
+      .subscribe((res: any[]) => {
+        res.forEach((s) => {
+          if (s.title != '') {
+            this.allScheme.push(s);
+          }
+        });
+        this.formGroup.get('schemeTitles')!.setValue('');
+      });
     this.titlesSc = this.formGroup.get('schemeTitles')!.valueChanges.pipe(
       startWith(''),
       map((value: string) => this._filterx(value || ''))
     );
+  }
+
+  handleCategoryChange(newCategory: string) {
+    this.setupData(newCategory)
   }
 
   add(event: any): void {
@@ -101,14 +119,14 @@ export class ChipSelectorComponent implements OnInit {
   }
   selected(event: any): void {
     const value = event.option.value;
-    
+
     if (!this.selectedScheme.includes(value)) {
       this.selectedScheme.push(value);
       this.getScheme.emit(this.selectedScheme);
     } else {
       Constants.Toast.fire(value.title, ' alrady added');
     }
-    this.titleInput.nativeElement.value = '';
+    // this.titleInput.nativeElement.value = '';
     this.formGroup.get('schemeTitles')!.setValue('');
   }
 

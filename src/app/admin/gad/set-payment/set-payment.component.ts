@@ -6,7 +6,7 @@ import { merge, tap } from 'rxjs';
 import { Claim_Data_Review } from 'src/app/Model/claim';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Constants } from 'src/app/util/constants';
-import { ClaimDataSource } from 'src/app/util/dataSource/claim-dataSource';
+import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -18,7 +18,7 @@ export class SetPaymentComponent implements OnInit, AfterViewInit {
   @Input() selectedClaim!: any | null
   claimData!: any[] | null
   selectedClaimData!: any | null
-  dataSource!: ClaimDataSource
+  dataSource!: LoadDataSource
   totalLength = 0
   columnsSchema: any = Claim_Data_Review
   displayedColumn: string[] = this.columnsSchema.map((col: { key: any; }) => col.key)
@@ -95,7 +95,7 @@ export class SetPaymentComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.dataSource = new ClaimDataSource(this.auth);
+    this.dataSource = new LoadDataSource(this.auth);
   }
   ngAfterViewInit() {
     this.setupTableFeatures();
@@ -129,6 +129,7 @@ export class SetPaymentComponent implements OnInit, AfterViewInit {
   loadClaimData(): void {
     this.dataSource.getClaimData(this.selectedClaim.id);
   }
+  
   cData(selectedRow: any) {
     this.selectedClaimData = selectedRow
     this.formGroup.patchValue({

@@ -4,4 +4,7 @@ export interface Dependant{
     nic: string;
     dob: any;
     relationship: string;
+    registerDate:any,
+    registrationYear:number,
+    deleted:boolean
 }

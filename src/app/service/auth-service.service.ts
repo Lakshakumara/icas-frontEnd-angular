@@ -13,6 +13,7 @@ import { Utils } from '../util/utils';
   providedIn: 'root',
 })
 export class AuthServiceService {
+
   private API_URL = environment.baseUrl;
 
   constructor(private http: HttpClient) { }
@@ -140,6 +141,24 @@ export class AuthServiceService {
       })
       .pipe<any>(map((res: any) => res));
   }
+
+  getHistoryMain(): Observable<any> {
+    return this.http
+      .get(`${this.API_URL}/guest`)
+      .pipe<any[]>(map((res: any) => res));
+
+  }
+
+  getClaimHistory(empNo:string, idText:any=[]): Observable<any> {
+    return this.http
+    .get(`${this.API_URL}/claim/history`, {
+      params: new HttpParams()
+      .set('empNo', empNo)
+      .set('idText', idText)
+    }).pipe<any[]>(map((res: any) => res));
+     
+  }
+
 
   getClaimData(claimId: number,
     pageIndex: number = 0,

@@ -5,8 +5,10 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
   inject,
 } from '@angular/core';
@@ -34,7 +36,7 @@ export const _filter = (opt: Scheme[], value: string): Scheme[] => {
   templateUrl: './chip-selector.component.html',
   styleUrls: ['./chip-selector.component.css'],
 })
-export class ChipSelectorComponent implements OnInit, AfterViewInit {
+export class ChipSelectorComponent implements OnInit, OnChanges  {
   @Input() category: any
   formGroup: FormGroup;
   separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -54,7 +56,17 @@ export class ChipSelectorComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     console.log("selected Category ", this.category)
-    this.schemeService.getScheme(this.category)
+    this.setupData(this.category)
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['category']) {
+      this.handleCategoryChange(changes['category'].currentValue);
+    }
+  }
+  setupData(cat:any){
+    this.allScheme = []
+    this.schemeService.getScheme(cat)
       .subscribe((res: any[]) => {
         res.forEach((s) => {
           if (s.title != '') {
@@ -67,11 +79,12 @@ export class ChipSelectorComponent implements OnInit, AfterViewInit {
       startWith(''),
       map((value: string) => this._filterx(value || ''))
     );
+  }
 
+  handleCategoryChange(newCategory: string) {
+    this.setupData(newCategory)
   }
-  ngAfterViewInit() {
-    console.log("ngAfterViewInit titlesSc ", this.titlesSc)
-  }
+
   add(event: any): void {
     const input = event.input;
     const value = event.value;

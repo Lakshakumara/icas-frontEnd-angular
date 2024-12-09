@@ -5,6 +5,8 @@ import { Observable, BehaviorSubject, of, catchError, finalize } from 'rxjs';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 
 export class LoadDataSource extends DataSource<any> {
+  
+  
   paginator: MatPaginator | undefined;
   sort: MatSort | undefined;
   filter: string = '';
@@ -137,6 +139,45 @@ export class LoadDataSource extends DataSource<any> {
       });
     console.log("fetch data set ", this.dataSetSubject)
   }
+  getHistoryMain() {
+    this.loadingSubject.next(true);
+    this.auth.getHistoryMain()
+      .pipe(
+        catchError(() => of([])),
+        finalize(() => this.loadingSubject.next(false))
+      )
+      .subscribe((receiveData: any) => {
+        this.data = receiveData
+        this.dataSetSubject.next(receiveData);
+        //this.totalCount = receiveData.totalElements;
+      });
+      console.log("fetch getHistoryMain ", this.dataSetSubject)
+  }
+  getSchemeData(idText: string[]) {
+    this.loadingSubject.next(true);
+    this.auth.getClaimData(1)
+      .pipe(
+        catchError(() => of([])),
+        finalize(() => this.loadingSubject.next(false))
+      )
+      .subscribe((receiveData: any) => {
+        this.dataSetSubject.next(receiveData);
+        //this.totalCount = receiveData.totalElements;
+      });
+      console.log("fetch getHistoryMain ", this.dataSetSubject)
+  }
+
+  /*getClaimHistory(empNo: string) {
+    this.loadingSubject.next(true);
+    this.auth.getClaimHistory(empNo)
+      .pipe(
+        catchError(() => of([])),
+        finalize(() => this.loadingSubject.next(false))
+      )
+      .subscribe((receiveData: any) => {
+        this.dataSetSubject.next(receiveData);
+      });
+  }*/
 
   /*requestAllData(
     claimStatus: string

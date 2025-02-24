@@ -16,7 +16,7 @@
       <button mat-raised-button color="warn" (click)="closePopup()">Close</button>
     </mat-card-actions>
   </mat-card-->
-  <h1 mat-dialog-title>{{ inputdata.title }}</h1>
+  <h1 mat-dialog-title>{{ inputData.title }}</h1>
 
   <div mat-dialog-content>
     <mat-form-field class="example-full-width title" appearance="outline">
@@ -44,8 +44,11 @@
     </mat-form-field>
   </div>
   <div mat-dialog-actions>
-    <button mat-raised-button color="primary" [disabled]="!dForm.valid" (click)="addBeneficiaryDetails()">
-      Add
+    <button mat-raised-button *ngIf="!showEditBtn" color="primary" [disabled]="!dForm.valid" (click)="addBeneficiaryDetails()">
+      <mat-icon>add</mat-icon>Add
+    </button>
+    <button mat-raised-button *ngIf="showEditBtn"color="primary" [disabled]="!dForm.valid" (click)="addBeneficiaryDetails()">
+      <mat-icon>edit</mat-icon>Edit
     </button>
     <button mat-raised-button color="warn" (click)="closePopup()">Close</button>
   </div>

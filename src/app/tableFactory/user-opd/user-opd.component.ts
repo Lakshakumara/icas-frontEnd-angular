@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
@@ -45,6 +45,7 @@ export class UserOPDComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
+    private ref:ChangeDetectorRef,
     private share: SharedService,
     private auth: AuthServiceService,
     private breakpointObserver: BreakpointObserver,
@@ -57,6 +58,7 @@ export class UserOPDComponent implements OnInit, AfterViewInit {
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.isMobile = window.innerWidth <= 600;
+    this.ref.detectChanges()
   }
   ngOnInit() {
     this.member = this.share.getUser();

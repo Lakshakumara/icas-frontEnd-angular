@@ -18,12 +18,11 @@
   overflow-x: auto;
 }
 
-.register-form td.mat-column-star {
-  width: 20px;
-  padding-right: 8px !important;
-}
 .td.mat-column-action{
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+}
+.btn{
+  margin-left: 8px;
 }

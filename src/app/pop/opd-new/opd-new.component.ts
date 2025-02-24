@@ -42,7 +42,7 @@ export class OpdNewComponent implements OnInit {
     memberId: this.buildr.control(0),
     category: this.buildr.control(Constants.CATEGORY_OPD),
     requestFor: this.buildr.control('',),
-    incidentDate: this.buildr.control(Utils.today, Validators.required),
+    startDate: this.buildr.control(Utils.today, Validators.required),
     claimDate: this.buildr.control(Utils.today, Validators.required),
     applyDate: this.buildr.control(Utils.today),
     requestAmount: this.buildr.control({ value: <number>{}, disabled: false }, Validators.required),

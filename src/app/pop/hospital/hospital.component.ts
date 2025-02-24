@@ -19,7 +19,7 @@ import Swal from 'sweetalert2';
 export class HospitalComponent implements OnInit {
   member!: Member;
   inputdata: any;
-  claimers: string[] = ['Member'];
+  claimers: string[] = [];
   schemeTitles!: string[];
   today = Utils.today;
   beforeThreeMonth = Utils.threeMonthbeforetoday;
@@ -128,14 +128,14 @@ export class HospitalComponent implements OnInit {
     this.member = this.share.getUser();
     if (this.member) {
       this.authService.getMemberDependants(this.member.empNo,)
-      .then((dep:any)=>{
-        this.member.dependants=dep
-        dep.forEach((b:any) => {
-          console.log(b)
-          this.claimers.push(b.relationship + '-' + b.name);
-        });
-      })
-      
+        .then((dep: any) => {
+          this.member.dependants = dep
+          dep.forEach((b: any) => {
+            console.log(b)
+            this.claimers.push(b.relationship + '-' + b.name);
+          });
+        })
+      console.log("saved Member in Sh ", this.member)
     } else {
       this.router.navigate(['/signin']);
     }

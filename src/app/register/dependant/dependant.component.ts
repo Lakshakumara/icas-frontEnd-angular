@@ -13,17 +13,17 @@ import { Utils } from 'src/app/util/utils';
 })
 export class DependantComponent implements OnInit {
   today = Utils.today;
-  inputdata: any;
+  inputData: any;
   editdata: Dependant[];
   relationshipOptions: string[] = Constants.relationShip;
-
+  showEditBtn: boolean = false;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private ref: MatDialogRef<DependantComponent>,
     private buildr: FormBuilder,
     private authService: AuthServiceService
   ) {
-    this.inputdata = data;
+    this.inputData = data;
     this.editdata = data.dataSet;
   }
 
@@ -36,7 +36,7 @@ export class DependantComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.editdata.forEach((d) => {
+    this.inputData.dataSet.forEach((d:any) => {
       this.dForm.patchValue({
         id: d.id,
         name: d.name,
@@ -44,12 +44,32 @@ export class DependantComponent implements OnInit {
         dob: d.dob,
         relationship: d.relationship,
       });
+      this.showEditBtn = true
     });
   }
 
-  addDependentDetails() {
-    if (this.dForm.invalid) return;
-    this.authService.getDependant(this.dForm.value.name).subscribe({
+  async addDependentDetails() {
+    console.log(this.dForm.value)
+    if (this.dForm.invalid) {
+      console.log("not valid", this.dForm.value)
+      return
+    }
+    const dep:any = this.authService.getMemberDependants(this.inputData.empNo, 0, this.dForm.value.name)
+    if (dep.name == null) {
+      this.ref.close(this.dForm);
+    } else {
+      console.log('exists dep' + JSON.stringify(dep));
+      dep.relationship = this.dForm.value.relationship;
+      this.dForm.patchValue({
+        id: dep.id,
+        name: dep.name,
+        nic: dep.nic,
+        dob: dep.dob,
+      });
+      this.ref.close(this.dForm);
+    }
+
+   /* .subscribe({
       next: (dep) => {
         if (dep.name == null) {
           this.ref.close(this.dForm);
@@ -68,7 +88,7 @@ export class DependantComponent implements OnInit {
       error: (error) => {
         console.log('Error dep search like ' + error);
       },
-    });
+    });*/
   }
 
   closePopup() {

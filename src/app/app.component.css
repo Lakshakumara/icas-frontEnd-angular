@@ -1,4 +1,4 @@
-.example-container {
+/*.example-container {
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -17,7 +17,37 @@ mat-sidenav-content {
 }
 
 .footer {
-  background-color: #b4beb9;
+  background-color: #00334e; 
+  color: white;
+  padding: 10px;
+  text-align: center;
+  flex-shrink: 0;
+}*/
+
+.example-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: url('/assets/images/back.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+mat-sidenav-content {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.8); /* Semi-transparent background for content */
+}
+
+.content {
+  flex: 1;
+  padding: 16px;
+  overflow: auto;
+}
+
+.footer {
+  background-color: #00334e; /* Slightly darker blue footer */
+  color: white;
   padding: 10px;
   text-align: center;
   flex-shrink: 0;

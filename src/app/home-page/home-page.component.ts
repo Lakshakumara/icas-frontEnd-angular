@@ -10,6 +10,7 @@ import { Utils } from '../util/utils';
 import { Constants } from '../util/constants';
 import { OpdNewComponent } from '../pop/opd-new/opd-new.component';
 import Swal from 'sweetalert2';
+import { ClaimDetailsDialogComponent } from '../pop/claim-details-dialog/claim-details-dialog.component';
 
 @Component({
   selector: 'app-home-page',
@@ -38,52 +39,68 @@ export class HomePageComponent implements OnInit {
     }
   }
   ngOnInit(): void {
-    const Toast = Swal.mixin({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 5000,
-      timerProgressBar: true,
-      didOpen: (toast) => {
-        toast.onmouseenter = Swal.stopTimer;
-        toast.onmouseleave = Swal.resumeTimer;
-      }
-    });
-    Toast.fire({
-      icon: "success",
-      title: `New Registration is available`,
-      showConfirmButton:true,
-      showCloseButton:true,
-      confirmButtonText:`Register Now`
-    }).then((result) => {
-      if (result.isConfirmed) {
-       Swal.fire("Redirecting!", "", "success");
-     }
- });
+    console.log("All ", this.member.memberRegistrations)
+    const registerOpen = this.member.registrationOpen
+    const reg = this.member.memberRegistrations.filter(r => { return r.year === registerOpen })
+    console.log("reg ", registerOpen, Utils.currentYear, reg)
+
+    if (registerOpen != 0 && reg) {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 5000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      });
+      Toast.fire({
+        icon: "success",
+        title: `New Registration is available`,
+        showConfirmButton: true,
+        showCloseButton: true,
+        confirmButtonText: `Register Now`
+      }).then((result) => {
+        if (result.isConfirmed) {
+          if (this.member != undefined) {
+            this.router.navigate([`/signup/${this.member.empNo}`]);
+          } else {
+            this.router.navigate([`/signin`]);
+          }
+        }
+      });
+    }
+    this.loadDashboard();
+  }
+
+  loadDashboard() {
     this.auth
       .getDashboardData(Utils.currentYear, this.member.empNo)
       .subscribe((receiveData: any) => {
         this.claimSummary = receiveData;
-        this.claimSummary.forEach((c) => {
-          if (c.category == Constants.CATEGORY_OPD) {
-            this.opdRequestSum += c.requestAmount;
-            this.opdPaidSum += c.paidAmount;
-          } else if (c.category == Constants.CATEGORY_SHE) {
-            this.hsRequestSum += c.requestAmount;
-            this.hsPaidSum += c.paidAmount;
-          }
-        });
+        if (this.claimSummary)
+          this.claimSummary.forEach((c) => {
+            if (c.category == Constants.CATEGORY_OPD) {
+              this.opdRequestSum += c.requestAmount;
+              this.opdPaidSum += c.paidAmount;
+            } else if (c.category == Constants.CATEGORY_SHE) {
+              this.hsRequestSum += c.requestAmount;
+              this.hsPaidSum += c.paidAmount;
+            }
+          });
       });
   }
-
   inquiry() {
     Constants.Toast.fire('Under Construction');
   }
 
   opdClaim() {
+
     this.Openpopup(0, 'OPD Reimbursement', OpdNewComponent, HomePageComponent);
   }
-  
+
   Openpopup(id: any, title: any, component: any, parent: any) {
     var _popup = this.dialog.open(component, {
       panelClass: 'fullscreen-dialog',
@@ -95,7 +112,9 @@ export class HomePageComponent implements OnInit {
       },
     });
 
-    _popup.afterClosed().subscribe((item) => {});
+    _popup.afterClosed().subscribe((item) => {
+      this.loadDashboard();
+    });
   }
 
   hospitalClaim() {

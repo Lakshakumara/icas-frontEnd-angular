@@ -38,7 +38,7 @@ export const BeneficiaryColumns = [
         label: 'Percent',
     },
     {
-        key: 'star',
+        key: 'action',
         type: 'icon',
         label: '',
     },

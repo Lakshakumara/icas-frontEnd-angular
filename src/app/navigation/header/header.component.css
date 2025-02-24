@@ -1,4 +1,54 @@
-a {
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .menu-button {
+    display: none;
+  }
+  
+  .logo img {
+    height: 40px;
+  }
+  
+  .member-info {
+    margin: 0 20px;
+  }
+  
+  .navigation {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navigation-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .navigation-items li {
+    margin: 0 10px;
+  }
+  
+  .navigation-items button {
+    color: white;
+  }
+  
+  @media (max-width: 600px) {
+    .menu-button {
+      display: block;
+    }
+    .navigation {
+      display: none;
+    }
+  }
+  
+
+
+/*a {
     text-decoration: none;
     color: white;
 }
@@ -21,4 +71,4 @@ mat-toolbar{
     mat-toolbar{
         border-radius: 0px;
     }
-}
+}*/

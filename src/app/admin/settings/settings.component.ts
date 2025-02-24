@@ -4,9 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Member } from 'src/app/Model/member';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { SettingsService } from 'src/app/service/settings.service';
-import { Constants } from 'src/app/util/constants';
 import { Utils } from 'src/app/util/utils';
-import Swal from 'sweetalert2';
 
 interface Section {
   id: string;

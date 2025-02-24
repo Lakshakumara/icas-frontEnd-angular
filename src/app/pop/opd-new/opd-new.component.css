@@ -1,3 +1,11 @@
 .example-full-width {
     width: 100%;
 }
+
+.scheme-title {
+    padding-top: 100px;
+}
+
+h1 {
+    text-align-last: center;
+}

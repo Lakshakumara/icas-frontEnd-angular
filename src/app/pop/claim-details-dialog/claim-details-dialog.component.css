@@ -1,0 +1,55 @@
+.mat-dialog-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #3f51b5;
+    align-items: baseline;
+}
+.dialog-title-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .dialog-title-container .claim-title {
+    flex-grow: 1;
+    text-align: center;
+  }
+  
+  .dialog-title-container button.close-button {
+    margin-left: auto;
+  }
+.mat-dialog-content {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.mat-dialog-content p {
+    margin: 5px 0;
+}
+
+.mat-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.mat-dialog-actions button {
+    background-color: #3f51b5;
+    color: white;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.mat-dialog-actions button:hover {
+    background-color: #303f9f;
+}
+
+@media (max-width: 600px) {
+    .mat-dialog-content {
+        font-size: 14px;
+    }
+
+    .mat-dialog-title {
+        font-size: 20px;
+    }
+}

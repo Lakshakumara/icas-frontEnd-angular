@@ -15,7 +15,6 @@ import { Member, Member_Column_Accept } from 'src/app/Model/member';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Constants } from 'src/app/util/constants';
 import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
-import { MemberDataSource } from 'src/app/util/dataSource/members-dataSource';
 
 @Component({
   selector: 'app-member-data',
@@ -45,7 +44,8 @@ export class MemberDataComponent implements OnInit, AfterViewInit {
     this.setupTableFeatures();
   }
   setupTableFeatures() {
-    this.dataSource.sort = this.sort;
+    this.dataSource.sort = this.sort
+    this.dataSource.paginator = this.paginator
     this.sort.direction = 'asc';
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
     this.changeDetectorRef.detectChanges();
@@ -65,7 +65,6 @@ export class MemberDataComponent implements OnInit, AfterViewInit {
       )
       .subscribe((value) => {
         this.paginator.pageIndex = 0;
-
         const filterValue = value.trim().toLowerCase();
         this.sort.active = 'name';
         this.loadMemberPage(filterValue);

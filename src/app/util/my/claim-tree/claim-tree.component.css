@@ -1,0 +1,47 @@
+.compact-tree {
+    max-width: 250px;
+    font-size: 12px; /* Smaller font size */
+    line-height: 1; /* Reduced line height */
+
+  }
+  .mat-tree-noden{
+    padding: 0px; /* Reduced padding */
+    margin-bottom: 0px;
+    margin-top: 0px;
+  }
+  .compact-tree .mat-tree-node,
+  .compact-tree .mat-nested-tree-node {
+    padding: 0 0; /* Reduced padding */
+    margin: 0; /* No margins */
+  }
+  
+  .compact-tree .mat-tree-node .node-text,
+  .compact-tree .mat-nested-tree-node .node-text {
+    display: inline-block;
+    white-space: nowrap; /* Prevent text wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Ellipsis for overflow */
+    vertical-align: middle;
+  }
+  
+  .compact-tree .toggle-button {
+    width: 24px; /* Smaller button size */
+    height: 24px; /* Smaller button size */
+   /* margin-right: 4px;  Small margin */
+    padding: 0px;
+    margin-left: 0px;
+  }
+  
+  .compact-tree .toggle-icon {
+    font-size: 16px; /* Smaller icon size */
+  }
+  
+  .compact-tree ul {
+   /* padding-left: 16px;  Reduced padding for nested items */
+    list-style: none; /* Remove default list style */
+  }
+  
+  .example-tree-invisible {
+    display: none;
+  }
+  

@@ -1,5 +1,5 @@
 <form [formGroup]="dForm">
-  <h1 mat-dialog-title>{{ inputdata.title }}</h1>
+  <h1 mat-dialog-title>{{ inputData.title }}</h1>
   <div mat-dialog-content>
     <mat-form-field class="example-full-width" appearance="outline">
       <mat-label>Name</mat-label>
@@ -28,8 +28,13 @@
     </mat-form-field>
   </div>
   <div mat-dialog-actions>
-    <button mat-raised-button color="primary" [disabled]="!dForm.valid" (click)="addDependentDetails()">
+    <button mat-raised-button *ngIf="!showEditBtn" color="primary" [disabled]="!dForm.valid"
+      (click)="addDependentDetails()">
       <mat-icon>add</mat-icon>Add
+    </button>
+    <button mat-raised-button *ngIf="showEditBtn" color="primary" [disabled]="!dForm.valid"
+      (click)="addDependentDetails()">
+      <mat-icon>edit</mat-icon>Edit
     </button>
     <button mat-raised-button color="warn" (click)="closePopup()">Close</button>
   </div>

@@ -1,12 +1,15 @@
 <article class="table-header">
   <div class="button-container">
-    <button class="button-remove-rows" mat-raised-button (click)="removeSelectedRows()">Remove Rows</button>
-    <button class="button-add-row" mat-raised-button (click)="addRow()">Add Row</button>
+    <button class="btn" mat-raised-button color="warn" (click)="removeSelectedRows()">
+      <mat-icon>delete</mat-icon>
+      Remove Rows</button>
+    <button class="btn" mat-raised-button color="primary" (click)="addRow()">
+      <mat-icon>add</mat-icon>Add Row</button>
     <span class="example-fill-remaining-space"></span>
   </div>
 
 </article>
-<table mat-table [dataSource]="dataSource">
+<table mat-table class="topClass-table mat-elevation-z8" [dataSource]="dataSource">
   <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema">
     <th mat-header-cell *matHeaderCellDef [ngSwitch]="col.key">
       <span *ngSwitchCase="'isSelected'">
@@ -22,12 +25,12 @@
         <ng-container *ngSwitchCase="'isSelected'">
           <mat-checkbox (change)="element.isSelected = $event.checked" [checked]="element.isSelected"></mat-checkbox>
         </ng-container>
-        <div class="btn-edit" *ngSwitchCase="'isEdit'">
-          <button mat-button (click)="element.isEdit = !element.isEdit">
-            Edit
+        <div class="btn" *ngSwitchCase="'isEdit'">
+          <button mat-icon-button color="primary" (click)="element.isEdit = !element.isEdit">
+            <mat-icon>edit</mat-icon>
           </button>
-          <button mat-button class="button-remove" (click)="removeRow(element.id)">
-            Delete
+          <button mat-icon-button class="button" color="warn" (click)="removeRow(element.id)">
+            <mat-icon>delete</mat-icon>
           </button>
         </div>
         <span *ngSwitchCase="'date'">
@@ -37,9 +40,10 @@
       </div>
       <div [ngSwitch]="col.type" *ngIf="element.isEdit">
         <div *ngSwitchCase="'isSelected'"></div>
-        <div class="btn-edit" *ngSwitchCase="'isEdit'">
-          <button mat-button (click)="editRow(element)" [disabled]="disableSubmit(element.id)">
-            Done
+        <div class="btn" *ngSwitchCase="'isEdit'">
+          <button mat-icon-button class="btn"
+         color="primary" (click)="editRow(element)" [disabled]="disableSubmit(element.id)">
+            <mat-icon>done</mat-icon>
           </button>
         </div>
 
@@ -70,4 +74,4 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 
 </table>
-<mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" [pageSize]="5"></mat-paginator>
+<mat-paginator #paginator [pageSizeOptions]="[10, 20,50]"></mat-paginator>

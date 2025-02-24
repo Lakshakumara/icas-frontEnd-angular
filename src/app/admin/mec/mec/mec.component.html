@@ -51,54 +51,66 @@
   </div>
 
   <mat-card class="mainbody">
-    <div *ngIf="selectedClaim; else noClaim">
-      <h4>
-        Claim Request for <b>{{ selectedClaim.requestFor }}</b>
-      </h4>
-      <table class="fullWith" cellspacing="0">
-        <tr>
-          <td>
-            Category: <b>{{ selectedClaim.category }}</b>
-          </td>
-          <td>
-            Name: <b>{{ selectedClaim.member.name }}</b>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            Date: <b>{{ selectedClaim.claimDate }}</b>
-          </td>
-          <td>
-            Gender: <b>{{ selectedClaim.member.sex }}</b>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            Contact: <b>{{ selectedClaim.member.contactNo }}</b>
-          </td>
-          <td>
-            DOB: <b>{{ selectedClaim.member.dob }}</b>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            Request Amount:
-            <b>{{ selectedClaim.requestAmount | currency : "Rs." }}</b>
-          </td>
-          <td>
-            Designation: <b>{{ selectedClaim.member.designation }}</b>
-          </td>
-        </tr>
-      </table>
-    </div>
-    <ng-template #noClaim>
-      <h4>
-        Select claim from left table...
-      </h4>
-    </ng-template>
-    <mat-divider></mat-divider>
-    <br>
+    <mat-card-title-group *ngIf="selectedClaim">
+      <img mat-card-sm-image [src]="profilePhotoUrl" alt="profile photo">
+      <mat-card-title>
+        Request Title <b>{{ selectedClaim.requestFor }}</b>
+      </mat-card-title>
+      <mat-card-subtitle class="subtitle" *ngIf="selectedClaim.dependant">
+        to dependant: <b>{{ selectedClaim.dependant.name}}-{{ selectedClaim.dependant.relationship}}</b>
+        DOB: <b>{{ selectedClaim.dependant.dob}}</b> Age: <b>{{ selectedClaim.dependant.age}}</b>
+      </mat-card-subtitle>
+      <mat-divider></mat-divider>
+    </mat-card-title-group>
+    <mat-card-content>
 
+      <div *ngIf="selectedClaim; else noClaim">
+        <table class="fullWith" cellspacing="0">
+          <tr>
+            <td>
+              Name: <b>{{ selectedClaim.member.name }}</b>
+            </td>
+            <td>
+              Designation: <b>{{ selectedClaim.member.designation }}</b>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Tp: <b>{{ selectedClaim.member.contactNo }}</b>
+            </td>
+            <td>
+              Gender: <b>{{ selectedClaim.member.sex }}</b>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              DOB: <b>{{ selectedClaim.member.dob }}</b>
+            </td>
+            <td>
+              Age: <b>{{ selectedClaim.member.age }}</b>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Date: <b>{{ selectedClaim.startDate }}</b>
+            </td>
+            <td>
+              Request Amount:
+              <b>{{ selectedClaim.requestAmount | currency : "Rs." }}</b>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <ng-template #noClaim>
+        <h4>
+          Select claim from left table...
+        </h4>
+      </ng-template>
+      <mat-divider></mat-divider>
+      <br>
+
+
+    </mat-card-content>
     <form [formGroup]="formGroup" *ngIf="this.selectedClaim">
       <mat-form-field class="fullWith">
         <mat-label>Select Scheme Title</mat-label>
@@ -120,8 +132,7 @@
 
         <mat-form-field class="fullWith">
           <mat-label>Request Amount for title </mat-label>
-          <input matInput type="number" class="example-right-align"
-            formControlName="requestAmount" />
+          <input matInput type="number" class="example-right-align" formControlName="requestAmount" />
           <span matTextSuffix>.00</span>
         </mat-form-field>
 
@@ -179,7 +190,11 @@
   </mat-card>
 
   <mat-card class="rside">
-    <mat-accordion>
+    <mat-card-title>Claim History</mat-card-title>
+    <mat-card-content>
+      <app-claim-tree *ngIf="selectedClaim" [empNo]="selectedClaim.empNo"></app-claim-tree>
+    </mat-card-content>
+    <!--mat-accordion>
       <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
           <mat-panel-title> Medical History </mat-panel-title>
@@ -187,6 +202,6 @@
 
 
       </mat-expansion-panel>
-    </mat-accordion>
+    </mat-accordion-->
   </mat-card>
 </div>

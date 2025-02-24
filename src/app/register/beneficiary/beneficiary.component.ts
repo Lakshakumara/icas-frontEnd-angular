@@ -13,18 +13,18 @@ import { Utils } from 'src/app/util/utils';
 })
 export class BeneficiaryComponent implements OnInit {
   today = Utils.today;
-  inputdata: any;
-  editdata: Beneficiary[];
+  inputData: any;
+  //editdata: Beneficiary[];
   relationshipOptions: string[] = Constants.relationShip;
-
+  showEditBtn:boolean=false;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private ref: MatDialogRef<BeneficiaryComponent>,
     private buildr: FormBuilder,
     private authService: AuthServiceService
   ) {
-    this.inputdata = data;
-    this.editdata = data.dataSet;
+    this.inputData = data;
+    //this.editdata = data.dataSet;
   }
 
   dForm = this.buildr.group({
@@ -39,7 +39,7 @@ export class BeneficiaryComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.editdata.forEach((d) => {
+    this.inputData.dataSet.forEach((d:any) => {
       this.dForm.patchValue({
         id: d.id,
         name: d.name,
@@ -47,13 +47,27 @@ export class BeneficiaryComponent implements OnInit {
         relationship: d.relationship,
         percent: d.percent,
       });
+      this.showEditBtn = true
     });
   }
-
   addBeneficiaryDetails() {
     //if (this.dForm.value.percent) return;
     console.log('addBeneficiaryDetails');
-    this.authService.getDependant(this.dForm.value.name).subscribe({
+    const ben:any = this.authService.getMemberBeneficiaries(this.inputData.empNo, 0, this.dForm.value.name)
+    if (ben.name == null) {
+      this.ref.close(this.dForm);
+    } else {
+      console.log('exists beneficiary' + JSON.stringify(ben));
+      //ben.relationship = this.dForm.value.relationship;
+      this.dForm.patchValue({
+        id: ben.id,
+        name: ben.name,
+        nic: ben.nic,
+      });
+      this.ref.close(this.dForm);
+    }
+
+    /*.subscribe({
       next: (dep) => {
         if (dep.name == null) {
           this.ref.close(this.dForm);
@@ -71,7 +85,7 @@ export class BeneficiaryComponent implements OnInit {
       error: (error) => {
         console.log('Error  beneficiary search like ' + error);
       },
-    });
+    });*/
   }
 
   closePopup() {

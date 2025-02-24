@@ -1,10 +1,12 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { catchError, finalize, merge, of, tap } from 'rxjs';
 import { Claim_Data_Review, Claim_History } from 'src/app/Model/claim';
 import { Scheme } from 'src/app/Model/scheme';
+import { ClaimDetailsDialogComponent } from 'src/app/pop/claim-details-dialog/claim-details-dialog.component';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Constants } from 'src/app/util/constants';
 import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
@@ -47,7 +49,7 @@ export class PaymentHistoryComponent implements OnInit, AfterViewInit {
 
   expandedElement: any | null;
 
-  constructor(
+  constructor(private dialog: MatDialog,
     private auth: AuthServiceService,
     private cdr: ChangeDetectorRef
   ) { }
@@ -75,7 +77,7 @@ export class PaymentHistoryComponent implements OnInit, AfterViewInit {
     this.cdr.detectChanges();
   }
   loadPaymentHistory() {
-    this.dataSource.getHistoryMain();
+    this.dataSource.getHistoryMain(this.member.empNo);
   }
   onCategoryChange(newCategory: string) {
     this.selectedCategory = newCategory;
@@ -112,10 +114,38 @@ export class PaymentHistoryComponent implements OnInit, AfterViewInit {
         )
         .subscribe((receiveData: any) => {
           console.log("expand loaded receiveData ", receiveData)
-          row.data = receiveData
+          row.data = receiveData.content
         });
-    }, 1000); // 1 second delay
+    }, 500); // 1 second delay
   }
+
+
+  openClaimDetails(claimId: number, claimIds:any, event: MouseEvent): void {
+    event.preventDefault();
+    this.Openpopup(ClaimDetailsDialogComponent, claimId, claimIds)
+    /*this.auth.getClaimNew(claimId).then(claim=>{
+      console.log("received claim ",claim)
+      this.Openpopup(ClaimDetailsDialogComponent, claim, claimId, claimIds)
+    });*/
+    
+  }
+  Openpopup(component: any, claimId:any, claimIds: any) {
+    var _popup = this.dialog.open(component, {
+      panelClass:  'custom-dialog-container',
+      enterAnimationDuration: '1000ms',
+      exitAnimationDuration: '1000ms',
+      width: '400px',
+      data: {
+        claimId:claimId,
+        claimIds:claimIds
+      },
+    });
+
+    _popup.afterClosed().subscribe((item) => {
+      console.log("Close it")
+    });
+  }
+
 
   getSchemeData(idText: string[]): any {
     console.log("expand loaded ", idText)

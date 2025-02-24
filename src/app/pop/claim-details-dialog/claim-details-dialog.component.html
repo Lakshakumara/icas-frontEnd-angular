@@ -1,0 +1,41 @@
+<div mat-dialog-title *ngIf="claim">
+    <div class="dialog-title-container">
+        <button mat-icon-button [disabled]="currentIndex === 0" (click)="previousClaim()">
+            <mat-icon>arrow_back_ios</mat-icon>
+        </button>
+        <span class="claim-title">{{ claim.id }} - {{ claim.requestFor }}</span>
+        <button mat-icon-button [disabled]="currentIndex === data.claimIds.length - 1" (click)="nextClaim()">
+            <mat-icon>arrow_forward_ios</mat-icon>
+        </button>
+        <button mat-icon-button class="close-button" (click)="onClose()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+</div>
+<div mat-dialog-content>
+    <p><strong>Claim Date:</strong> {{ claim.claimDate }}</p>
+    <p><strong>Request Amount:</strong> {{ claim.requestAmount }} <strong>Paid Amount:</strong> {{ claim.paidAmount
+        }}</p>
+    <p><strong>Status:</strong> {{ claim.claimStatus }}</p>
+    <p><strong>Voucher Date:</strong> {{ claim.voucherId | date }}</p>
+</div>
+<div mat-dialog-content *ngIf="!claim">
+    <mat-spinner diameter="30"></mat-spinner>
+</div>
+
+
+<!--h1 mat-dialog-title>
+    Claim Details
+    <button mat-icon-button class="close-button" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </h1>
+<div mat-dialog-content>
+    <p><strong>Claim ID:</strong> {{ data.selectedClaim.id }}</p>
+    <p><strong>Request For:</strong> {{ data.selectedClaim.requestFor }}</p>
+    <p><strong>Status:</strong> {{ data.selectedClaim.claimStatus }}</p>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onClose()">Close</button>
+    
+</div-->

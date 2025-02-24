@@ -24,10 +24,12 @@ export const _filter = (opt: string[], value: string): string[] => {
   styleUrls: ['./mec.component.css'],
 })
 export class MecComponent implements OnInit {
+  profilePhotoUrl: string = 'assets/images/blank-profile.webp';
   title!: string;
   claim_category!: string;
   panelOpenState = false;
   claim!: Claim;
+  claimHistory!: any
   selectedClaim!: Claim | null;
   claimDataStatus!: string;
   currentClaimData: any[] = [];
@@ -130,7 +132,7 @@ export class MecComponent implements OnInit {
     this.dataSource = new LoadDataSource(this.auth);
     //this.dataSource.paginator = this.paginator;
     //this.dataSource.sort = this.sort;
-    this.loadClaimPage();
+    this.loadClaimPage()
     this.schemeService
       .getSchemeTitle(this.claim_category)
       .subscribe((titles: any) => {
@@ -180,9 +182,7 @@ export class MecComponent implements OnInit {
     this.selectedClaim = claim;
     this.calculatedRequestAmount = this.selectedClaim.requestAmount
     this.formGroup.patchValue({ requestAmount: this.calculatedRequestAmount })
-    //
     this.loadTitleTable();
-    this.loadMedicalHistory();
   }
   onNotifySelected(selectedclaimTitle: any[]) {
     this.selectedclaimTitle = selectedclaimTitle[0];
@@ -191,12 +191,10 @@ export class MecComponent implements OnInit {
   loadTitleTable() {
     this.dataSource.loadCurrentClaimData(this.selectedClaim!.id).then((res) => {
       this.currentClaimData = res;
-      console.log(
-        'this.currentClaimData: ' + JSON.stringify(this.currentClaimData)
-      );
+      
     });
   }
-  loadMedicalHistory() { }
+  
 
   updateClaim() {
     if (this.currentClaimData.length == 0) {
@@ -215,7 +213,7 @@ export class MecComponent implements OnInit {
       remarks: this.formGroup.value.remarks,
     });
 
-    console.log(this.tobeUpdated);
+    //console.log(this.tobeUpdated);
     Swal.fire({
       title: 'Complete the medical approval',
       icon: 'warning',
@@ -239,7 +237,7 @@ export class MecComponent implements OnInit {
   addClaimTitle() {
     let scheme = this.formGroup.value.stateGroup?.split('-');
     if (scheme == undefined) return;
-    console.log('this.claimDataStatus ', this.claimDataStatus)
+    //console.log('this.claimDataStatus ', this.claimDataStatus)
     if (this.claimDataStatus === undefined) return
     this.tobeUpdated = [];
     this.tobeUpdated.push({
@@ -256,7 +254,7 @@ export class MecComponent implements OnInit {
       remarks: this.formGroup.value.remarks,
     });
 
-    console.log(this.tobeUpdated);
+    //console.log(this.tobeUpdated);
     Swal.fire({
       title: 'Add Claim Data',
       icon: 'question',
@@ -294,7 +292,7 @@ export class MecComponent implements OnInit {
       },
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
-      console.log('result ', result.value);
+      //console.log('result ', result.value);
       if (result.isConfirmed) {
         Swal.fire({
           title: 'Deleted!',
@@ -305,11 +303,11 @@ export class MecComponent implements OnInit {
         });
         //
       } else {
-        console.log('error');
+        //console.log('error');
       }
     });
 
-    console.log('selected id ', this.selectedclaimTitle.id);
+    // console.log('selected id ', this.selectedclaimTitle.id);
   }
   private _filterGroup(value: string): SchemeTitles[] {
     if (value) {
@@ -325,7 +323,7 @@ export class MecComponent implements OnInit {
   }
 
   click() {
-    console.log('selected', this.formGroup.value);
+    //console.log('selected', this.formGroup.value);
   }
   onValueChange(evt: any) {
     var target = evt.target;

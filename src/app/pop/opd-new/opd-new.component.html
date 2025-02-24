@@ -25,12 +25,12 @@
         </mat-autocomplete>
       </mat-form-field-->
 
-      <app-chip-selector [category]="opd" (getScheme)="onNotifySelectedScheme($event)"></app-chip-selector>
+      <app-chip-selector class="scheme-title" [category]="opd" (getScheme)="onNotifySelectedScheme($event)"></app-chip-selector>
 
       <mat-form-field class="example-full-width">
         <mat-label>Date of Incident</mat-label>
         <input matInput [matDatepicker]="picker" [min]="beforeThreeMonth" [max]="today" placeholder="Date of Incident"
-          formControlName="incidentDate" />
+          formControlName="startDate" />
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
         <mat-hint>dd/mm/yyyy</mat-hint>

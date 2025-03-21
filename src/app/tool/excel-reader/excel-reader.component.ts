@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@ang
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { DatePipe } from '@angular/common';
+import { Constants } from 'src/app/util/constants';
+import { AuthServiceService } from 'src/app/service/auth-service.service';
 
 @Component({
   selector: 'app-excel-reader',
@@ -14,13 +16,15 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./excel-reader.component.css']
 })
 export class ExcelReaderComponent {
+  
   onSubmit() {
-    console.log(this.formGroup.value)
+    //console.log(this.formGroup.value)
   }
+  updatedFormValues: any
   currentDateAndTime: any
   formGroup: FormGroup;
-  constructor(private fb: FormBuilder, private http: HttpClient, private datePipe: DatePipe) {
-    this.currentDateAndTime = this.datePipe.transform(new Date(), 'yyyy-MM-dd')
+  constructor(private fb: FormBuilder, private http: HttpClient, private datePipe: DatePipe, private authService: AuthServiceService,) {
+    this.currentDateAndTime = new Date()//this.datePipe.transform(new Date(), 'yyyy-MM-dd')
     this.formGroup = this.fb.group({
       empNo: ['', Validators.required],
       name: ['', Validators.required],
@@ -64,7 +68,7 @@ export class ExcelReaderComponent {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        console.log("loaded ", e)
+        // console.log("loaded ", e)
       };
       reader.readAsDataURL(file);
     }
@@ -77,7 +81,9 @@ export class ExcelReaderComponent {
   get memberRegistrations() {
     return this.formGroup.get('memberRegistrations') as FormArray;
   }
-
+  fileread() {
+    //this.processExcelData(this.exceldata)
+    }
   onFileChange(evt: any) {
     const target: DataTransfer = <DataTransfer>(evt.target);
     if (target.files.length !== 1) throw new Error('Cannot use multiple files');
@@ -92,15 +98,13 @@ export class ExcelReaderComponent {
       //console.log("wsname ", wsname)
       //console.log("ws ", ws)
       const data = <any[][]>XLSX.utils.sheet_to_json(ws, { header: 1 });
-
-
       this.processExcelData(data);
     };
     reader.readAsBinaryString(target.files[0]);
   }
 
   dotToDash(dateText: any): Date {
-    console.log("given value ", dateText)
+    //console.log("given value ", dateText)
     return this.excelDateToJSDate(dateText)
   }
   excelDateToJSDate(excelDate: number): Date {
@@ -110,14 +114,86 @@ export class ExcelReaderComponent {
   }
 
   processExcelData(data: any[][]) {
-    //console.log("data ", data)
     var formValues: any
-    var dep: any
+    var dep: any = []
+
+    for (let i = 2703; i < 2705; i++) {//2703
+      //console.log("main i ",i)
+      const row = data[i]
+      if(row.length == 0) continue
+      if (row[0] != undefined) {
+        dep = []
+        formValues = {
+          empNo: row[2],
+          name: row[3],
+          address: '',
+          email: '',
+          contactNo: '',
+          nic: this.getNicorXX(row[8]),
+          sex: this.getGender(row[8]),
+          dob: this.dotToDash(row[9]).toISOString().substring(0, 10),
+          designation: row[5],
+          department: row[4],
+          password: 'user'+row[2],
+          scheme: row[1],
+          registrationOpen: 0,
+          roles: [{role:'user'}],
+          memberRegistrations: [{
+            id: null,
+            year: 2025,
+            registerDate: this.currentDateAndTime,
+            acceptedDate: this.currentDateAndTime,
+            schemeType: row[1],
+            acceptedBy:1,
+          }],
+          dependants: [],
+          beneficiaries: [],
+          mDate: this.currentDateAndTime,
+          status: Constants.REGISTRATION_HEAD_APPROVED,
+          photoUrl: '',
+          deleted: false
+        }
+
+      }
+      let nextRow: any
+      let j=i+1
+      do {
+        nextRow = data[j]
+        //console.log("nextRow j ",j, nextRow)
+        if(nextRow[6] == undefined ){
+          const civil = this.getCivilStatus(dep)
+          this.updatedFormValues = {
+            ...formValues,
+            civilStatus: civil,
+            dependants: dep,
+          };
+          console.log("updatedFormValues j ",j, this.updatedFormValues)
+          //this.formGroup.setValue(updatedFormValues)
+          //console.log("save data ", this.formGroup.value)
+
+          this.authService.registerNew(this.updatedFormValues)
+          //end of database upload
+          break
+        }else{
+          dep.push(this.setDepFormArrayx(nextRow))
+          j++;
+        }
+        
+        //console.log("j++ ",j)
+      } while (nextRow[6] != undefined);
+      i=j-1
+    }
+  }
+  
+
+  processExcelDataold(data: any[][]) {
+    var formValues: any
+    var dep: any = []
     var i: number = 1
     data.forEach(data => {
-      console.log("data[0] ", data[0])
-
+      //console.log("formValues", formValues)
       if (data[0] === 'Se N.') return
+
       if (data[0] != undefined) {
         dep = []
         formValues = {
@@ -138,10 +214,10 @@ export class ExcelReaderComponent {
           roles: [{ role: 'user' }],
           memberRegistrations: [{
             id: null,
-            year: 2024,
+            year: 2025,
             registerDate: this.currentDateAndTime,
             acceptedDate: null,
-            schemeType: data[i][1]
+            schemeType: data[1]
           }],
           dependants: [],
           beneficiaries: [],
@@ -151,31 +227,128 @@ export class ExcelReaderComponent {
           deleted: false
         }
       } else {
-        console.log("data[6], data[9] ", data[6], data[9])
         if (data[6] === undefined) return
         dep.push(this.setDepFormArrayx(data))
+        //console.log("dep Inner ", dep)
       }
-
-      if (data[0]) {
-
-        if (formValues != null) {
-          console.log(data[0], formValues.name, "==>", dep)
-          const updatedFormValues = {
+      if (data[0] != undefined) {
+        console.log("dep ==>", dep, formValues)
+        if (formValues != undefined) {
+          
+          this.updatedFormValues = {
             ...formValues,
             dependants: dep,
           };
-          console.log("updatedFormValues ", updatedFormValues)
-          this.formGroup.setValue(updatedFormValues)
+          //this.formGroup.setValue(updatedFormValues)
+          console.log("save data ", this.formGroup.value)
+
         }
       }
-    })
+
+      //console.log("formValues end ", formValues)
+    }
+    )
+  }
+  getCivilStatus(dep: any):string  {
+    const hasHusbandOrWife = dep.some((dep: { relationship: string; }) => dep.relationship === "Husband" || dep.relationship === "Wife");
+    if (hasHusbandOrWife) {
+      return "Married"
+    } else {
+      return "Unmarried"
+    }
   }
   getNicorXX(data: any): string {
     if (data === undefined) {
       return "XX"
-    } else
+    } else {
       return data
+    }
+
   }
+
+  getGender(nic: string) {
+    if (typeof nic === "number") {
+      nic = "".concat(nic)
+    } else if (nic == undefined) {
+      return "Not Set"
+    }
+    switch (nic.length) {
+      case 9:
+      case 10:
+        nic = "19" + nic;
+        break;
+      case 12:
+        break;
+      default:
+
+        return "Not Set"
+    }
+
+    let data: number;
+    try {
+      data = parseInt(nic.substring(0, 7), 10);
+    } catch (ex) {
+      return "Not Set"
+    }
+    let rest = data % 1000;
+
+    if ((rest > 366 && rest < 500) || (rest > 866)) return "Not Set"
+
+    if (rest > 500) {
+      return "Female"
+    }else{
+      return "Male"
+    }
+  }
+
+  isNIC(nic: string): Date | null {
+    if (typeof nic === "number") {
+      nic = "".concat(nic)
+    } else if (nic == undefined) {
+      return null
+    }
+    let male = true;
+    switch (nic.length) {
+      case 9:
+      case 10:
+        nic = "19" + nic;
+        break;
+      case 12:
+        break;
+      default:
+
+        return null;
+    }
+
+    let data: number;
+    try {
+      data = parseInt(nic.substring(0, 7), 10);
+    } catch (ex) {
+      return null;
+    }
+    const year = Math.floor(data / 1000);
+    let rest = data % 1000;
+
+    if ((rest > 366 && rest < 500) || (rest > 866)) return null;
+
+    if (rest > 500) {
+      male = false;
+      rest = rest - 500;
+    }
+
+    const date = new Date(year, 0); // January 1st of the given year
+    date.setDate(rest);
+
+    //console.log(nic, rest, male, date)
+
+    // Adjust for leap years
+    if (new Date(year, 1, 29).getMonth() != 1 && rest > 59) {
+      date.setDate(date.getDate() - 1);
+    }
+
+    return date;
+  }
+
   private setDepFormArray(data: any[]) {
     return {
       id: null,
@@ -184,9 +357,10 @@ export class ExcelReaderComponent {
       dob: this.excelDateToJSDate(data[9]).toISOString().substring(0, 10),
       relationship: data[7],
       registerDate: this.currentDateAndTime,
-      registerYear: 2024,
+      registerYear: 2025,
     };
   }
+
   private setDepFormArrayx(data: any[]) {
     return this.fb.group({
       id: this.fb.control(null),
@@ -195,8 +369,8 @@ export class ExcelReaderComponent {
       dob: this.fb.control(this.excelDateToJSDate(data[9]).toISOString().substring(0, 10)),
       relationship: this.fb.control(data[7]),
       registerDate: this.fb.control(this.currentDateAndTime),
-      registerYear: this.fb.control(2024),
-    });
+      registerYear: this.fb.control(2025),
+    }).value;
   }
 
   private setBenFormArray(data: any[], i: number) {

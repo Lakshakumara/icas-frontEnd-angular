@@ -2,6 +2,7 @@
     <h1>Upload Excel File</h1>
     <div class="file-upload">
         <input type="file" (change)="onFileChange($event)" />
+        <button (click)="fileread()">Read File</button>
     </div>
     <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
         <div class="form-group" *ngFor="let control of formGroup.controls | keyvalue">

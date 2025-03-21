@@ -29,7 +29,7 @@ elif [ $task -eq 3 ]
 then
 echo "Please Enter Imagename"
 read imagename
-echo "Please Enter external port which is in proxy_pass port in dauflt file 80"
+echo "Please Enter external port which is in proxy_pass port in dauflt file 80 or 8081"
 read portout
 echo "Please Enter Internal port 4200" 
 read portin
@@ -42,7 +42,7 @@ echo "Successfully created."
 elif [ $task -eq 4 ]
 then
 docker ps
-echo "Please Enter Image name"
+echo "Please Enter Image name to build"
 read imagename
 docker build -t $imagename .
 #..............................................
@@ -57,7 +57,7 @@ echo "Previous image and continer are removed....."
 docker images
 echo "Please Enter Imagename"
 read imagename
-echo "Please Enter external port which is in proxy_pass port in dauflt file usually 80"
+echo "Please Enter external port which is in proxy_pass port in dauflt file usually 80 or 8081"
 read portout
 echo "Please Enter Internal port 4200"
 read portin
@@ -67,7 +67,7 @@ echo "Successfully created."
 elif [ $task -eq 6 ]
 then
 docker ps
-echo "Please Enter external port which is in proxy_pass port in dauflt file"
+echo "Please Enter external port which is in proxy_pass port in dauflt file 80 or 8081"
 read portout
 echo "Please Enter Internal port 4200"
 read portin

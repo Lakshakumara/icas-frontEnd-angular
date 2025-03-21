@@ -215,13 +215,13 @@ export const Claim_History = [
     label: 'Max Amount',
   },
   {
-    key: 'claimDate',
-    type: 'Date',
-    label: 'Claim Date',
+    key: 'itemCount',
+    type: 'text',
+    label: 'Item Count',
   },
   {
-    key: 'paidAmount',
+    key: 'totalPaid',
     type: 'currency',
-    label: 'Paid Amount',
+    label: 'Total Paid',
   },
 ];

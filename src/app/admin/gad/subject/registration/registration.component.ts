@@ -22,6 +22,7 @@ import { Constants } from 'src/app/util/constants';
 import { SharedService } from 'src/app/shared/shared.service';
 import { VoucherNewComponent } from '../../voucher-new/voucher-new.component';
 import { Utils } from 'src/app/util/utils';
+import { GravatarService } from 'src/app/gravatar-service.service';
 
 @Component({
   selector: 'app-sub_registration',
@@ -36,6 +37,7 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   profilePhotoUrl: string = 'assets/images/blank-profile.webp'; // Default placeholder image
   loggeduser: any;
   selectedMember!: Member | null;
+  profilePictureUrl: string = '';
   selectedClaim!: Claim | null;
   viewMode: string = 'memberDetails'; // State variable to control view
   panelTitle: string = 'Members Data';
@@ -76,7 +78,8 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
     private share: SharedService,
     private changeDetectorRef: ChangeDetectorRef,
     private auth: AuthServiceService,
-    private buildr: FormBuilder
+    private buildr: FormBuilder,
+    private gravatarService: GravatarService
   ) {}
 
   ngOnInit() {
@@ -104,6 +107,7 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
 
   getMember(member: any) {
     this.selectedMember = member;
+    this.profilePictureUrl = this.gravatarService.getGravatarUrl(this.selectedMember!.email);
     this.selectedRoles = [];
     const rr: Role[] = this.selectedMember!.roles;
     rr.forEach((r) => {
@@ -232,14 +236,11 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   getvoucherIds(id:number[]){
     this.voucherIds = id
   }
+  
   showVoucher() {
     Constants.Toast.fire('Under Construction');
   }
-  /*downloadVoucher():any{
-    Constants.Toast.fire('Under Construction');
-    this.doVoucher.emit(true);
-    return null;
-  }*/
+  
   public downloadVoucher(): void {
     if (this.voucherNewComponent) {
       this.voucherNewComponent.downloadVoucher(this.selectedvoucherId!);

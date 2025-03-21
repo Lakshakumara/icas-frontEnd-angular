@@ -26,7 +26,6 @@ import { ClaimUpdateComponent } from './admin/dep-head/claim-update/claim-update
 import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { VoucherComponent } from './admin/gad/head/voucher.component';
 import { AccessComponent } from './admin/super/access/access/access.component';
-import { MecHsComponent } from './DeleteMe/mec-hs/mec-hs.component';
 import { BeneficiaryComponent } from './register/beneficiary/beneficiary.component';
 import { DownloadComponent } from './download/download.component';
 import { MemberComponent } from './admin/dep-head/staff-member/member.component';
@@ -51,6 +50,10 @@ import { VoucherNewComponent } from './admin/gad/voucher-new/voucher-new.compone
 import { OpdNewComponent } from './pop/opd-new/opd-new.component';
 import { SettingsComponent } from './admin/settings/settings.component';
 import { ReRegComponent } from './admin/gad/re-reg/re-reg.component';
+import { TestComponent } from './test/test.component';
+import { ClaimDetailsDialogComponent } from './pop/claim-details-dialog/claim-details-dialog.component';
+import { ExcelReaderComponent } from './tool/excel-reader/excel-reader.component';
+import { ClaimTreeComponent } from './util/my/claim-tree/claim-tree.component';
 
 @NgModule({
   declarations: [
@@ -90,7 +93,11 @@ import { ReRegComponent } from './admin/gad/re-reg/re-reg.component';
     VoucherNewComponent,
     OpdNewComponent,
     SettingsComponent,
-    ReRegComponent
+    ReRegComponent,
+    TestComponent,
+    ClaimDetailsDialogComponent,
+    ExcelReaderComponent,
+    ClaimTreeComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,15 +1,4 @@
 .example-full-width {
   width: 100%;
-}
-
-.gpLabel {
-  font-style: italic;
-  text-align: left;
-  font-weight: bold;
-  background: #2bb961;
-  background-color: #fa7d44
-}
-
-.gpDescription {
-  font-style: normal;
+  margin-top: 8px;
 }

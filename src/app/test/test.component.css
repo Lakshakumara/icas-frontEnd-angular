@@ -1,7 +1,88 @@
-.mat-autocomplete {
-    width: 100%;
-  }
-  
-  .example-chip-list {
-    width: 100%;
-  }
+.insurance-container {
+  font-family: Arial, sans-serif;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  background-color: #2C3E50;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.main-banner {
+  background: url('/assets/images/back.jpg') no-repeat center center fixed;
+ /* background: url('assets/happy-family.jpg') no-repeat center center;*/
+  background-size: cover;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-text {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.info-section {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px;
+}
+
+.card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 30%;
+  text-align: center;
+}
+
+.about-section {
+  background-color: #f9f9f9;
+  padding: 20px;
+  text-align: center;
+}
+
+.footer {
+  background-color: #2C3E50;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+.social-media-icons img {
+  width: 30px;
+  margin: 0 10px;
+}
+/*
+.background {
+  background: url('/assets/images/back.jpg') no-repeat center center fixed;
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.social-media-icons img {
+  width: 48px;
+  margin: 0 10px;
+}*/

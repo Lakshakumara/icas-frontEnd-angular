@@ -93,9 +93,15 @@
       <mat-card-header>
         <mat-card-title>Beneficiary Details</mat-card-title>
         <div fxFlex></div>
-        <button class="btn" mat-raised-button (click)="popupBenificiary()" color="primary">
+
+        <button class="btn" mat-raised-button (click)="addBenificiary()" color="primary">
           <mat-icon>add</mat-icon>New benificiary
         </button>
+        <button *ngIf="member.registrationOpen" class="btn" mat-raised-button (click)="getPreviousBenificiaries()"
+          color="warn">
+          <mat-icon>add</mat-icon>Previous Benificiaries
+        </button>
+        
       </mat-card-header>
       <mat-card-content>
         <ng-container>
@@ -128,22 +134,22 @@
             </ng-container>
 
             <!-- Symbol Column -->
-            <ng-container matColumnDef="star">
+            <!--ng-container matColumnDef="star">
               <th mat-header-cell *matHeaderCellDef></th>
               <td mat-cell *matCellDef="let element">
                 <button mat-icon-button [matMenuTriggerFor]="menu" [matMenuTriggerData]="element.name">
                   <mat-icon>more_vert</mat-icon>
                 </button>
               </td>
-            </ng-container>
+            </ng-container-->
 
-            <!--ng-container matColumnDef="action">
+            <ng-container matColumnDef="action">
               <th mat-header-cell *matHeaderCellDef> Action</th>
               <td mat-cell *matCellDef="let element">
-                <button (click)="editBenificiary(element.id)" mat-raised-button color="primary">Edit</button>
-                <button mat-raised-button color="warn" (click)="removeBenificiary(element.name)">Delete</button>
+                <button class="btn" mat-icon-button (click)="editBenificiary(element.name)" color="primary"><mat-icon>edit</mat-icon></button>
+                <button class="btn" mat-icon-button color="warn" (click)="removeBenificiary(element.name)"><mat-icon>delete</mat-icon></button>
               </td>
-            </ng-container-->
+            </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="beneficiaryColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: beneficiaryColumns"></tr>
@@ -157,7 +163,11 @@
           <mat-card-title>Dependant Details</mat-card-title>
           <div fxFlex></div>
           <button mat-raised-button (click)="popupDependant()" color="primary">
-            <mat-icon>add</mat-icon> New Dependant
+            <mat-icon>add</mat-icon>New Dependant
+          </button>
+          <button *ngIf="showPreviousDependants" class="btn" mat-raised-button (click)="getPreviousDependants()"
+            color="warn">
+            <mat-icon>add</mat-icon>Previous Dependants
           </button>
         </mat-card-header>
         <mat-card-content>
@@ -195,11 +205,11 @@
               <ng-container matColumnDef="action">
                 <th mat-header-cell *matHeaderCellDef>Action</th>
                 <td mat-cell *matCellDef="let element">
-                  <button (click)="editDependant(element.name)" mat-raised-button color="primary">
-                    Edit
+                  <button mat-icon-button class="btn" (click)="editDependant(element.name)" color="primary">
+                    <mat-icon>edit</mat-icon>
                   </button>
-                  <button mat-raised-button color="warn" (click)="removeDependant(element.name)">
-                    Delete
+                  <button mat-icon-button class="btn" color="warn" (click)="removeDependant(element.name)">
+                    <mat-icon>delete</mat-icon>
                   </button>
                 </td>
               </ng-container>
@@ -221,7 +231,7 @@
     </mat-card>
   </div>
 </form>
-<mat-menu #menu="matMenu" >
+<mat-menu #menu="matMenu">
   <button mat-menu-item>
     <mat-icon>edit</mat-icon>
     <span>Edit</span>

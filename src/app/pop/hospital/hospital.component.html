@@ -7,9 +7,9 @@
         member.dependants.length == 0
       " #chkEnabledep (change)="disableDependants(chkEnabledep.checked)">Claim for Dependent</mat-checkbox>
       <mat-form-field class="example-full-width">
-        <mat-label>Claim Benificiary</mat-label>
+        <mat-label>Claim for dependants</mat-label>
         <mat-select formControlName="dependant">
-          <mat-option [value]="claimer" *ngFor="let claimer of member.dependants">{{ claimer.name }}
+          <mat-option [value]="claimer" *ngFor="let claimer of member.dependants">{{ claimer.name }}-{{ claimer.relationship }}
           </mat-option>
         </mat-select>
       </mat-form-field>

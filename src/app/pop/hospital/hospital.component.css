@@ -6,3 +6,6 @@
   width: 100%;
   align-items: baseline;
 }
+h1 {
+  text-align-last: center;
+}

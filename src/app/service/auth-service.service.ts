@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, lastValueFrom } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { Observable, lastValueFrom, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { Member } from '../Model/member';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { Dependant } from '../Model/dependant';
 import { Claim } from '../Model/claim';
 import { ClaimData } from '../Model/claimData';
@@ -83,14 +83,22 @@ export class AuthServiceService {
     })
     return await response.json();
   }
-  async getMemberDependants(empNo: string, year: number = Utils.currentYear): Promise<any> {
-    const response = await fetch(`${this.API_URL}/dependant/${year}/${empNo}`, {
+
+  getDependant(name: any): Observable<any> {
+    return this.http
+      .get(`${this.API_URL}/dependant/${name}`)
+      .pipe<Dependant>(map((data: any) => data));
+  }
+
+  async getMemberDependants(empNo: string, year: number = Utils.currentYear, depName: string | null = ''): Promise<any> {
+    const response = await fetch(`${this.API_URL}/member/dependant/${year}/${empNo}/${depName}`, {
       method: 'get',
     })
     return await response.json();
   }
-  async getMemberBeneficiaries(empNo: string, year: number = Utils.currentYear): Promise<any> {
-    const response = await fetch(`${this.API_URL}/member/beneficiaries/${year}/${empNo}`, {
+
+  async getMemberBeneficiaries(empNo: string, year: number = Utils.currentYear, benName: string | null = ''): Promise<any> {
+    const response = await fetch(`${this.API_URL}/member/beneficiaries/${year}/${empNo}/${benName}`, {
       method: 'get',
     })
     return await response.json();
@@ -125,6 +133,7 @@ export class AuthServiceService {
     pageIndex: number = 0,
     pageSize: number = 10,
     sortField: string = '',
+    department: string = ''
   ): Observable<any> {
     return this.http
       .get(`${this.API_URL}/claim/getAll`, {
@@ -137,28 +146,80 @@ export class AuthServiceService {
           .set('sortOrder', sortDirection)
           .set('pageIndex', pageIndex.toString())
           .set('pageSize', pageSize.toString())
-          .set('sortField', sortField),
+          .set('sortField', sortField)
+          .set('department', department),
       })
       .pipe<any>(map((res: any) => res));
   }
 
-  getHistoryMain(): Observable<any> {
+  getDepHeadClaims(
+    department: string,
+    filter: string = '',
+    sortDirection: string = 'asc',
+    pageIndex: number = 0,
+    pageSize: number = 10,
+    sortField: string = '',
+  ): Observable<any> {
+    console.log("getDepHeadClaims ", department)
+    return this.getAllClaims('', 0, '', 'pending', filter, sortDirection, pageIndex, pageSize, sortField, department)
+  }
+
+  getHistoryMain(empNo: string): Observable<any> {
     return this.http
-      .get(`${this.API_URL}/guest`)
+      .get(`${this.API_URL}/claim/history/summary`, {
+        params: new HttpParams()
+          .set('empNo', empNo)
+      })
       .pipe<any[]>(map((res: any) => res));
 
   }
 
-  getClaimHistory(empNo:string, idText:any=[]): Observable<any> {
+  /**
+   * 
+   * @param empNo 
+   * @param idText 
+   * @param sortDirection 
+   * @param pageIndex 
+   * @param pageSize 
+   * @param sortField 
+   * @returns Pageable Object
+   */
+  getClaimHistory(empNo: string,
+    idText: any = null,
+    sortDirection: string = 'asc',
+    pageIndex: number = 0,
+    pageSize: number = 50,
+    sortField: string = '',
+  ): Observable<any> {
     return this.http
-    .get(`${this.API_URL}/claim/history`, {
-      params: new HttpParams()
-      .set('empNo', empNo)
-      .set('idText', idText)
-    }).pipe<any[]>(map((res: any) => res));
-     
+      .get(`${this.API_URL}/claim/history`, {
+        params: new HttpParams()
+          .set('empNo', empNo)
+          .set('idText', idText)
+          .set('sortOrder', sortDirection)
+          .set('pageIndex', pageIndex.toString())
+          .set('pageSize', pageSize.toString())
+          .set('sortField', sortField)
+      }).pipe<any[]>(map((res: any) => res));
   }
-
+getClaimHistoryAll(empNo: string,
+    idText: any = null,
+    sortDirection: string = 'asc',
+    pageIndex: number = 0,
+    pageSize: number = 50,
+    sortField: string = '',
+  ): Observable<any> {
+    return this.http
+      .get(`${this.API_URL}/claim/history/all`, {
+        params: new HttpParams()
+          .set('empNo', empNo)
+          .set('idText', idText)
+          .set('sortOrder', sortDirection)
+          .set('pageIndex', pageIndex.toString())
+          .set('pageSize', pageSize.toString())
+          .set('sortField', sortField)
+      }).pipe<any[]>(map((res: any) => res));
+  }
 
   getClaimData(claimId: number,
     pageIndex: number = 0,
@@ -213,6 +274,13 @@ export class AuthServiceService {
       .catch((error) => {
         return null; //new Error(error);
       });
+  }
+
+  async getClaimNew(claimId: number): Promise<any> {
+    const response = await fetch(`${this.API_URL}/claim/get/${claimId}`, {
+      method: 'get'
+    })
+    return await response.json();
   }
 
   async addClaim(claim: any): Promise<Observable<any>> {
@@ -286,15 +354,23 @@ export class AuthServiceService {
     return await response.json();
   }
 
-  getDependant(name: any): Observable<any> {
-    return this.http
-      .get(`${this.API_URL}/dependant/${name}`)
-      .pipe<Dependant>(map((data: any) => data));
-  }
+
+
   download(type: number, year: any, empNo: string): Observable<any> {
     return this.http.get(
-      `${this.API_URL}/download/application/${year}/${empNo}`,
-      { responseType: 'blob' }
+      `${this.API_URL}/download/application/${year}/${empNo}`, {
+      responseType: 'blob',
+      observe: 'response'
+    }
+    ).pipe(
+      map(response => {
+        console.log("response ", response)
+        if (response.status !== 200) {
+          throw new HttpErrorResponse({ error: response.body, status: response.status });
+        }
+        return response.body!;
+      }),
+      catchError(this.handleError)
     );
   }
 
@@ -346,6 +422,26 @@ export class AuthServiceService {
   updateRoles(memberId: number, roles: string[]): Observable<any> {
     return this.http.put(`${this.API_URL}/member/${memberId}/roles`, { roles });
   }
+
+  private handleError(error: HttpErrorResponse) {
+    if (error.error instanceof Blob) {
+      return new Observable<string>(observer => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          observer.error(reader.result as string);
+          observer.complete();
+        };
+        reader.onerror = () => {
+          observer.error('Unknown error!');
+          observer.complete();
+        };
+        reader.readAsText(error.error);
+      });
+    } else {
+      return throwError(() => new Error(error.message || 'Unknown error!'));
+    }
+  }
+
 }
 /*
 

@@ -62,22 +62,24 @@ export class DownloadComponent implements OnInit {
     Constants.Toast.fire('Downloading...');
     this.auth
       .download(1, this.appForm.value.year, this.appForm.value.empNo)
-      .subscribe((response: any) => {
-        console.log(response.fileNme);
+      .subscribe({
+        next: (response: Blob) => {
         let dataType = response.type;
         let binaryData = [];
         binaryData.push(response);
-        //let fname = response.get("file name").ToString();
-        //console.log(fname);
         let downloadLink = document.createElement('a');
         downloadLink.href = window.URL.createObjectURL(
           new Blob(binaryData, { type: dataType })
         );
-        downloadLink.setAttribute('download', 'Application.pdf');
+        downloadLink.setAttribute('download', `${this.appForm.value.year}_${this.appForm.value.empNo}.pdf`);
         document.body.appendChild(downloadLink);
         console.log(downloadLink);
         downloadLink.click();
-      });
+      },
+      error: (error: string) => {
+        Constants.Toast.fire(error)
+      }
+    });
   }
 
   claimApplication() {

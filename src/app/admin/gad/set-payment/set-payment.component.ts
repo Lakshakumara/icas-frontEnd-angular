@@ -114,9 +114,7 @@ export class SetPaymentComponent implements OnInit, AfterViewInit {
         if (this.dataSource.data) {
           this.dataSource.data.map((d: any) => {
             d.title = d.scheme.title
-            if (d.paidAmount === null) {
-              this.btnClaimUpdateEnable = true
-            }
+            this.btnClaimUpdateEnable = d.paidAmount === null
             this.totalDeduction += d.deductionAmount + d.adjustAmount
             this.netPayment += d.paidAmount
           })
@@ -129,7 +127,7 @@ export class SetPaymentComponent implements OnInit, AfterViewInit {
   loadClaimData(): void {
     this.dataSource.getClaimData(this.selectedClaim.id);
   }
-  
+
   cData(selectedRow: any) {
     this.selectedClaimData = selectedRow
     this.formGroup.patchValue({
@@ -169,6 +167,10 @@ export class SetPaymentComponent implements OnInit, AfterViewInit {
         if (result.value >= 1) {
           Swal.fire('Claim Updated', '', 'success');
           this.loadClaimData();
+          this.formGroup.reset()
+          this.totalDeduction = 0
+          this.netPayment = 0
+          this.btnClaimUpdateEnable = false
         } else Swal.fire('Error', 'Failed to Update', 'error');
       }
     });
@@ -181,7 +183,7 @@ export class SetPaymentComponent implements OnInit, AfterViewInit {
     let ar = (this.formGroup.value.adjustRemarks) ? this.formGroup.value.adjustRemarks : ''
     let pa = (this.formGroup.value.paidAmount) ? this.formGroup.value.paidAmount : 0
     let tda = da + aa
-    if (raNew == 0 ||  (raNew - tda) <0) {
+    if (raNew == 0 || (raNew - tda) < 0) {
       Constants.Toast.fire("Request Amount less than total Deduction")
       return;
     }
@@ -197,7 +199,7 @@ export class SetPaymentComponent implements OnInit, AfterViewInit {
     this.tobeUpdated.push({
       criteria: Constants.CRITERIA_CLAIMDATA_UPDATE,
       claimDataId: this.selectedClaimData!.id,
-      requestAmount:raNew,
+      requestAmount: raNew,
       adjustAmount: aa,
       adjustRemarks: ar,
       paidAmount: pa,
@@ -260,25 +262,25 @@ setPaidAmount() {
         timer!.textContent = `${deductionAmount}`;
       },*/
 
-      /*preConfirm: async (deductionAmount) => {
-        tobeUpdated.push({
-          criteria: 'finalize',
-          id: this.selectedClaim.id,
-          deductionAmount: +deductionAmount,
-          paidAmount: this.selectedClaim.requestAmount - deductionAmount,
-          claimStatus: Constants.CLAIMSTATUS_PAID,
-        });
-        console.log(tobeUpdated);
-        return await this.auth.updateClaim_new(tobeUpdated);
-      },
-    }).then((result) => {
-      console.log('result ', result);
-      if (result.isConfirmed) {
-        if (result.value >= 1) {
-          Swal.fire('Claim Updated', '', 'success');
-          //this.reload();
-        } else Swal.fire('Error', 'Failed to Update', 'error');
-      }
-    });
-  }
+/*preConfirm: async (deductionAmount) => {
+  tobeUpdated.push({
+    criteria: 'finalize',
+    id: this.selectedClaim.id,
+    deductionAmount: +deductionAmount,
+    paidAmount: this.selectedClaim.requestAmount - deductionAmount,
+    claimStatus: Constants.CLAIMSTATUS_PAID,
+  });
+  console.log(tobeUpdated);
+  return await this.auth.updateClaim_new(tobeUpdated);
+},
+}).then((result) => {
+console.log('result ', result);
+if (result.isConfirmed) {
+  if (result.value >= 1) {
+    Swal.fire('Claim Updated', '', 'success');
+    //this.reload();
+  } else Swal.fire('Error', 'Failed to Update', 'error');
+}
+});
+}
 */

@@ -1,104 +1,76 @@
-<mat-toolbar color="primary">
-  <div fxHide.gt-xs>
-    <button mat-icon-button (click)="onToggleSidenav()">
-      <mat-icon>menu</mat-icon>
-    </button>
+<mat-toolbar color="primary" class="toolbar">
+  <button mat-icon-button (click)="onToggleSidenav()" class="menu-button" fxHide.gt-xs>
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <div class="logo">
+    <a routerLink="/home">
+      <img src="favicon.ico" alt="Medical Claim Logo">
+    </a>
   </div>
-  <div>
-    <a routerLink="/home">Home</a>
-  </div>
-  <div fxFlex fxLayout fxLayoutAlign="center" fxHide.xs>
+
+  <div class="member-info" fxHide.xs>
     <mat-label *ngIf="member">{{ member.name }}</mat-label>
   </div>
-  <div fxFlex fxLayout fxLayoutAlign="end" fxHide.xs>
+
+  <div class="navigation" fxFlex fxLayout fxLayoutAlign="end" fxHide.xs>
     <ul fxLayout fxLayoutGap="15px" class="navigation-items">
       <li *ngIf="roles.length > 1">
         <button mat-button [matMenuTriggerFor]="switch">Roles</button>
       </li>
-
       <li>
-        <button mat-button matBadgeColor="accent" routerLink="/signin">
-          Sign out
-        </button>
+        <button mat-button routerLink="/signin">Sign out</button>
+      </li>
+      <li *ngIf="isUser">
+        <button mat-button routerLink="/c_history">Claim History</button>
+      </li>
+      <li *ngIf="isUser">
+        <button mat-button routerLink="/download">Download</button>
       </li>
       <li>
-        <button *ngIf="isUser" mat-button matBadgeColor="accent" routerLink="/c_history">
-          Claim History
-        </button>
-      </li>
-      <li>
-        <button *ngIf="isUser" mat-button matBadgeColor="accent" routerLink="/download">
-          Download
-        </button>
-      </li>
-      <li>
-        <button mat-button matBadgeColor="accent" routerLink="/profile">
-          Profile
-        </button>
+        <button mat-button routerLink="/profile">Profile</button>
       </li>
       <li>
         <button mat-button (click)="toggleTheme()">
           <mat-icon>{{ isDarkTheme ? 'brightness_7' : 'brightness_2' }}</mat-icon>
         </button>
       </li>
-      <li>
-        <button *ngIf="isDepHead || isAdmin || isSuperAdmin || isGADHead || isMec || isMo" mat-button
-          matBadgeColor="accent" [matMenuTriggerFor]="admin">
-          Admin
-        </button>
+      <li *ngIf="isDepHead || isAdmin || isSuperAdmin || isGADHead || isMec || isMo">
+        <button mat-button [matMenuTriggerFor]="admin">Admin</button>
       </li>
     </ul>
-
-    <mat-menu #switch="matMenu">
-      <button *ngFor="let role of roles" mat-menu-item>{{ role }}</button>
-    </mat-menu>
-
-    <mat-menu #admin="matMenu">
-      <button *ngIf="isDepHead" mat-menu-item [matMenuTriggerFor]="dep_head">
-        Department Head
-      </button>
-      <button *ngIf="isAdmin" mat-menu-item [matMenuTriggerFor]="subject_cleark">
-        Management
-      </button>
-      <button *ngIf="isMo || isMec" mat-menu-item [matMenuTriggerFor]="mec">MEC</button>
-      <button *ngIf="isSuperAdmin" mat-menu-item [matMenuTriggerFor]="super_admin">
-        Super Admin
-      </button>
-      <button *ngIf="isAdmin || isSuperAdmin" mat-menu-item 
-      routerLink="admin/settings">Setting</button>
-    </mat-menu>
-
-    <mat-menu #dep_head="matMenu">
-      <button routerLink="admin/head/member" mat-menu-item>
-        Membership Acceptance
-      </button>
-      <button routerLink="admin/head/claim" mat-menu-item>
-        Claims Acceptance
-      </button>
-    </mat-menu>
-
-    <mat-menu #subject_cleark="matMenu">
-      <button routerLink="admin/gad/subject/reg" mat-menu-item>Members</button>
-      <button routerLink="admin/gad/subject/claimupdate" mat-menu-item>
-        Claims Update
-      </button>
-      <button routerLink="admin/gad/subject/voucher" mat-menu-item>
-        Voucher Generation
-      </button>
-    </mat-menu>
-
-    <mat-menu #mec="matMenu">
-      <button *ngIf="isMo" routerLink="admin/mec/opd" mat-menu-item>OPD Claims</button>
-      <button *ngIf="isMec" routerLink="admin/mec/hs" mat-menu-item>H&S Claims</button>
-    </mat-menu>
-
-    <mat-menu #super_admin="matMenu">
-      <button routerLink="admin/super/scheme" mat-menu-item>
-        Scheme Update
-      </button>
-      <button routerLink="admin/super/access" mat-menu-item>
-        Privelidge Grants
-      </button>
-    </mat-menu>
   </div>
+
+  <mat-menu #switch="matMenu">
+    <button *ngFor="let role of roles" mat-menu-item>{{ role }}</button>
+  </mat-menu>
+
+  <mat-menu #admin="matMenu">
+    <button *ngIf="isDepHead" mat-menu-item [matMenuTriggerFor]="dep_head">Department Head</button>
+    <button *ngIf="isAdmin" mat-menu-item routerLink="admin/gad/subject/reg">Management</button>
+    <button *ngIf="isMo || isMec" mat-menu-item [matMenuTriggerFor]="mec">MEC</button>
+    <button *ngIf="isSuperAdmin" mat-menu-item [matMenuTriggerFor]="super_admin">Super Admin</button>
+    <button *ngIf="isAdmin || isSuperAdmin" mat-menu-item routerLink="admin/settings">Setting</button>
+  </mat-menu>
+
+  <mat-menu #dep_head="matMenu">
+    <button routerLink="admin/head/member" mat-menu-item>Membership Acceptance</button>
+    <button routerLink="admin/head/claim" mat-menu-item>Claims Acceptance</button>
+  </mat-menu>
+
+  <mat-menu #subject_cleark="matMenu">
+    <button routerLink="admin/gad/subject/reg" mat-menu-item>Members</button>
+    <button routerLink="admin/gad/subject/claimupdate" mat-menu-item>Claims Update</button>
+    <button routerLink="admin/gad/subject/voucher" mat-menu-item>Voucher Generation</button>
+  </mat-menu>
+
+  <mat-menu #mec="matMenu">
+    <button *ngIf="isMo" routerLink="admin/mec/opd" mat-menu-item>OPD Claims</button>
+    <button *ngIf="isMec" routerLink="admin/mec/hs" mat-menu-item>H&S Claims</button>
+  </mat-menu>
+
+  <mat-menu #super_admin="matMenu">
+    <button routerLink="admin/super/scheme" mat-menu-item>Scheme Update</button>
+    <button routerLink="admin/super/access" mat-menu-item>Privilege Grants</button>
+  </mat-menu>
 </mat-toolbar>

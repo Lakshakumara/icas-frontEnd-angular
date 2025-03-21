@@ -79,7 +79,7 @@ body {
   border-bottom: 1px solid #ddd;
 }
 .mat-paginator {
-  margin-top: 20px;
+  margin-top: 8px;
   justify-content: center;
 }
 ::ng-deep .mat-sort-header-container {

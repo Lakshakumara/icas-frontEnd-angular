@@ -1,7 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Member } from 'src/app/Model/member';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
-import { Utils } from 'src/app/util/utils';
 
 @Component({
   selector: 'app-beneficiary-data',

@@ -19,6 +19,8 @@ import { Constants } from '../util/constants';
 import { DirectDownloadComponent } from '../download/directdownload.component';
 import { DownloadGuard } from '../download.guard';
 import { SettingsComponent } from '../admin/settings/settings.component';
+import { TestComponent } from '../test/test.component';
+import { ExcelReaderComponent } from '../tool/excel-reader/excel-reader.component';
 const routes: Routes = [
   { path: 'home', component: HomePageComponent },
   {
@@ -26,6 +28,7 @@ const routes: Routes = [
     component: RegisterComponent,
     title: 'Search for Employee data',
   },
+  { path: 'test', component: ExcelReaderComponent },
   { path: 'signin', component: LoginV1Component },
   { path: 'signup', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent },

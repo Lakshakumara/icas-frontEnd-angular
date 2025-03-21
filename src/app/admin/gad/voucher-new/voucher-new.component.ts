@@ -91,9 +91,10 @@ export class VoucherNewComponent implements OnInit {
     this.auth.getVouchers().then((r) => {
       this.getvoucherIds.emit(r);
     });
-    /*this.dataSource
-      .requestData('',Constants.CLAIMSTATUS_VOUCHER)
-      .subscribe((receiveData: any) => (this.rowData = receiveData.content));*/
+    this.dataSource
+      .loadClaims('',Constants.CLAIMSTATUS_VOUCHER)
+      //.subscribe((receiveData: any) => (this.rowData = receiveData.content));
+
       this.dataSource.loading$.subscribe((loading) => {
         if (!loading) {
           if(this.dataSource.data) this.rowData = this.dataSource.data;

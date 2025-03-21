@@ -7,3 +7,16 @@
   display: flex;
   gap: 10px; /* Adjust the value as needed */
 }
+.btn {
+  display: flex;
+  align-items: center;
+  /* Vertically center the items */
+  gap: 1rem;
+  /* Add space between the items */
+}
+mat-form-field{
+  width: 100px;
+}
+.form-input{
+  width: 100px;
+}

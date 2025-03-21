@@ -6,7 +6,7 @@
             </mat-card-header>
             <mat-card-content class="mat-card-content">
                 <div class="profile-content">
-                    <img [src]="selectedMember.photoUrl" alt="Profile Photo" class="profile-photo"
+                    <img [src]="profilePictureUrl" alt="Profile Photo" class="profile-photo"
                         (error)="onImageError($event)">
                     <div class="profile-details">
                         <p class="profile-name">{{selectedMember.empNo}}</p>
@@ -62,7 +62,6 @@
                     </div>
 
                 </ng-container>
-
             </mat-card-content>
         </mat-card>
         <ng-container [ngSwitch]="viewMode">
@@ -72,8 +71,8 @@
                 </h3>
                 <div class="profile-buttons">
                     <button mat-raised-button color="warn" (click)="showMemberDetails()">Members Details</button>
-                    <button mat-raised-button color="accent" (click)="showAddNewUser()">Add new User</button>
                     <button mat-raised-button color="primary" (click)="showClaimManage()">Claim Manage</button>
+                    <button mat-raised-button color="accent" (click)="showAddNewUser()">Add new User</button>
                     <button mat-raised-button color="primary" (click)="showReRegistration()">Re Registration</button>
                 </div>
             </div>
@@ -113,11 +112,18 @@
                         </mat-form-field>
                     </mat-card-header>
                     <mat-card-content class="mat-card-content">
-                        <button [disabled]="selectedvoucherId == null" mat-raised-button color="accent"
-                            (click)="downloadVoucher()">
-                            Download Voucher
-                        </button>
+                        <h1> body</h1>
                     </mat-card-content>
+                    <mat-card-actions>
+                        <button [disabled]="selectedvoucherId == null" mat-raised-button color="accent"
+                        (click)="showVoucher()">
+                        Show Voucher
+                    </button>
+                    <button [disabled]="selectedvoucherId == null" mat-raised-button color="accent"
+                        (click)="downloadVoucher()">
+                        Download Voucher
+                    </button>
+                    </mat-card-actions>
                 </mat-card>
             </div>
 
@@ -131,9 +137,6 @@
                 <div class="button-container">
                     <button mat-button class="back-button" (click)="goBack()">
                         <mat-icon>arrow_back</mat-icon>
-                        <!--a class="show-more-link" (click)="toggleProfile()">
-                            {{panelTitle}}
-                        </a-->
                         <span class="back-text">{{panelTitle}}</span>
                     </button>
 

@@ -1,0 +1,39 @@
+<div class="container">
+    <h1>Upload Excel File</h1>
+    <div class="file-upload">
+        <input type="file" (change)="onFileChange($event)" />
+        <button (click)="fileread()">Read File</button>
+    </div>
+    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+        <div class="form-group" *ngFor="let control of formGroup.controls | keyvalue">
+            <label [for]="control.key">{{ control.key | titlecase }}:</label>
+            <input *ngIf="control.key !== 'registrationOpen' && control.key !== 'roles' && 
+        control.key !== 'memberRegistrations' && control.key !== 'dependants' && 
+        control.key !== 'beneficiaries'" type="text" [formControlName]="control.key" [id]="control.key" />
+            <input *ngIf="control.key === 'registrationOpen'" type="checkbox" [formControlName]="control.key"
+                [id]="control.key" />
+            <div *ngIf="control.key === 'roles'" formArrayName="roles">
+                <div *ngFor="let role of roles.controls; let i = index" [formGroupName]="i">
+                    <label for="role">Role:</label>
+                    <input type="text" formControlName="role" id="role" />
+                </div>
+            </div>
+            <div *ngIf="control.key === 'memberRegistrations'" formArrayName="memberRegistrations">
+                <div *ngFor="let registration of memberRegistrations.controls; let i = index" [formGroupName]="i">
+                    <label for="id">ID:</label>
+                    <input type="text" formControlName="id" id="id" />
+                    <label for="year">Year:</label>
+                    <input type="text" formControlName="year" id="year" />
+                    <label for="registerDate">Register Date:</label>
+                    <input type="date" formControlName="registerDate" id="registerDate" />
+                    <label for="acceptedDate">Accepted Date:</label>
+                    <input type="date" formControlName="acceptedDate" id="acceptedDate" />
+                    <label for="schemeType">Scheme Type:</label>
+                    <input type="text" formControlName="schemeType" id="schemeType" />
+                </div>
+            </div>
+
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</div>

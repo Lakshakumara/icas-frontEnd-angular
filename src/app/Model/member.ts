@@ -15,6 +15,7 @@ export interface Member {
   nic: string;
   sex: string;
   dob: Date;
+  age: string;
   designation: string;
   department: string;
   status: string;

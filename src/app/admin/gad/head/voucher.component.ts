@@ -5,7 +5,6 @@ import {
 } from 'src/app/tableFactory/tableModel/table-settings.model';
 import { VoucherDataSource } from './voucher-dataSource';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
-import { catchError, of } from 'rxjs';
 import { Claim } from 'src/app/Model/claim';
 import Swal from 'sweetalert2';
 import { Constants } from 'src/app/util/constants';

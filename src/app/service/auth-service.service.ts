@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+  HttpParams,
+} from '@angular/common/http';
 import { Observable, lastValueFrom, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { Member } from '../Model/member';
@@ -13,10 +18,22 @@ import { Utils } from '../util/utils';
   providedIn: 'root',
 })
 export class AuthServiceService {
-
   private API_URL = environment.baseUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
+
+  saveToken(token: string) {
+    localStorage.setItem('jwtToken', token);
+    console.log('saved ', token);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('jwtToken');
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
 
   getMembers(
     searchFor: string,
@@ -28,7 +45,7 @@ export class AuthServiceService {
     sortField: string = ''
   ) {
     return this.http
-      .get(`${this.API_URL}/member/get`, {
+      .get<{ token: string }>(`${this.API_URL}/member/get`, {
         params: new HttpParams()
           .set('searchFor', searchFor)
           .set('searchText', searchText)
@@ -41,16 +58,15 @@ export class AuthServiceService {
       .pipe<any[]>(map((res: any) => res));
   }
 
-
   getRelationShip(rs: string): Observable<string[]> {
     return this.http
-      .get(`${this.API_URL}/member/relationship/${rs}`)
+      .get<{ token: string }>(`${this.API_URL}/member/relationship/${rs}`)
       .pipe<string[]>(map((data: any) => data));
   }
 
   update(criteria: string, data: any): Observable<number> {
     const x = this.http
-      .put(`${this.API_URL}/member/update/${criteria}`, data)
+      .put<{ token: string }>(`${this.API_URL}/member/update/${criteria}`, data)
       .pipe<number>(map((data: any) => data));
     return x;
   }
@@ -60,6 +76,7 @@ export class AuthServiceService {
       method: 'put',
       body: JSON.stringify(data), // data can be `string` or {object}!
       headers: {
+        Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
         'Content-Type': 'application/json',
       },
     });
@@ -71,43 +88,91 @@ export class AuthServiceService {
       method: 'post',
       body: JSON.stringify(data),
       headers: {
+        Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
         'Content-Type': 'application/json',
       },
-    })
+    });
     return await response.json();
   }
 
-  async getMemberNew(empNo: any): Promise<Member> {
+  /*async getMemberNew(empNo: any): Promise<Member> {
     const response = await fetch(`${this.API_URL}/member/${empNo}`, {
       method: 'get',
     })
     return await response.json();
-  }
+  }*/
 
-  getDependant(name: any): Observable<any> {
-    return this.http
-      .get(`${this.API_URL}/dependant/${name}`)
-      .pipe<Dependant>(map((data: any) => data));
-  }
+  async getMemberNew(empNo: any): Promise<Member> {
+    const token = this.getToken(); // Get the stored token
 
-  async getMemberDependants(empNo: string, year: number = Utils.currentYear, depName: string | null = ''): Promise<any> {
-    const response = await fetch(`${this.API_URL}/member/dependant/${year}/${empNo}/${depName}`, {
-      method: 'get',
-    })
+    const response = await fetch(`${this.API_URL}/member/${empNo}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach JWT token
+        'Content-Type': 'application/json',
+      },
+    });
     return await response.json();
   }
 
-  async getMemberBeneficiaries(empNo: string, year: number = Utils.currentYear, benName: string | null = ''): Promise<any> {
-    const response = await fetch(`${this.API_URL}/member/beneficiaries/${year}/${empNo}/${benName}`, {
-      method: 'get',
-    })
+  login(username: string, password: string) {
+    return this.http.post<{ token: string }>(`${this.API_URL}/auth/login`, {
+      username,
+      password,
+    });
+  }
+  /*async login(username: any, password: any){
+    return this.http.post<{ token: string }>(`${this.API_URL}/login`, { username, password });
+  }*/
+
+  getDependant(name: any): Observable<any> {
+    return this.http
+      .get<{ token: string }>(`${this.API_URL}/dependant/${name}`)
+      .pipe<Dependant>(map((data: any) => data));
+  }
+
+  async getMemberDependants(
+    empNo: string,
+    year: number = Utils.currentYear,
+    depName: string | null = ''
+  ): Promise<any> {
+    const response = await fetch(
+      `${this.API_URL}/member/dependant/${year}/${empNo}/${depName}`,{
+        method: 'get',
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    return await response.json();
+  }
+
+  async getMemberBeneficiaries(
+    empNo: string,
+    year: number = Utils.currentYear,
+    benName: string | null = ''
+  ): Promise<any> {
+    const response = await fetch(
+      `${this.API_URL}/member/beneficiaries/${year}/${empNo}/${benName}`,{
+        method: 'get',
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
+          'Content-Type': 'application/json',
+        },
+      }
+    );
     return await response.json();
   }
 
   async getHRDetailsNew(empNo: any): Promise<any> {
     const response = await fetch(`${this.API_URL}/hr/${empNo}`, {
       method: 'get',
-    })
+      headers: {
+        Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
+        'Content-Type': 'application/json',
+      },
+    });
     return await response.json();
   }
 
@@ -136,7 +201,7 @@ export class AuthServiceService {
     department: string = ''
   ): Observable<any> {
     return this.http
-      .get(`${this.API_URL}/claim/getAll`, {
+      .get<{ token: string }>(`${this.API_URL}/claim/getAll`, {
         params: new HttpParams()
           .set('claimType', claimType)
           .set('year', year)
@@ -158,77 +223,91 @@ export class AuthServiceService {
     sortDirection: string = 'asc',
     pageIndex: number = 0,
     pageSize: number = 10,
-    sortField: string = '',
+    sortField: string = ''
   ): Observable<any> {
-    console.log("getDepHeadClaims ", department)
-    return this.getAllClaims('', 0, '', 'pending', filter, sortDirection, pageIndex, pageSize, sortField, department)
+    //console.log("getDepHeadClaims ", department)
+    return this.getAllClaims(
+      '',
+      0,
+      '',
+      'pending',
+      filter,
+      sortDirection,
+      pageIndex,
+      pageSize,
+      sortField,
+      department
+    );
   }
 
   getHistoryMain(empNo: string): Observable<any> {
     return this.http
-      .get(`${this.API_URL}/claim/history/summary`, {
-        params: new HttpParams()
-          .set('empNo', empNo)
+      .get<{ token: string }>(`${this.API_URL}/claim/history/summary`, {
+        params: new HttpParams().set('empNo', empNo),
       })
       .pipe<any[]>(map((res: any) => res));
-
   }
 
   /**
-   * 
-   * @param empNo 
-   * @param idText 
-   * @param sortDirection 
-   * @param pageIndex 
-   * @param pageSize 
-   * @param sortField 
+   *
+   * @param empNo
+   * @param idText
+   * @param sortDirection
+   * @param pageIndex
+   * @param pageSize
+   * @param sortField
    * @returns Pageable Object
    */
-  getClaimHistory(empNo: string,
+  getClaimHistory(
+    empNo: string,
     idText: any = null,
     sortDirection: string = 'asc',
     pageIndex: number = 0,
     pageSize: number = 50,
-    sortField: string = '',
+    sortField: string = ''
   ): Observable<any> {
     return this.http
-      .get(`${this.API_URL}/claim/history`, {
+      .get<{ token: string }>(`${this.API_URL}/claim/history`, {
         params: new HttpParams()
           .set('empNo', empNo)
           .set('idText', idText)
           .set('sortOrder', sortDirection)
           .set('pageIndex', pageIndex.toString())
           .set('pageSize', pageSize.toString())
-          .set('sortField', sortField)
-      }).pipe<any[]>(map((res: any) => res));
+          .set('sortField', sortField),
+      })
+      .pipe<any[]>(map((res: any) => res));
   }
-getClaimHistoryAll(empNo: string,
+  getClaimHistoryAll(
+    empNo: string,
     idText: any = null,
     sortDirection: string = 'asc',
     pageIndex: number = 0,
     pageSize: number = 50,
-    sortField: string = '',
+    sortField: string = ''
   ): Observable<any> {
     return this.http
-      .get(`${this.API_URL}/claim/history/all`, {
+      .get<{ token: string }>(`${this.API_URL}/claim/history/all`, {
         params: new HttpParams()
           .set('empNo', empNo)
           .set('idText', idText)
           .set('sortOrder', sortDirection)
           .set('pageIndex', pageIndex.toString())
           .set('pageSize', pageSize.toString())
-          .set('sortField', sortField)
-      }).pipe<any[]>(map((res: any) => res));
+          .set('sortField', sortField),
+      })
+      .pipe<any[]>(map((res: any) => res));
   }
 
-  getClaimData(claimId: number,
+  getClaimData(
+    claimId: number,
     pageIndex: number = 0,
     pageSize: number = 10,
     sortDirection: string = 'asc',
     sortField: string = ''
   ): Observable<ClaimData[]> {
     return this.http
-      .get(`${this.API_URL}/claim/claimData`, {
+      .get<{ token: string }>(`${this.API_URL}/claim/claimData`, {
         params: new HttpParams()
           .set('claimId', claimId)
           .set('sortOrder', sortDirection)
@@ -256,6 +335,7 @@ getClaimHistoryAll(empNo: string,
     return await fetch(`${this.API_URL}/claim/get/${claimId}`, {
       method: 'get',
       headers: {
+        Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
         'Content-Type': 'application/json',
       },
     })
@@ -268,7 +348,7 @@ getClaimHistoryAll(empNo: string,
             console.log(receivedData.claimData)
             return receivedData;
           }));*/
-        console.log('auth getClaims ', responseJson);
+        //console.log('auth getClaims ', responseJson);
         return responseJson;
       })
       .catch((error) => {
@@ -278,8 +358,12 @@ getClaimHistoryAll(empNo: string,
 
   async getClaimNew(claimId: number): Promise<any> {
     const response = await fetch(`${this.API_URL}/claim/get/${claimId}`, {
-      method: 'get'
-    })
+      method: 'get',
+      headers: {
+        Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
+        'Content-Type': 'application/json',
+      },
+    });
     return await response.json();
   }
 
@@ -288,12 +372,13 @@ getClaimHistoryAll(empNo: string,
       method: 'post',
       body: JSON.stringify(claim), // data can be `string` or {object}!
       headers: {
+        Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
         'Content-Type': 'application/json',
       },
     })
       .then((res) => res.json())
       .then((responseJson) => {
-        console.log('auth res ', responseJson);
+        //console.log('auth res ', responseJson);
         return responseJson;
       })
       .catch((error) => {
@@ -306,6 +391,7 @@ getClaimHistoryAll(empNo: string,
       method: 'put',
       body: JSON.stringify(claim),
       headers: {
+        Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
         'Content-Type': 'application/json',
       },
     });
@@ -314,12 +400,16 @@ getClaimHistoryAll(empNo: string,
 
   async deleteClaimData(id: number): Promise<boolean> {
     try {
-      const response = await fetch(`${this.API_URL}/claim/claimData/delete/${id}`, {
-        method: 'delete',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        `${this.API_URL}/claim/claimData/delete/${id}`,
+        {
+          method: 'delete',
+          headers: {
+            Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
+            'Content-Type': 'application/json',
+          },
+        }
+      );
       if (response.ok) return response.json();
       else throw Error('Error deleting Item');
     } catch (error) {
@@ -329,13 +419,20 @@ getClaimHistoryAll(empNo: string,
 
   getDashboardData(year: number, empNo: string): any {
     return this.http
-      .get(`${this.API_URL}/claim/dashboard/${year}/${empNo}`)
+      .get<{ token: string }>(`${this.API_URL}/claim/dashboard/${year}/${empNo}`)
       .pipe<Claim[]>(map((data: any) => data));
   }
 
   async getVouchers(): Promise<number[]> {
     try {
-      const response = await fetch(`${this.API_URL}/claim/voucherIds`);
+      const response = await fetch(`${this.API_URL}/claim/voucherIds`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
+            'Content-Type': 'application/json',
+          },
+        });
       if (response.ok) return response.json();
       else throw Error('Error getting Voucher');
     } catch (error) {
@@ -348,39 +445,50 @@ getClaimHistoryAll(empNo: string,
       method: 'post',
       body: JSON.stringify(data), // data can be `string` or {object}!
       headers: {
+        Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
         'Content-Type': 'application/json',
       },
     });
     return await response.json();
   }
 
-
-
   download(type: number, year: any, empNo: string): Observable<any> {
-    return this.http.get(
-      `${this.API_URL}/download/application/${year}/${empNo}`, {
-      responseType: 'blob',
-      observe: 'response'
-    }
-    ).pipe(
-      map(response => {
-        console.log("response ", response)
-        if (response.status !== 200) {
-          throw new HttpErrorResponse({ error: response.body, status: response.status });
-        }
-        return response.body!;
-      }),
-      catchError(this.handleError)
-    );
+    const token = this.getToken(); // ✅ Retrieve token
+    return this.http
+      .get(`${this.API_URL}/download/application/${year}/${empNo}`, {
+        responseType: 'blob',
+        observe: 'response',
+        headers: new HttpHeaders({
+          Authorization: `Bearer ${token}`, // ✅ Add token
+        }),
+      })
+      .pipe(
+        map((response) => {
+          //console.log("response ", response)
+          if (response.status !== 200) {
+            throw new HttpErrorResponse({
+              error: response.body,
+              status: response.status,
+            });
+          }
+          return response.body!;
+        }),
+        catchError(this.handleError)
+      );
   }
 
   async downloadNew(type: number, year: any, empNo: string): Promise<any> {
-    const response = await fetch(`${this.API_URL}/download/application/${year}/${empNo}`, {
-      method: 'get',
-    })
+    const response = await fetch(
+      `${this.API_URL}/download/application/${year}/${empNo}`,{
+        method: 'get',
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
+          'Content-Type': 'application/json',
+        },
+      }
+    );
     return await response.blob();
   }
-
 
   directDownload(url: string, version: string): Observable<any> {
     return this.http.get(`${this.API_URL}/download/${url}/${version}`, {
@@ -410,7 +518,13 @@ getClaimHistoryAll(empNo: string,
   async downloadVoucher(voucherId: number) {
     try {
       const response = await fetch(
-        `${this.API_URL}/download/voucher/${voucherId}`
+        `${this.API_URL}/download/voucher/${voucherId}`,{
+          method: 'get',
+          headers: {
+            Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
+            'Content-Type': 'application/json',
+          },
+        }
       );
       if (response.ok) return response.blob();
       else throw Error('Error generating pdf');
@@ -420,12 +534,12 @@ getClaimHistoryAll(empNo: string,
   }
 
   updateRoles(memberId: number, roles: string[]): Observable<any> {
-    return this.http.put(`${this.API_URL}/member/${memberId}/roles`, { roles });
+    return this.http.put<{ token: string }>(`${this.API_URL}/member/${memberId}/roles`, { roles });
   }
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof Blob) {
-      return new Observable<string>(observer => {
+      return new Observable<string>((observer) => {
         const reader = new FileReader();
         reader.onload = () => {
           observer.error(reader.result as string);
@@ -441,7 +555,6 @@ getClaimHistoryAll(empNo: string,
       return throwError(() => new Error(error.message || 'Unknown error!'));
     }
   }
-
 }
 /*
 

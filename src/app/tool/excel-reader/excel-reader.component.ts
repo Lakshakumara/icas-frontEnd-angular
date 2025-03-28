@@ -117,7 +117,7 @@ export class ExcelReaderComponent {
     var formValues: any
     var dep: any = []
 
-    for (let i = 2703; i < 2705; i++) {//2703
+    for (let i = 1; i < 2705; i++) {//2703
       //console.log("main i ",i)
       const row = data[i]
       if(row.length == 0) continue

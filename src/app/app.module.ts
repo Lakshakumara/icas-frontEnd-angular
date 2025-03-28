@@ -4,7 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 import { RegisterComponent } from './register/register.component';
@@ -54,6 +54,7 @@ import { TestComponent } from './test/test.component';
 import { ClaimDetailsDialogComponent } from './pop/claim-details-dialog/claim-details-dialog.component';
 import { ExcelReaderComponent } from './tool/excel-reader/excel-reader.component';
 import { ClaimTreeComponent } from './util/my/claim-tree/claim-tree.component';
+import { AuthInterceptor } from './auth-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -112,7 +113,14 @@ import { ClaimTreeComponent } from './util/my/claim-tree/claim-tree.component';
     NgMultiSelectDropDownModule,
     MyTableModule,
   ],
-  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'en-GB' }],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -31,7 +31,6 @@ export class LoginV1Component implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-
   }
   initForm() {
     this.empNoForm = new FormGroup({
@@ -44,42 +43,95 @@ export class LoginV1Component implements OnInit {
       this.loaderService.showLoader('Fetching member details...');
       await this.delay(100);
       // Fetch member details
-      let member = await this.authService.getMemberNew(this.empNoForm.value.empNo);
+      /*let member = await this.authService.getMemberNew(
+        this.empNoForm.value.empNo
+      );*/
 
-      if (member.id != null) {
-        // Member found
-        this.loaderService.updateMessage('Checking registration status...');
-        await this.delay(100);
-        const reg = member.memberRegistrations.find((r) => r.year == Utils.currentYear && r.acceptedDate != null);
+      if (true) {//member.id != null
+        const { value: password } = await Swal.fire({
+          title: 'Enter password',
+          input: 'password',
+          inputLabel: 'Password',
+          inputPlaceholder: 'Enter your password',
+          inputAttributes: {
+            maxlength: '10',
+            autocapitalize: 'off',
+            autocorrect: 'off',
+          },
+        });
+        if (password) {
+          this.authService
+            .login(this.empNoForm.value.empNo, password)
+            .subscribe(
+              async (response:any) => {
+                //console.log("received ", response.token)
+                this.authService.saveToken(response.token);
 
-        if (reg !== undefined) {
-          // Registration OK, navigate to home
-          this.loaderService.updateMessage('Registration found. Redirecting to home page...');
-          await this.delay(100);
-          this.share.setUser(member);
+                // Member found
+                this.loaderService.updateMessage(
+                  'Checking registration status...'
+                );
+                await this.delay(100);
+                let member = await this.authService.getMemberNew(this.empNoForm.value.empNo);
 
+                const reg = member.memberRegistrations.find(
+                  (r) => r.year == Utils.currentYear && r.acceptedDate != null
+                );
 
-          this.router.navigate(['/home']);
+                if (reg !== undefined) {
+                  // Registration OK, navigate to home
+                  this.loaderService.updateMessage(
+                    'Registration found. Redirecting to home page...'
+                  );
+                  //await this.delay(100);
+                  this.share.setUser(member);
+                  this.router.navigate(['/home']);
+                } else {
+                  const regnext = member.memberRegistrations.find(
+                    (r) => r.year == Utils.currentYear + 1
+                  );
+                  if (regnext !== undefined) {
+                    // Registered for next year, navigate to signin
+                    Swal.fire(
+                      `Registered for year ${Utils.currentYear + 1}`,
+                      `No access for current Year ${Utils.currentYear}`,
+                      'warning'
+                    );
+                    this.router.navigate(['/signin']);
+                  } else {
+                    // Registration process ongoing, navigate to signin
+                    Swal.fire(
+                      'Membership accept pending',
+                      'Contact Department Head',
+                      'warning'
+                    );
+                    this.router.navigate(['/signin']);
+                  }
+                }
+              },
+              (error:any) => {
+                alert('Invalid credentials');
+                return;
+              }
+            );
+          //let correctUser = await this.authService.isCorrectUser(this.empNoForm.value.empNo, password);
         } else {
-          const regnext = member.memberRegistrations.find((r) => r.year == Utils.currentYear + 1);
-          if (regnext !== undefined) {
-            // Registered for next year, navigate to signin
-            Swal.fire(`Registered for year ${Utils.currentYear + 1}`, `No access for current Year ${Utils.currentYear}`, 'warning');
-            this.router.navigate(['/signin']);
-          } else {
-            // Registration process ongoing, navigate to signin
-            Swal.fire('Membership accept pending', 'Contact Department Head', 'warning');
-            this.router.navigate(['/signin']);
-          }
+          return;
         }
       } else {
         // Member not found, check HR database
-        this.loaderService.updateMessage('Member not found. Checking HR database...');
+        this.loaderService.updateMessage(
+          'Member not found. Checking HR database...'
+        );
         await this.delay(100);
-        const hr = await this.authService.getHRDetailsNew(this.empNoForm.value.empNo);
+        const hr = await this.authService.getHRDetailsNew(
+          this.empNoForm.value.empNo
+        );
         if (hr.empNo != null) {
           // Employee found in HR, navigate to signup
-          this.loaderService.updateMessage('Employee found in HR. Redirecting to signup...');
+          this.loaderService.updateMessage(
+            'Employee found in HR. Redirecting to signup...'
+          );
           await this.delay(100);
           this.share.setUser(hr);
           this.router.navigate(['/signup']);
@@ -95,7 +147,7 @@ export class LoginV1Component implements OnInit {
         }
       }
     } catch (error) {
-      console.error('Error performing tasks', error);
+      //console.error('Error performing tasks', error);
       Swal.fire({
         title: 'Error',
         text: 'An error occurred while processing your request.',
@@ -103,13 +155,12 @@ export class LoginV1Component implements OnInit {
         confirmButtonText: 'Ok',
       });
     } finally {
-
       this.loaderService.hideLoader();
     }
   }
 
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   resetEmpNoForm(): void {

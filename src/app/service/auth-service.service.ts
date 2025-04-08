@@ -24,7 +24,6 @@ export class AuthServiceService {
 
   saveToken(token: string) {
     localStorage.setItem('jwtToken', token);
-    console.log('saved ', token);
   }
 
   getToken(): string | null {
@@ -92,6 +91,7 @@ export class AuthServiceService {
         'Content-Type': 'application/json',
       },
     });
+    console.log(response)
     return await response.json();
   }
 
@@ -115,9 +115,10 @@ export class AuthServiceService {
     return await response.json();
   }
 
-  login(username: string, password: string) {
+  login(empNo: string, password: string) {
+    console.log(empNo)
     return this.http.post<{ token: string }>(`${this.API_URL}/auth/login`, {
-      username,
+      empNo,
       password,
     });
   }
@@ -137,7 +138,8 @@ export class AuthServiceService {
     depName: string | null = ''
   ): Promise<any> {
     const response = await fetch(
-      `${this.API_URL}/member/dependant/${year}/${empNo}/${depName}`,{
+      `${this.API_URL}/member/dependant/${year}/${empNo}/${depName}`,
+      {
         method: 'get',
         headers: {
           Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
@@ -154,7 +156,8 @@ export class AuthServiceService {
     benName: string | null = ''
   ): Promise<any> {
     const response = await fetch(
-      `${this.API_URL}/member/beneficiaries/${year}/${empNo}/${benName}`,{
+      `${this.API_URL}/member/beneficiaries/${year}/${empNo}/${benName}`,
+      {
         method: 'get',
         headers: {
           Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
@@ -419,20 +422,21 @@ export class AuthServiceService {
 
   getDashboardData(year: number, empNo: string): any {
     return this.http
-      .get<{ token: string }>(`${this.API_URL}/claim/dashboard/${year}/${empNo}`)
+      .get<{ token: string }>(
+        `${this.API_URL}/claim/dashboard/${year}/${empNo}`
+      )
       .pipe<Claim[]>(map((data: any) => data));
   }
 
   async getVouchers(): Promise<number[]> {
     try {
-      const response = await fetch(`${this.API_URL}/claim/voucherIds`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
-            'Content-Type': 'application/json',
-          },
-        });
+      const response = await fetch(`${this.API_URL}/claim/voucherIds`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
+          'Content-Type': 'application/json',
+        },
+      });
       if (response.ok) return response.json();
       else throw Error('Error getting Voucher');
     } catch (error) {
@@ -479,7 +483,8 @@ export class AuthServiceService {
 
   async downloadNew(type: number, year: any, empNo: string): Promise<any> {
     const response = await fetch(
-      `${this.API_URL}/download/application/${year}/${empNo}`,{
+      `${this.API_URL}/download/application/${year}/${empNo}`,
+      {
         method: 'get',
         headers: {
           Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
@@ -506,7 +511,13 @@ export class AuthServiceService {
   async downloadClaim(claimId: number) {
     try {
       const response = await fetch(
-        `${this.API_URL}/download/application/opd/${claimId}`
+        `${this.API_URL}/download/application/opd/${claimId}`,
+        {
+          method: 'get',
+          headers: {
+            Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
+          },
+        }
       );
       if (response.ok) return response.blob();
       else throw Error('Error generating pdf');
@@ -518,7 +529,8 @@ export class AuthServiceService {
   async downloadVoucher(voucherId: number) {
     try {
       const response = await fetch(
-        `${this.API_URL}/download/voucher/${voucherId}`,{
+        `${this.API_URL}/download/voucher/${voucherId}`,
+        {
           method: 'get',
           headers: {
             Authorization: `Bearer ${this.getToken()}`, // Attach JWT token
@@ -534,7 +546,10 @@ export class AuthServiceService {
   }
 
   updateRoles(memberId: number, roles: string[]): Observable<any> {
-    return this.http.put<{ token: string }>(`${this.API_URL}/member/${memberId}/roles`, { roles });
+    return this.http.put<{ token: string }>(
+      `${this.API_URL}/member/${memberId}/roles`,
+      { roles }
+    );
   }
 
   private handleError(error: HttpErrorResponse) {

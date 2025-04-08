@@ -66,7 +66,7 @@ export class LoginV1Component implements OnInit {
               async (response:any) => {
                 //console.log("received ", response.token)
                 this.authService.saveToken(response.token);
-
+                console.log("received response ", response)
                 // Member found
                 this.loaderService.updateMessage(
                   'Checking registration status...'
@@ -83,7 +83,7 @@ export class LoginV1Component implements OnInit {
                   this.loaderService.updateMessage(
                     'Registration found. Redirecting to home page...'
                   );
-                  //await this.delay(100);
+                  await this.delay(100);
                   this.share.setUser(member);
                   this.router.navigate(['/home']);
                 } else {

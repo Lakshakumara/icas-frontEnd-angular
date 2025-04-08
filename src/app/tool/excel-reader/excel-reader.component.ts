@@ -117,7 +117,7 @@ export class ExcelReaderComponent {
     var formValues: any
     var dep: any = []
 
-    for (let i = 1; i < 2705; i++) {//2703
+    for (let i = 5; i < 2705; i++) {//2705
       //console.log("main i ",i)
       const row = data[i]
       if(row.length == 0) continue
@@ -137,7 +137,7 @@ export class ExcelReaderComponent {
           password: 'user'+row[2],
           scheme: row[1],
           registrationOpen: 0,
-          roles: [{role:'user'}],
+          roles: [{role:'ROLE_USER'}, {role:'ROLE_ADMIN'}],
           memberRegistrations: [{
             id: null,
             year: 2025,

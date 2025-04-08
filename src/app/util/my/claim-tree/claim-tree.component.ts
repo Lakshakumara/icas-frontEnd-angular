@@ -30,14 +30,14 @@ export class ClaimTreeComponent implements OnInit {
       console.log("claim history", this.claims)
       if (this.claims == undefined) return
       const TREE_DATA: ClaimNode[] = this.claims.map((claim: any) => ({
-        name: `${claim.idText} - ${claim.title}`,
+        name: `${claim.scheme.idText} - ${claim.scheme.title}-${claim.claimDataStatus}`,
         children: [
           { name: `Request: ${claim.requestAmount}`, data: claim },
           { name: `Deduction: ${claim.deductionAmount}`, data: claim },
           { name: `Adjust: ${claim.adjustAmount}`, data: claim },
           { name: `Paid: ${claim.paidAmount}`, data: claim },
           {
-            name: `Claim ID: ${claim.claimIds}`,
+            name: `Claim ID: ${claim.id}`,
             children: [],
           },
           // Add more fields as needed

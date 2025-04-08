@@ -19,12 +19,11 @@ export class AuthInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     const token = this.authService.getToken(); // Get stored token
-    console.log('getToken', token);
 
     if (req.url.includes('/auth/login')) {
       return next.handle(req);
     }
-    
+
     if (token) {
       // Clone request and attach token
       const cloned = req.clone({

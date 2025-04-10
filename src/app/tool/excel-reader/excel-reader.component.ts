@@ -1,14 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
-import { DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Constants } from 'src/app/util/constants';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 
 @Component({
+  standalone: true,
   selector: 'app-excel-reader',
+  imports: [ CommonModule, ReactiveFormsModule],
   providers: [
     DatePipe,
   ],

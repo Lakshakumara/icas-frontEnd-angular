@@ -41,6 +41,7 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
 .mat-elevation-z8 {
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
     0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
@@ -50,6 +51,7 @@ body {
   /*padding: 10px;*/
   font-family: Arial, sans-serif;
 }
+
 .topClass-table th.mat-header-cell {
   position: sticky;
   top: 0;
@@ -75,13 +77,16 @@ body {
   background-color: #f1f1f1;
   cursor: pointer;
 }
+
 .topClass-table td {
   border-bottom: 1px solid #ddd;
 }
+
 .mat-paginator {
   margin-top: 8px;
   justify-content: center;
 }
+
 ::ng-deep .mat-sort-header-container {
   padding: 10px;
 }

@@ -8,8 +8,30 @@ import { Claim } from 'src/app/Model/claim';
 import Swal from 'sweetalert2';
 import { Constants } from 'src/app/util/constants';
 import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MyTableModule } from "../../../tableFactory/tableModel/table.module";
 
 @Component({
+  standalone: true,
+    imports: [CommonModule, ReactiveFormsModule, MatCardModule,
+    MatAutocompleteModule, MatCardModule, MatCheckboxModule,
+    MatDividerModule,
+    FormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatNativeDateModule, MyTableModule],
   selector: 'app-voucher-new',
   templateUrl: './voucher-new.component.html',
   styleUrls: ['./voucher-new.component.css']

@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Utils } from 'src/app/util/utils';
@@ -8,11 +8,28 @@ import { Router } from '@angular/router';
 import { SharedService } from 'src/app/shared/shared.service';
 import { Member } from 'src/app/Model/member';
 import { Constants } from 'src/app/util/constants';
-import { Observable, map, startWith } from 'rxjs';
-import { Scheme, SchemeTitles } from 'src/app/Model/scheme';
+import { Scheme } from 'src/app/Model/scheme';
 import { SchemeService } from 'src/app/service/scheme.service';
+import { CommonModule } from '@angular/common';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepicker, MatDatepickerToggle, MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormField, MatLabel, MatHint, MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { ChipSelectorComponent } from "../../util/my/chip-selector/chip-selector.component";
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule,
+    MatAutocompleteModule, MatCardModule, MatFormField, MatLabel,
+    MatDatepicker, MatDatepickerToggle, MatHint, CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatNativeDateModule, ChipSelectorComponent],
   selector: 'app-opd-new',
   templateUrl: './opd-new.component.html',
   styleUrls: ['./opd-new.component.css']

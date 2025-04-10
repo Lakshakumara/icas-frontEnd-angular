@@ -1,10 +1,15 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnInit } from '@angular/core';
-import { MatTreeNestedDataSource } from '@angular/material/tree';
+import { MatCardModule } from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatNestedTreeNode, MatTree, MatTreeNestedDataSource, MatTreeNode } from '@angular/material/tree';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 
 @Component({
+  standalone: true,
   selector: 'app-claim-tree',
+  imports: [ MatCardModule, MatPaginator, MatIcon, MatTree, MatTreeNode, MatNestedTreeNode],
   templateUrl: './claim-tree.component.html',
   styleUrls: ['./claim-tree.component.css']
 })

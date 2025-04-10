@@ -1,18 +1,49 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { CommonModule } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { catchError, finalize, merge, of, tap } from 'rxjs';
-import { Claim_Data_Review, Claim_History } from 'src/app/Model/claim';
+import { MatTableModule } from '@angular/material/table';
+import { catchError, merge, of, tap } from 'rxjs';
+import { Claim_History } from 'src/app/Model/claim';
 import { Scheme } from 'src/app/Model/scheme';
 import { ClaimDetailsDialogComponent } from 'src/app/pop/claim-details-dialog/claim-details-dialog.component';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Constants } from 'src/app/util/constants';
 import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
+import { ChipSelectorComponent } from "../../../util/my/chip-selector/chip-selector.component";
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
 
 @Component({
   selector: 'app-payment-history',
+  standalone: true,
+    imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatTableModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatDividerModule,
+    FormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatPaginator,
+    MatProgressSpinnerModule,
+    ChipSelectorComponent,
+    MatSelect
+],
   templateUrl: './payment-history.component.html',
   styleUrls: ['./payment-history.component.css'],
   animations: [
@@ -79,8 +110,8 @@ export class PaymentHistoryComponent implements OnInit, AfterViewInit {
   loadPaymentHistory() {
     this.dataSource.getHistoryMain(this.member.empNo);
   }
-  onCategoryChange(newCategory: string) {
-    this.selectedCategory = newCategory;
+  onCategoryChange(event: string) {
+    this.selectedCategory = event;
   }
   search() {
     console.log("category ", this.selectedCategory)

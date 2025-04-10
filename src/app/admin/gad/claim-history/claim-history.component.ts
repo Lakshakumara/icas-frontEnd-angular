@@ -6,6 +6,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -14,18 +15,47 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSort } from '@angular/material/sort';
+import { MatColumnDef, MatTableModule } from '@angular/material/table';
 import { merge, tap } from 'rxjs';
 import { Claim, Claim_All } from 'src/app/Model/claim';
 import { ClaimData } from 'src/app/Model/claimData';
 import { Member } from 'src/app/Model/member';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
+import { ChipSelectorComponent } from 'src/app/util/my/chip-selector/chip-selector.component';
 
 @Component({
   selector: 'app-claim-history',
+  standalone: true,
+      imports: [
+      CommonModule,
+      ReactiveFormsModule,
+      MatMenuModule,
+      MatIcon,
+      MatTableModule,
+      MatCardModule,
+      MatCheckboxModule,
+      MatDividerModule,
+      FormsModule,
+      MatDatepickerModule,
+      MatFormFieldModule,
+      MatInputModule,
+      MatPaginator,
+      MatProgressSpinnerModule,
+  ],
   templateUrl: './claim-history.component.html',
   styleUrls: ['./claim-history.component.css'],
   animations: [

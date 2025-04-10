@@ -1,11 +1,31 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatList, MatListModule } from '@angular/material/list';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
 import { Access_type } from 'src/app/Model/role';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Constants } from 'src/app/util/constants';
 
 @Component({
+  standalone: true,
+    imports: [CommonModule, ReactiveFormsModule, MatList, MatListModule,
+      MatFormFieldModule, MatLabel, MatCardModule, MatCheckboxModule,
+      MatDividerModule,
+      FormsModule,
+      MatFormFieldModule,
+      MatNativeDateModule, MatPaginatorModule, MatOptionModule],
   selector: 'app-access',
   templateUrl: './access.component.html',
   styleUrls: ['./access.component.css'],

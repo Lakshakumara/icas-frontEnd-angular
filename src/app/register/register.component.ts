@@ -4,6 +4,8 @@ import {
   FormBuilder,
   FormControl,
   FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,7 +13,7 @@ import { AuthServiceService } from '../service/auth-service.service';
 import { SharedService } from '../shared/shared.service';
 import { DependantComponent } from './dependant/dependant.component';
 import { Dependant } from '../Model/dependant';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Utils } from '../util/utils';
 import { Beneficiary, BeneficiaryColumns } from '../Model/benificiary';
 import Swal from 'sweetalert2';
@@ -19,8 +21,17 @@ import { Router } from '@angular/router';
 import { BeneficiaryComponent } from './beneficiary/beneficiary.component';
 import { Member } from '../Model/member';
 import { Constants } from '../util/constants';
+import { CommonModule } from '@angular/common';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenu } from '@angular/material/menu';
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule,
+    MatAutocompleteModule, MatCardModule,
+    MatTableModule, MatIcon, MatMenu],
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],

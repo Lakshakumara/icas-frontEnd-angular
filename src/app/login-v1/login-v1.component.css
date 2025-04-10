@@ -5,3 +5,18 @@
 .loggin-form {
     padding: 20px;
 }
+
+.main-div {
+    display: flex;
+    justify-content: center;
+    /* Horizontally center */
+    align-items: center;
+    /* Vertically center */
+    height: 90vh;
+    /* Full height of the viewport */
+}
+
+mat-card {
+    width: 400px;
+    /* You can adjust the width as per your requirement */
+}

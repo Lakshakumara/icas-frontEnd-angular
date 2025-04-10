@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -7,9 +8,18 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSort } from '@angular/material/sort';
+import { MatColumnDef, MatTableModule } from '@angular/material/table';
 import { merge, tap, debounceTime, distinctUntilChanged } from 'rxjs';
 import { Member, Member_Column_Accept } from 'src/app/Model/member';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
@@ -18,6 +28,23 @@ import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
 
 @Component({
   selector: 'app-member-data',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatColumnDef,
+    MatAutocompleteModule,
+    MatTableModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatDividerModule,
+    FormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatPaginator,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './member-data.component.html',
   styleUrls: ['./member-data.component.css'],
 })
@@ -35,7 +62,7 @@ export class MemberDataComponent implements OnInit, AfterViewInit {
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
     private auth: AuthServiceService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.dataSource = new LoadDataSource(this.auth);
@@ -44,8 +71,8 @@ export class MemberDataComponent implements OnInit, AfterViewInit {
     this.setupTableFeatures();
   }
   setupTableFeatures() {
-    this.dataSource.sort = this.sort
-    this.dataSource.paginator = this.paginator
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
     this.sort.direction = 'asc';
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
     this.changeDetectorRef.detectChanges();
@@ -82,7 +109,7 @@ export class MemberDataComponent implements OnInit, AfterViewInit {
     );
   }
   onRowClicked(selectedMember: Member) {
-    this.selectedMember = selectedMember
+    this.selectedMember = selectedMember;
     this.getMember.emit(selectedMember);
   }
 }

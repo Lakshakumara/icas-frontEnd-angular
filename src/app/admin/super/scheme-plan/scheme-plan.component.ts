@@ -1,8 +1,23 @@
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { Scheme, SchemeColumns } from '../../../Model/scheme';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
+import {
+  MatColumnDef,
+  MatTableDataSource,
+  MatTableModule,
+} from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Member } from 'src/app/Model/member';
 import { ConfirmDialogComponent } from 'src/app/pop/confirm-dialog/confirm-dialog.component';
@@ -12,6 +27,25 @@ import { SharedService } from 'src/app/shared/shared.service';
 import { Constants } from 'src/app/util/constants';
 
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatIcon,
+    MatAutocompleteModule,
+    MatTableModule,
+    MatColumnDef,
+    MatCardModule,
+    MatCheckboxModule,
+    MatDividerModule,
+    FormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatNativeDateModule,
+    MatFormFieldModule,
+    MatPaginator,
+  ],
   selector: 'app-scheme-plan',
   templateUrl: './scheme-plan.component.html',
   styleUrls: ['./scheme-plan.component.css'],
@@ -23,7 +57,7 @@ export class SchemePlanComponent implements OnInit {
   dataSource = new MatTableDataSource<Scheme>();
   valid: any = {};
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  
+
   constructor(
     public dialog: MatDialog,
     private schemeService: SchemeService,
@@ -37,7 +71,7 @@ export class SchemePlanComponent implements OnInit {
     this.member = this.share.getUser();
     if (this.member) {
       this.schemeService.getScheme(Constants.ALL).subscribe((res: any) => {
-        console.log(res)
+        console.log(res);
         this.dataSource.data = res;
       });
     } else this.router.navigate(['/signin']);

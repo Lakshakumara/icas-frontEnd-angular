@@ -18,9 +18,43 @@ import { Claim, Claim_All } from 'src/app/Model/claim';
 import { SharedService } from 'src/app/shared/shared.service';
 import { ClaimDataSource } from 'src/app/util/dataSource/claim-dataSource';
 import { Constants } from 'src/app/util/constants';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatColumnDef, MatTableModule } from '@angular/material/table';
 
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatColumnDef,
+    MatAutocompleteModule,
+    MatTableModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatDividerModule,
+    FormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatPaginator,
+  ],
   selector: 'app-claim-manage',
   templateUrl: './claim-manage.component.html',
   styleUrls: ['./claim-manage.component.css'],
@@ -28,7 +62,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 export class ClaimManageComponent implements OnInit, AfterViewInit {
   @Output() getClaim = new EventEmitter();
   selectedClaim!: Claim | null;
-  isHeadPresent: Boolean = Constants.isHeadPresent
+  isHeadPresent: Boolean = Constants.isHeadPresent;
   status_actual_pending: string = Constants.CLAIMSTATUS_PENDING;
   status_head_approved: string = Constants.CLAIMSTATUS_HEAD_APPROVED;
   status_reject: string = Constants.CLAIMSTATUS_REJECTED;
@@ -38,12 +72,12 @@ export class ClaimManageComponent implements OnInit, AfterViewInit {
   loggeduser!: Member;
   search_year!: number;
   claim!: Claim;
-  
+
   tobeUpdated!: any[];
   dataSource!: ClaimDataSource;
   columnsSchema: any = Claim_All;
-  displayedColumn: string[] = this.columnsSchema.map((col:any) => col.key);
-  
+  displayedColumn: string[] = this.columnsSchema.map((col: any) => col.key);
+
   claimViewOptions: string[] = Constants.CLAIM_STATUS_VIEW;
   claimViewOptionSelected: string = 'All';
   search: any;
@@ -83,9 +117,9 @@ export class ClaimManageComponent implements OnInit, AfterViewInit {
     this.dataSource = new ClaimDataSource(this.auth);
   }
   ngAfterViewInit() {
-    this.dataSource.sort = this.sort
-    this.dataSource.paginator = this.paginator
-    this.loadClaimPage()
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.loadClaimPage();
     this.dataSource.loading$.subscribe((loading) => {
       if (!loading) {
         this.totalLength = this.dataSource.totalCount;
@@ -114,10 +148,7 @@ export class ClaimManageComponent implements OnInit, AfterViewInit {
 
   loadClaimPage() {
     this.selectedClaim = null;
-    this.dataSource.requestData(
-      this.getSelectedClaimStatus(),
-      '',
-    );
+    this.dataSource.requestData(this.getSelectedClaimStatus(), '');
   }
   getSelectedClaimStatus(): string {
     let sop: string = '';

@@ -9,10 +9,37 @@ import { Claim, Claim_Head_Accept } from 'src/app/Model/claim';
 import { SharedService } from 'src/app/shared/shared.service';
 import { Constants } from 'src/app/util/constants';
 import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatColumnDef, MatTableModule } from '@angular/material/table';
 
 @Component({
   selector: 'app-claim-update',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatColumnDef,
+    MatAutocompleteModule,
+    MatTableModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatDividerModule,
+    FormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatPaginator,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './claim-update.component.html',
   styleUrls: ['./claim-update.component.css'],
 })
@@ -33,7 +60,7 @@ export class ClaimUpdateComponent implements OnInit {
     private auth: AuthServiceService,
     private share: SharedService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.loggeduser = this.share.getUser();
@@ -42,7 +69,7 @@ export class ClaimUpdateComponent implements OnInit {
   }
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator
+    this.dataSource.paginator = this.paginator;
     this.loadClaimPage();
     this.dataSource.loading$.subscribe((loading) => {
       if (!loading) {
@@ -62,14 +89,16 @@ export class ClaimUpdateComponent implements OnInit {
       .subscribe((value) => {
         //const filterValue = value.trim().toLowerCase();
         this.dataSource.filter = value.trim().toLowerCase();
-        this.sort.active = 'member.name'
+        this.sort.active = 'member.name';
         this.dataSource.paginator!.firstPage();
         this.loadClaimPage();
       });
   }
 
-
-  loadClaimPage(department: string = this.loggeduser.department, filter: string = '') {
+  loadClaimPage(
+    department: string = this.loggeduser.department,
+    filter: string = ''
+  ) {
     this.dataSource.getDepHeadClaims(department);
   }
 
@@ -77,7 +106,7 @@ export class ClaimUpdateComponent implements OnInit {
     this.selectedClaim = claim;
   }
   clearClaim() {
-    this.selectedClaim = null
+    this.selectedClaim = null;
   }
   acceptClaim() {
     if (this.selectedClaim == null) return;

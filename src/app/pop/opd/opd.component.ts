@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Utils } from 'src/app/util/utils';
@@ -8,8 +8,25 @@ import { Router } from '@angular/router';
 import { SharedService } from 'src/app/shared/shared.service';
 import { Member } from 'src/app/Model/member';
 import { Constants } from 'src/app/util/constants';
+import { CommonModule, NgFor } from '@angular/common';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatOption, MatNativeDateModule } from '@angular/material/core';
+import { MatDatepicker, MatDatepickerToggle, MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormField, MatLabel, MatHint, MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, NgFor,
+    MatAutocompleteModule, MatOption, MatCardModule, MatFormField, MatLabel,
+    MatDatepicker, MatDatepickerToggle, MatHint, CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatNativeDateModule],
   selector: 'app-opd',
   templateUrl: './opd.component.html',
   styleUrls: ['./opd.component.css'],

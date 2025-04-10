@@ -13,7 +13,12 @@ import { Role } from 'src/app/Model/role';
 
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 
-import { FormBuilder, FormGroup } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import Swal from 'sweetalert2';
@@ -23,14 +28,55 @@ import { SharedService } from 'src/app/shared/shared.service';
 import { VoucherNewComponent } from '../../voucher-new/voucher-new.component';
 import { Utils } from 'src/app/util/utils';
 import { GravatarService } from 'src/app/gravatar-service.service';
+import { CommonModule } from '@angular/common';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIcon } from '@angular/material/icon';
+import { ClaimManageComponent } from "../claim-manage/claim-manage.component";
+import { SetPaymentComponent } from "../../set-payment/set-payment.component";
+import { ReRegComponent } from "../../re-reg/re-reg.component";
+import { NewUserComponent } from "../../new-user/new-user.component";
+import { PaymentHistoryComponent } from "../../payment-history/payment-history.component";
+import { ClaimHistoryComponent } from "../../claim-history/claim-history.component";
+import { MemberDataComponent } from "../../member-data/member-data.component";
+import { BeneficiaryDataComponent } from "../../beneficiary-data/beneficiary-data.component";
 
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatDividerModule,
+    FormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatNativeDateModule,
+    MatIcon,
+    ClaimManageComponent,
+    SetPaymentComponent,
+    ReRegComponent,
+    VoucherNewComponent,
+    NewUserComponent,
+    PaymentHistoryComponent,
+    ClaimHistoryComponent,
+    MemberDataComponent,
+    BeneficiaryDataComponent
+],
   selector: 'app-sub_registration',
   templateUrl: './r.html', //member-manage//registration.component
   styleUrls: ['./r.css'],
 })
 export class RegistrationComponent implements OnInit, AfterViewInit {
-
   @Input() voucherIds!: number[];
   @Output() doVoucher = new EventEmitter();
   showFullProfile = false;
@@ -42,8 +88,8 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   viewMode: string = 'memberDetails'; // State variable to control view
   panelTitle: string = 'Members Data';
   status_mecApproved: string = Constants.CLAIMSTATUS_MEDICAL_DECISION_APPROVED;
-  
- // @Output() sidenavClose = new EventEmitter();
+
+  // @Output() sidenavClose = new EventEmitter();
 
   //claims: Claim[] | undefined;
   //dataSource!: MemberDataSource;
@@ -70,10 +116,10 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   //@ViewChild(MatSort) sort!: MatSort;
   panelOpenState = false;
   selectedvoucherId!: number | undefined;
-  currentYear:number = Utils.currentYear
+  currentYear: number = Utils.currentYear;
 
   @ViewChild(VoucherNewComponent) voucherNewComponent!: VoucherNewComponent;
-  
+
   constructor(
     private share: SharedService,
     private changeDetectorRef: ChangeDetectorRef,
@@ -107,7 +153,9 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
 
   getMember(member: any) {
     this.selectedMember = member;
-    this.profilePictureUrl = this.gravatarService.getGravatarUrl(this.selectedMember!.email);
+    this.profilePictureUrl = this.gravatarService.getGravatarUrl(
+      this.selectedMember!.email
+    );
     this.selectedRoles = [];
     const rr: Role[] = this.selectedMember!.roles;
     rr.forEach((r) => {
@@ -135,7 +183,7 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
           role: Constants.ROLE_SUPER_ADMIN,
         });
     });
-   
+
     this.roleGroup.patchValue({
       selectedRoles: [this.selectedRoles],
       //selectedRoles: this.selectedMember!.roles.map(role => this.roleData.find(item => item.role === role))
@@ -160,15 +208,15 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   }
 
   showClaimManage() {
-    this.selectedClaim = null
+    this.selectedClaim = null;
     this.viewMode = 'claimManage';
     this.panelTitle = 'Claim Manage';
   }
   showReRegistration() {
     this.viewMode = 'reReg';
-    this.panelTitle = `Re Registration -${this.currentYear+1} `;
-    }
-  showSetPayment(){
+    this.panelTitle = `Re Registration -${this.currentYear + 1} `;
+  }
+  showSetPayment() {
     this.viewMode = 'setPayment';
     this.panelTitle = `Claim ID ${this.selectedClaim!.id}`;
   }
@@ -233,14 +281,14 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
       });
     });
   }
-  getvoucherIds(id:number[]){
-    this.voucherIds = id
+  getvoucherIds(id: number[]) {
+    this.voucherIds = id;
   }
-  
+
   showVoucher() {
     Constants.Toast.fire('Under Construction');
   }
-  
+
   public downloadVoucher(): void {
     if (this.voucherNewComponent) {
       this.voucherNewComponent.downloadVoucher(this.selectedvoucherId!);

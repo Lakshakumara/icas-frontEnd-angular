@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   ColumnSettingsModel,
   TablePaginationSettingsModel,
@@ -8,9 +8,34 @@ import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Claim } from 'src/app/Model/claim';
 import Swal from 'sweetalert2';
 import { Constants } from 'src/app/util/constants';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardActions, MatCardModule } from '@angular/material/card';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatFooterRow, MatRow, MatTableModule } from '@angular/material/table';
+import { MyTableModule } from '../../../tableFactory/tableModel/table.module';
+import { MatActionList } from '@angular/material/list';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-voucher',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatTableModule,
+    MatCardModule,
+    FormsModule,
+    MatFormFieldModule,
+    MyTableModule,
+    MatExpansionModule,
+  ],
   templateUrl: './voucher.component.html',
   styleUrls: ['./voucher.component.css'],
 })

@@ -1,7 +1,17 @@
+import { CommonModule } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { MatColumnDef, MatTableModule } from '@angular/material/table';
 import { merge, tap } from 'rxjs';
 import { Claim_Data_Review } from 'src/app/Model/claim';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
@@ -10,6 +20,22 @@ import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
 import Swal from 'sweetalert2';
 
 @Component({
+  standalone: true,
+    imports: [
+      CommonModule,
+      ReactiveFormsModule,
+      MatColumnDef,
+      MatAutocompleteModule,
+      MatTableModule,
+      MatCardModule,
+      MatCheckboxModule,
+      MatDividerModule,
+      FormsModule,
+      MatExpansionModule,
+      MatFormFieldModule,
+      MatInputModule,
+      MatPaginator,
+    ],
   selector: 'app-set-payment',
   templateUrl: './set-payment.component.html',
   styleUrls: ['./set-payment.component.css']

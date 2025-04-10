@@ -1,9 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Member, Member_Column_Accept } from 'src/app/Model/member';
 import { MemberDataSource } from '../../../util/dataSource/members-dataSource';
 import { MatPaginator } from '@angular/material/paginator';
@@ -11,21 +6,43 @@ import { MatSort } from '@angular/material/sort';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Router } from '@angular/router';
 
-import {
-  debounceTime,
-  distinctUntilChanged,
-  merge,
-  tap,
-} from 'rxjs';
+import { debounceTime, distinctUntilChanged, merge, tap } from 'rxjs';
 import { SharedService } from 'src/app/shared/shared.service';
 import { Utils } from 'src/app/util/utils';
 import Swal from 'sweetalert2';
 import { Registration } from 'src/app/Model/registration';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Constants } from 'src/app/util/constants';
+import { CommonModule } from '@angular/common';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatColumnDef, MatTableModule } from '@angular/material/table';
 
 @Component({
   selector: 'app-member',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatColumnDef,
+    MatAutocompleteModule,
+    MatTableModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatDividerModule,
+    FormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatPaginator,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './member.component.html',
   styleUrls: ['./member.component.css'],
 })
@@ -74,7 +91,7 @@ export class MemberComponent implements OnInit, AfterViewInit {
       )
       .subscribe((value) => {
         const filterValue = value.trim().toLowerCase();
-        this.sort.active = 'member.name'
+        this.sort.active = 'member.name';
         this.loadMemberPage(filterValue);
       });
   }

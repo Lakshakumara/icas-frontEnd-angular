@@ -1,12 +1,31 @@
+import { CommonModule, NgFor } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatNativeDateModule, MatOption } from '@angular/material/core';
+import { MatDatepicker, MatDatepickerModule, MatDatepickerToggle } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatFormField, MatFormFieldModule, MatHint, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { Dependant } from 'src/app/Model/dependant';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Constants } from 'src/app/util/constants';
 import { Utils } from 'src/app/util/utils';
 
 @Component({
+  standalone: true,
+  imports: [ CommonModule, ReactiveFormsModule, NgFor, 
+    MatAutocompleteModule, MatOption, MatCardModule, MatFormField, MatIcon, MatLabel,
+    MatDatepicker, MatDatepickerToggle, MatHint,CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatNativeDateModule,
+  ],
   selector: 'app-dependant',
   templateUrl: './dependant.component.html',
   styleUrls: ['./dependant.component.css'],

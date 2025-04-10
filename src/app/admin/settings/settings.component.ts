@@ -1,6 +1,11 @@
-// src/app/settings/settings.component.ts
+
+import { CommonModule, NgFor } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatOption } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatListItem, MatListModule, MatNavList } from '@angular/material/list';
+import { MatSidenavContainer, MatSidenavModule } from '@angular/material/sidenav';
 import { Member } from 'src/app/Model/member';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { SettingsService } from 'src/app/service/settings.service';
@@ -13,6 +18,10 @@ interface Section {
 }
 
 @Component({
+  standalone: true,
+  imports:[CommonModule, ReactiveFormsModule, NgFor, MatListItem, 
+    MatSidenavModule, MatNavList, MatSidenavContainer,
+  MatFormFieldModule, MatOption, ],
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']

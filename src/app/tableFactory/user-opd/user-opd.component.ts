@@ -11,8 +11,20 @@ import { Claim } from 'src/app/Model/claim';
 import { merge, tap } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
+import { CommonModule, NgFor } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatOption } from '@angular/material/core';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatTableModule } from '@angular/material/table';
 
 @Component({
+  standalone: true,
+  imports: [ CommonModule, FormsModule, ReactiveFormsModule, NgFor, 
+    MatAutocompleteModule, MatOption, MatCardModule, MatFormField, MatLabel,
+    MatTableModule, MatPaginator,
+  ],
   selector: 'app-user-opd',
   templateUrl: './user-opd.component.html',
   styleUrls: ['./user-opd.component.css'],

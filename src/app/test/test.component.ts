@@ -8,14 +8,18 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { SchemeTitles } from '../Model/scheme';
 import { SchemeService } from '../service/scheme.service';
-import { MatChipInputEvent } from '@angular/material/chips';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipGrid, MatChipInput, MatChipInputEvent, MatChipRow } from '@angular/material/chips';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatOption } from '@angular/material/autocomplete';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { CommonModule, NgFor } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
 
 export const _filter = (opt: string[], value: string): string[] => {
   const filterValue = value.toLowerCase();
@@ -27,6 +31,11 @@ export const _filter = (opt: string[], value: string): string[] => {
  */
 
 @Component({
+  standalone: true,
+  imports: [ CommonModule, ReactiveFormsModule, NgFor, 
+    MatAutocompleteModule, MatOption, MatCardModule, MatFormField, MatIcon, MatLabel, MatChipGrid, 
+    MatChipRow, MatChipInput],
+    
   selector: 'app-test',
   templateUrl: './test.component.html',
   styleUrls: ['./test.component.css'],

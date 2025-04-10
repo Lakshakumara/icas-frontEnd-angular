@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthServiceService } from '../service/auth-service.service';
 import { Router } from '@angular/router';
 import { SharedService } from '../shared/shared.service';
@@ -7,8 +7,22 @@ import { LoaderService } from '../service/loader.service';
 import { Utils } from '../util/utils';
 import Swal from 'sweetalert2';
 import { Scheme } from '../Model/scheme';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+],
   selector: 'app-login-v1',
   templateUrl: './login-v1.component.html',
   styleUrls: ['./login-v1.component.css'],
@@ -40,10 +54,6 @@ export class LoginV1Component implements OnInit {
       // Show loader with initial message
       this.loaderService.showLoader('Fetching member details...');
       await this.delay(100);
-      // Fetch member details
-      /*let member = await this.authService.getMemberNew(
-        this.empNoForm.value.empNo
-      );*/
 
       if (true) {//member.id != null
         const { value: password } = await Swal.fire({

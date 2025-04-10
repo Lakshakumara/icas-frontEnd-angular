@@ -1,6 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -12,15 +11,19 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable, of } from 'rxjs';
-import { startWith, map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { MatChipInputEvent } from '@angular/material/chips';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { startWith, map } from 'rxjs/operators';
+import { MatChipGrid, MatChipInput, MatChipRow } from '@angular/material/chips';
+import { MatAutocompleteModule, MatOption } from '@angular/material/autocomplete';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { SchemeService } from 'src/app/service/scheme.service';
 import { Scheme } from 'src/app/Model/scheme';
 import { Constants } from '../../constants';
+import { CommonModule, NgFor } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
 
 export const _filter = (opt: Scheme[], value: string): Scheme[] => {
   const filterValue = value.toLowerCase();
@@ -32,6 +35,10 @@ export const _filter = (opt: Scheme[], value: string): Scheme[] => {
 };
 
 @Component({
+  standalone: true,
+  imports: [ CommonModule, ReactiveFormsModule, NgFor, 
+    MatAutocompleteModule, MatOption, MatCardModule, MatFormField, MatIcon, MatLabel, MatChipGrid, 
+    MatChipRow, MatChipInput],
   selector: 'app-chip-selector',
   templateUrl: './chip-selector.component.html',
   styleUrls: ['./chip-selector.component.css'],

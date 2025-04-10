@@ -4,7 +4,12 @@ import { Claim, MEC_Column_Accept } from 'src/app/Model/claim';
 import Swal from 'sweetalert2';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, map, merge, startWith, tap } from 'rxjs';
-import { FormBuilder, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { SchemeTitles } from 'src/app/Model/scheme';
 import { SchemeService } from 'src/app/service/scheme.service';
 import { Constants } from 'src/app/util/constants';
@@ -12,6 +17,21 @@ import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { CommonModule } from '@angular/common';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCard, MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
+import { MyTableModule } from '../../../tableFactory/tableModel/table.module';
+import { ClaimTreeComponent } from '../../../util/my/claim-tree/claim-tree.component';
+import { MatTableModule } from '@angular/material/table';
 
 export const _filter = (opt: string[], value: string): string[] => {
   const filterValue = value.toLowerCase();
@@ -19,6 +39,27 @@ export const _filter = (opt: string[], value: string): string[] => {
 };
 
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatCardModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatDividerModule,
+    FormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatNativeDateModule,
+    MatTableModule,
+    MatTooltip,
+    MatPaginator,
+    MatRadioModule,
+    MyTableModule,
+    ClaimTreeComponent,
+  ],
   selector: 'app-mec',
   templateUrl: './mec.component.html',
   styleUrls: ['./mec.component.css'],
@@ -29,7 +70,7 @@ export class MecComponent implements OnInit {
   claim_category!: string;
   panelOpenState = false;
   claim!: Claim;
-  claimHistory!: any
+  claimHistory!: any;
   selectedClaim!: Claim | null;
   claimDataStatus!: string;
   currentClaimData: any[] = [];
@@ -56,7 +97,7 @@ export class MecComponent implements OnInit {
   ];
   // @ViewChild("myTooltip") myTooltip!: MatTooltip
   totalLength = 0;
-  calculatedRequestAmount: number = 0
+  calculatedRequestAmount: number = 0;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -65,7 +106,7 @@ export class MecComponent implements OnInit {
     private schemeService: SchemeService,
     private auth: AuthServiceService,
     private route: ActivatedRoute
-  ) { }
+  ) {}
 
   stateGroups!: SchemeTitles[];
   stateGroupOptions!: Observable<SchemeTitles[]>;
@@ -132,7 +173,7 @@ export class MecComponent implements OnInit {
     this.dataSource = new LoadDataSource(this.auth);
     //this.dataSource.paginator = this.paginator;
     //this.dataSource.sort = this.sort;
-    this.loadClaimPage()
+    this.loadClaimPage();
     this.schemeService
       .getSchemeTitle(this.claim_category)
       .subscribe((titles: any) => {
@@ -180,8 +221,8 @@ export class MecComponent implements OnInit {
 
   onRowClicked(claim: Claim) {
     this.selectedClaim = claim;
-    this.calculatedRequestAmount = this.selectedClaim.requestAmount
-    this.formGroup.patchValue({ requestAmount: this.calculatedRequestAmount })
+    this.calculatedRequestAmount = this.selectedClaim.requestAmount;
+    this.formGroup.patchValue({ requestAmount: this.calculatedRequestAmount });
     this.loadTitleTable();
   }
   onNotifySelected(selectedclaimTitle: any[]) {
@@ -191,10 +232,8 @@ export class MecComponent implements OnInit {
   loadTitleTable() {
     this.dataSource.loadCurrentClaimData(this.selectedClaim!.id).then((res) => {
       this.currentClaimData = res;
-      
     });
   }
-  
 
   updateClaim() {
     if (this.currentClaimData.length == 0) {
@@ -238,7 +277,7 @@ export class MecComponent implements OnInit {
     let scheme = this.formGroup.value.stateGroup?.split('-');
     if (scheme == undefined) return;
     //console.log('this.claimDataStatus ', this.claimDataStatus)
-    if (this.claimDataStatus === undefined) return
+    if (this.claimDataStatus === undefined) return;
     this.tobeUpdated = [];
     this.tobeUpdated.push({
       criteria: Constants.CRITERIA_CLAIMDATA_ADD,
@@ -270,7 +309,8 @@ export class MecComponent implements OnInit {
         if (result.value >= 1) {
           Swal.fire('Claim Data Added', '', 'success');
           if (this.formGroup.value.requestAmount != null)
-            this.calculatedRequestAmount = this.calculatedRequestAmount - this.formGroup.value.requestAmount
+            this.calculatedRequestAmount =
+              this.calculatedRequestAmount - this.formGroup.value.requestAmount;
           this.formGroup.reset();
           this.loadTitleTable();
         } else Swal.fire('Error', 'Failed to Update', 'error');

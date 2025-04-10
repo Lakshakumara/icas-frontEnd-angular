@@ -1,6 +1,15 @@
+import { CommonModule, NgFor } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatOption, MatNativeDateModule } from '@angular/material/core';
+import { MatDatepicker, MatDatepickerToggle, MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormField, MatLabel, MatHint, MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { Dependant } from 'src/app/Model/dependant';
 import { Member } from 'src/app/Model/member';
@@ -10,8 +19,19 @@ import { SharedService } from 'src/app/shared/shared.service';
 import { Constants } from 'src/app/util/constants';
 import { Utils } from 'src/app/util/utils';
 import Swal from 'sweetalert2';
+import { ChipSelectorComponent } from "../../util/my/chip-selector/chip-selector.component";
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, NgFor,
+    MatAutocompleteModule, MatOption, MatCardModule, MatFormField, MatCheckboxModule,
+    MatLabel, MatDividerModule,
+    MatDatepicker, MatDatepickerToggle, MatHint,
+    FormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatNativeDateModule, ChipSelectorComponent],
   selector: 'app-hospital',
   templateUrl: './hospital.component.html',
   styleUrls: ['./hospital.component.css'],

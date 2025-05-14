@@ -1,5 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Utils } from 'src/app/util/utils';
@@ -12,21 +17,39 @@ import { CommonModule, NgFor } from '@angular/common';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
 import { MatOption, MatNativeDateModule } from '@angular/material/core';
-import { MatDatepicker, MatDatepickerToggle, MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormField, MatLabel, MatHint, MatFormFieldModule } from '@angular/material/form-field';
+import {
+  MatDatepicker,
+  MatDatepickerToggle,
+  MatDatepickerModule,
+} from '@angular/material/datepicker';
+import {
+  MatFormField,
+  MatLabel,
+  MatHint,
+  MatFormFieldModule,
+} from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgFor,
-    MatAutocompleteModule, MatOption, MatCardModule, MatFormField, MatLabel,
-    MatDatepicker, MatDatepickerToggle, MatHint, CommonModule,
-    FormsModule,
+  imports: [
+    CommonModule,
     ReactiveFormsModule,
+    NgFor,
+    MatAutocompleteModule,
+    MatOption,
+    MatCardModule,
+    MatFormField,
+    MatLabel,
+    MatDatepicker,
+    MatDatepickerToggle,
+    MatHint,
+    FormsModule,
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
-    MatNativeDateModule],
+    MatNativeDateModule,
+  ],
   selector: 'app-opd',
   templateUrl: './opd.component.html',
   styleUrls: ['./opd.component.css'],
@@ -56,7 +79,10 @@ export class OpdComponent implements OnInit {
     incidentDate: this.buildr.control(Utils.today, Validators.required),
     claimDate: this.buildr.control(Utils.today, Validators.required),
     applyDate: this.buildr.control(''),
-    requestAmount: this.buildr.control({ value: <number>{}, disabled: false }, Validators.required),
+    requestAmount: this.buildr.control(
+      { value: <number>{}, disabled: false },
+      Validators.required
+    ),
     claimStatus: this.buildr.control(Constants.CLAIMSTATUS_PENDING),
   });
   ngOnInit() {
@@ -132,8 +158,8 @@ export class OpdComponent implements OnInit {
           allowOutsideClick: () => false,
           preConfirm: async () => {
             try {
-              if(result.value == undefined) throw ''
-              let claimid : any = result.value;
+              if (result.value == undefined) throw '';
+              let claimid: any = result.value;
               let response: any = await this.auth.downloadClaim(claimid);
               console.log('received from backend ', response);
 

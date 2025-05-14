@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+  HttpParams,
+} from '@angular/common/http';
 import { Observable, lastValueFrom, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { Member } from '../Model/member';
@@ -8,7 +13,7 @@ import { Dependant } from '../Model/dependant';
 import { Claim } from '../Model/claim';
 import { ClaimData } from '../Model/claimData';
 import { Utils } from '../util/utils';
-
+import { jwtDecode } from 'jwt-decode';
 @Injectable({
   providedIn: 'root',
 })
@@ -23,6 +28,38 @@ export class AuthServiceService {
 
   getToken(): string | null {
     return localStorage.getItem('jwtToken');
+  }
+
+  isDefaultPassword(): boolean {
+    const decodedToken1 = this.decodeToken();
+    if (decodedToken1) return decodedToken1.defaultPassword;
+    else return false;
+  }
+  // Decode token and get roles
+  getRoles(): string[] {
+    const decodedToken1 = this.decodeToken();
+    if (decodedToken1) return decodedToken1.roles.map((r: any) => r.authority);
+    else return [];
+  }
+  decodeToken(): any {
+    const token = this.getToken();
+    if (token) {
+      const decodedToken: any = jwtDecode(token);
+      return decodedToken;
+    } else return [];
+  }
+  // Check if the user has a specific role
+  hasRole(role: string): boolean {
+    const roles = this.getRoles();
+    return roles.includes(role);
+  }
+  public hasAnyRole(...checkRoles: string[]): boolean {
+    const roles = this.getRoles();
+    return checkRoles.some((role) => roles.includes(role));
+  }
+  // Remove JWT token from localStorage (logout)
+  logout() {
+    localStorage.removeItem('jwtToken');
   }
 
   isLoggedIn(): boolean {
@@ -86,7 +123,7 @@ export class AuthServiceService {
         'Content-Type': 'application/json',
       },
     });
-    console.log(response)
+    console.log(response);
     return await response.json();
   }
 
@@ -111,16 +148,29 @@ export class AuthServiceService {
   }
 
   login(empNo: string, password: string) {
-    console.log(empNo)
+    console.log(empNo);
     return this.http.post<{ token: string }>(`${this.API_URL}/auth/login`, {
       empNo,
       password,
     });
   }
-  /*async login(username: any, password: any){
-    return this.http.post<{ token: string }>(`${this.API_URL}/login`, { username, password });
-  }*/
-
+  changePassword(oldPassword: string, newPassword: string) {
+    return this.http.post<{ token: string }>(
+      `${this.API_URL}/auth/change-default-password`,
+      {
+        oldPassword,
+        newPassword,
+      }
+    );
+  }
+  forgotPassword(email: any) {
+    return this.http.post<{ token: string }>(
+      `${this.API_URL}/auth/forgot-password`,
+      {
+        email,
+      }
+    );
+  }
   getDependant(name: any): Observable<any> {
     return this.http
       .get<{ token: string }>(`${this.API_URL}/dependant/${name}`)

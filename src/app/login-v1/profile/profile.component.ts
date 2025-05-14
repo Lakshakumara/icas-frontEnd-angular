@@ -4,18 +4,19 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatChipInput, MatChipOption, MatChipsModule } from '@angular/material/chips';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { MatIcon } from '@angular/material/icon';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router } from '@angular/router';
+import { MaterialModule } from 'src/app/material/material.module';
 import { Member } from 'src/app/Model/member';
 import { SharedService } from 'src/app/shared/shared.service';
 
@@ -24,13 +25,11 @@ import { SharedService } from 'src/app/shared/shared.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    NgFor,
     MatAutocompleteModule,
-    MatIcon,
+    MatIconModule,
     MatCardModule,
     MatMenuModule,
     MatCheckboxModule,
-    MatToolbarModule,
     MatDividerModule,
     FormsModule,
     MatDatepickerModule,
@@ -39,8 +38,8 @@ import { SharedService } from 'src/app/shared/shared.service';
     MatNativeDateModule,
     MatGridListModule,
     MatListModule,
-    MatChipsModule
-  ],
+    MatChipsModule,
+],
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css'],
@@ -51,7 +50,7 @@ export class ProfileComponent {
     this.profile = this.share.getUser();
     if (this.profile != undefined) {
     } else {
-      this.router.navigate(['/signin']);
+      //this.router.navigate(['/signin']);
     }
   }
 }

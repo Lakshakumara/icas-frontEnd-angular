@@ -66,9 +66,9 @@ export class LoadDataSource extends DataSource<any> {
         finalize(() => this.loadingSubject.next(false))
       )
       .subscribe((receiveData: any) => {
-        console.log("receiveData to datasource ",receiveData)
         this.data = receiveData.content
-        this.dataSetSubject.next(this.data);
+        console.log("receiveData to datasource ",receiveData.content)
+        this.dataSetSubject.next(receiveData.content);
         this.totalCount = receiveData.totalElements;
       });
   }

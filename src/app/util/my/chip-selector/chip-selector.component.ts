@@ -11,19 +11,27 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { MatChipGrid, MatChipInput, MatChipRow } from '@angular/material/chips';
-import { MatAutocompleteModule, MatOption } from '@angular/material/autocomplete';
+import {
+  MatAutocompleteModule,
+  MatOption,
+} from '@angular/material/autocomplete';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { SchemeService } from 'src/app/service/scheme.service';
 import { Scheme } from 'src/app/Model/scheme';
 import { Constants } from '../../constants';
-import { CommonModule, NgFor } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 export const _filter = (opt: Scheme[], value: string): Scheme[] => {
   const filterValue = value.toLowerCase();
@@ -36,20 +44,29 @@ export const _filter = (opt: Scheme[], value: string): Scheme[] => {
 
 @Component({
   standalone: true,
-  imports: [ CommonModule, ReactiveFormsModule, NgFor, 
-    MatAutocompleteModule, MatOption, MatCardModule, MatFormField, MatIcon, MatLabel, MatChipGrid, 
-    MatChipRow, MatChipInput],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatOption,
+    MatIcon,
+    MatChipGrid,
+    MatChipRow,
+    MatChipInput,
+  ],
   selector: 'app-chip-selector',
   templateUrl: './chip-selector.component.html',
   styleUrls: ['./chip-selector.component.css'],
 })
-export class ChipSelectorComponent implements OnInit, OnChanges  {
-  @Input() category: any
+export class ChipSelectorComponent implements OnInit, OnChanges {
+  @Input() category: any;
   formGroup: FormGroup;
   separatorKeysCodes: number[] = [ENTER, COMMA];
   allScheme: any[] = [];
   selectedScheme: Scheme[] = [];
-  titlesSc!: Observable<Scheme[]>
+  titlesSc!: Observable<Scheme[]>;
   @ViewChild('titleInput') titleInput!: ElementRef<HTMLInputElement>;
   @Output() getScheme = new EventEmitter<Scheme[]>();
 
@@ -58,12 +75,11 @@ export class ChipSelectorComponent implements OnInit, OnChanges  {
     this.formGroup = this.fb.group({
       schemeTitles: this.fb.control('', [Validators.required]),
     });
-
   }
 
   ngOnInit() {
-    console.log("selected Category ", this.category)
-    this.setupData(this.category)
+    console.log('selected Category ', this.category);
+    this.setupData(this.category);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -71,17 +87,17 @@ export class ChipSelectorComponent implements OnInit, OnChanges  {
       this.handleCategoryChange(changes['category'].currentValue);
     }
   }
-  setupData(cat:any){
-    this.allScheme = []
-    this.schemeService.getScheme(cat)
-      .subscribe((res: any[]) => {
-        res.forEach((s) => {
-          if (s.title != '') {
-            this.allScheme.push(s);
-          }
-        });
-        this.formGroup.get('schemeTitles')!.setValue('');
+  setupData(cat: any) {
+    this.allScheme = [];
+    this.schemeService.getScheme(cat).subscribe((res: any[]) => {
+      res.forEach((s) => {
+        if (s.title != '') {
+          console.log(s)
+          this.allScheme.push(s);
+        }
       });
+      this.formGroup.get('schemeTitles')!.setValue('');
+    });
     this.titlesSc = this.formGroup.get('schemeTitles')!.valueChanges.pipe(
       startWith(''),
       map((value: string) => this._filterx(value || ''))
@@ -89,7 +105,7 @@ export class ChipSelectorComponent implements OnInit, OnChanges  {
   }
 
   handleCategoryChange(newCategory: string) {
-    this.setupData(newCategory)
+    this.setupData(newCategory);
   }
 
   add(event: any): void {

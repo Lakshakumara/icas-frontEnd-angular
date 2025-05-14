@@ -32,20 +32,22 @@ import { CommonModule } from '@angular/common';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatIcon } from '@angular/material/icon';
-import { ClaimManageComponent } from "../claim-manage/claim-manage.component";
-import { SetPaymentComponent } from "../../set-payment/set-payment.component";
-import { ReRegComponent } from "../../re-reg/re-reg.component";
-import { NewUserComponent } from "../../new-user/new-user.component";
-import { PaymentHistoryComponent } from "../../payment-history/payment-history.component";
-import { ClaimHistoryComponent } from "../../claim-history/claim-history.component";
-import { MemberDataComponent } from "../../member-data/member-data.component";
-import { BeneficiaryDataComponent } from "../../beneficiary-data/beneficiary-data.component";
+import { MatIconModule } from '@angular/material/icon';
+import { ClaimManageComponent } from '../claim-manage/claim-manage.component';
+import { SetPaymentComponent } from '../../set-payment/set-payment.component';
+import { ReRegComponent } from '../../re-reg/re-reg.component';
+import { NewUserComponent } from '../../new-user/new-user.component';
+import { PaymentHistoryComponent } from '../../payment-history/payment-history.component';
+import { ClaimHistoryComponent } from '../../claim-history/claim-history.component';
+import { MemberDataComponent } from '../../member-data/member-data.component';
+import { BeneficiaryDataComponent } from '../../beneficiary-data/beneficiary-data.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   standalone: true,
@@ -61,7 +63,10 @@ import { BeneficiaryDataComponent } from "../../beneficiary-data/beneficiary-dat
     MatFormFieldModule,
     MatInputModule,
     MatNativeDateModule,
-    MatIcon,
+    MatButtonModule,
+    MatIconModule,
+    MatSelectModule,
+    MatOptionModule,
     ClaimManageComponent,
     SetPaymentComponent,
     ReRegComponent,
@@ -70,8 +75,8 @@ import { BeneficiaryDataComponent } from "../../beneficiary-data/beneficiary-dat
     PaymentHistoryComponent,
     ClaimHistoryComponent,
     MemberDataComponent,
-    BeneficiaryDataComponent
-],
+    BeneficiaryDataComponent,
+  ],
   selector: 'app-sub_registration',
   templateUrl: './r.html', //member-manage//registration.component
   styleUrls: ['./r.css'],

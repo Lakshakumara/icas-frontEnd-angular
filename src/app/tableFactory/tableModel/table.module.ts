@@ -14,7 +14,7 @@ export {
 } from './table-settings.model';
 
 @NgModule({
-  declarations: [TableComponent],
+  declarations: [],
   imports: [
     CommonModule,
     MatTableModule,
@@ -22,6 +22,7 @@ export {
     MatCheckboxModule,
     MatSortModule,
     MatPaginatorModule,
+    TableComponent,
   ],
   exports: [TableComponent],
 })

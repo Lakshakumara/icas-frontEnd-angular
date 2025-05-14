@@ -8,18 +8,31 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
 import {
   TablePaginationSettingsModel,
   ColumnSettingsModel,
 } from './table-settings.model';
-import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
+import { CommonModule } from '@angular/common';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-my-table',
+  standalone:true,
+  imports:[
+    CommonModule,
+    MatFormFieldModule,
+    MatTableModule,
+    MatCheckboxModule,
+    MatIconModule,
+    MatPaginatorModule,
+    MatSortModule,
+  ],
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
 })

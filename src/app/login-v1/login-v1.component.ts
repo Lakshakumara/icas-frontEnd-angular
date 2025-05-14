@@ -1,7 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { AuthServiceService } from '../service/auth-service.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { SharedService } from '../shared/shared.service';
 import { LoaderService } from '../service/loader.service';
 import { Utils } from '../util/utils';
@@ -18,14 +23,16 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    RouterModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-],
+  ],
   selector: 'app-login-v1',
   templateUrl: './login-v1.component.html',
-  styleUrls: ['./login-v1.component.css'],
+  styleUrls: ['./login-v1.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class LoginV1Component implements OnInit {
   empNoForm!: FormGroup;
@@ -55,7 +62,8 @@ export class LoginV1Component implements OnInit {
       this.loaderService.showLoader('Fetching member details...');
       await this.delay(100);
 
-      if (true) {//member.id != null
+      if (true) {
+        //member.id != null
         const { value: password } = await Swal.fire({
           title: 'Enter password',
           input: 'password',
@@ -71,16 +79,16 @@ export class LoginV1Component implements OnInit {
           this.authService
             .login(this.empNoForm.value.empNo, password)
             .subscribe(
-              async (response:any) => {
-                //console.log("received ", response.token)
+              async (response: any) => {
                 this.authService.saveToken(response.token);
-                console.log("received response ", response)
                 // Member found
                 this.loaderService.updateMessage(
                   'Checking registration status...'
                 );
                 await this.delay(100);
-                let member = await this.authService.getMemberNew(this.empNoForm.value.empNo);
+                let member = await this.authService.getMemberNew(
+                  this.empNoForm.value.empNo
+                );
 
                 const reg = member.memberRegistrations.find(
                   (r) => r.year == Utils.currentYear && r.acceptedDate != null
@@ -93,7 +101,13 @@ export class LoginV1Component implements OnInit {
                   );
                   await this.delay(100);
                   this.share.setUser(member);
-                  this.router.navigate(['/home']);
+
+                  const isDefaultPassword = this.authService.isDefaultPassword();
+                  if (isDefaultPassword) {
+                    this.router.navigate(['/change-password']);
+                  } else {
+                    this.router.navigate(['/home']);
+                  }
                 } else {
                   const regnext = member.memberRegistrations.find(
                     (r) => r.year == Utils.currentYear + 1
@@ -117,8 +131,12 @@ export class LoginV1Component implements OnInit {
                   }
                 }
               },
-              (error:any) => {
-                alert('Invalid credentials');
+              (error: any) => {
+                Swal.fire(
+                  'Failed',
+                  error.error?.message || 'Login failed',
+                  'error'
+                );
                 return;
               }
             );

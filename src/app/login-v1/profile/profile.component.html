@@ -23,7 +23,7 @@
         <div style="padding: 16px;">
             <h3 style="margin-bottom: 8px;">Roles</h3>
             <mat-chip-listbox aria-label="User Roles" style="display: flex; flex-wrap: wrap; gap: 8px;">
-                <mat-chip *ngFor="let role of profile.roles" color="primary" selected>
+                <mat-chip *ngFor="let role of profile.roles" selected>
                     {{ role.role }}
                     <mat-icon matChipTrailingIcon >cancel</mat-icon>
                 </mat-chip>

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {
   ColumnSettingsModel,
   TablePaginationSettingsModel,
@@ -9,38 +9,39 @@ import Swal from 'sweetalert2';
 import { Constants } from 'src/app/util/constants';
 import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDividerModule } from '@angular/material/divider';
+import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
 import { MyTableModule } from "../../../tableFactory/tableModel/table.module";
 
 @Component({
   standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, MatCardModule,
-    MatAutocompleteModule, MatCardModule, MatCheckboxModule,
-    MatDividerModule,
+  imports: [
+    CommonModule,
     FormsModule,
-    MatDatepickerModule,
+    FlexLayoutModule,
+    MatCardModule,
     MatFormFieldModule,
-    MatInputModule,
-    MatNativeDateModule, MyTableModule],
+    MatSelectModule,
+    MatOptionModule,
+    MatButtonModule,
+    MatTableModule,
+    MyTableModule
+],
   selector: 'app-voucher-new',
   templateUrl: './voucher-new.component.html',
-  styleUrls: ['./voucher-new.component.css']
+  styleUrls: ['./voucher-new.component.css'],
 })
 export class VoucherNewComponent implements OnInit {
   dataSource!: LoadDataSource;
   //@Input() dVoucher:boolean =false
   @Output() getvoucherIds = new EventEmitter();
- // selectedvoucherId!: number | undefined;
+  // selectedvoucherId!: number | undefined;
   columnDefinition: ColumnSettingsModel[] = [];
 
   tablePaginationSettings: TablePaginationSettingsModel = <
@@ -113,15 +114,14 @@ export class VoucherNewComponent implements OnInit {
     this.auth.getVouchers().then((r) => {
       this.getvoucherIds.emit(r);
     });
-    this.dataSource
-      .loadClaims('',Constants.CLAIMSTATUS_VOUCHER)
-      //.subscribe((receiveData: any) => (this.rowData = receiveData.content));
+    this.dataSource.loadClaims('', Constants.CLAIMSTATUS_VOUCHER);
+    //.subscribe((receiveData: any) => (this.rowData = receiveData.content));
 
-      this.dataSource.loading$.subscribe((loading) => {
-        if (!loading) {
-          if(this.dataSource.data) this.rowData = this.dataSource.data;
-        }
-      });
+    this.dataSource.loading$.subscribe((loading) => {
+      if (!loading) {
+        if (this.dataSource.data) this.rowData = this.dataSource.data;
+      }
+    });
   }
 
   voucherGenerate() {
@@ -174,9 +174,9 @@ export class VoucherNewComponent implements OnInit {
       }
     });
   }
-  public downloadVoucher(selectedvoucherId:number):void {
+  public downloadVoucher(selectedvoucherId: number): void {
     console.log('this.selectedvoucherId ', selectedvoucherId);
-    
+
     Swal.fire({
       title: 'Download Voucher',
       icon: 'question',

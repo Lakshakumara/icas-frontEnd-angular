@@ -1,5 +1,16 @@
-import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import {
+  MatPaginator,
+  MatPaginatorIntl,
+  MatPaginatorModule,
+} from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Router } from '@angular/router';
@@ -15,15 +26,34 @@ import { CommonModule, NgFor } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
-import { MatOption } from '@angular/material/core';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatOption, MatOptionModule } from '@angular/material/core';
+import {
+  MatFormField,
+  MatFormFieldModule,
+  MatLabel,
+} from '@angular/material/form-field';
 import { MatTableModule } from '@angular/material/table';
+import { MatSelectModule } from '@angular/material/select';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   standalone: true,
-  imports: [ CommonModule, FormsModule, ReactiveFormsModule, NgFor, 
-    MatAutocompleteModule, MatOption, MatCardModule, MatFormField, MatLabel,
-    MatTableModule, MatPaginator,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatInputModule,
+    FlexLayoutModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatAutocompleteModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatCardModule,
+    MatTableModule,
+    MatPaginatorModule,
   ],
   selector: 'app-user-opd',
   templateUrl: './user-opd.component.html',
@@ -57,20 +87,22 @@ export class UserOPDComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
-    private ref:ChangeDetectorRef,
+    private ref: ChangeDetectorRef,
     private share: SharedService,
     private auth: AuthServiceService,
     private breakpointObserver: BreakpointObserver,
     private router: Router
   ) {
-    this.breakpointObserver.observe([Breakpoints.XSmall]).subscribe(result => {
-      this.isMobile = result.matches;
-    });
+    this.breakpointObserver
+      .observe([Breakpoints.XSmall])
+      .subscribe((result) => {
+        this.isMobile = result.matches;
+      });
   }
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.isMobile = window.innerWidth <= 600;
-    this.ref.detectChanges()
+    this.ref.detectChanges();
   }
   ngOnInit() {
     this.member = this.share.getUser();
@@ -78,11 +110,11 @@ export class UserOPDComponent implements OnInit, AfterViewInit {
     else this.dataSource = new LoadDataSource(this.auth);
   }
   ngAfterViewInit() {
-    this.dataSource.sort = this.sort
-    this.dataSource.paginator = this.paginator
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
     this.loadClaimPage();
-    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-    merge(this.sort.sortChange, this.paginator.page)
+    this.sort?.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+    merge(this.sort?.sortChange, this.paginator.page)
       .pipe(tap(() => this.loadClaimPage()))
       .subscribe();
     this.dataSource.loading$.subscribe((loading) => {
@@ -97,8 +129,8 @@ export class UserOPDComponent implements OnInit, AfterViewInit {
       this.selectedCategory === 'All' ? '' : this.selectedCategory,
       this.selectedStatus === 'All' ? '%' : this.selectedStatus,
       '',
-      this.member.empNo,
-      this.year,
+      this.member?.empNo,
+      this.year
     );
   }
   onRowClicked(claim: Claim) {
@@ -112,7 +144,7 @@ export class UserOPDComponent implements OnInit, AfterViewInit {
     this.loadClaimPage();
   }
   readableStatus(status: string) {
-    let newstatus: string = ''
+    let newstatus: string = '';
     /*0'All',
    1 'Pending',
     2'Head Approved',
@@ -122,21 +154,28 @@ export class UserOPDComponent implements OnInit, AfterViewInit {
     6'Finance',
     7'Paid',*/
     switch (status) {
-      case Constants.CLAIMSTATUS_PENDING: newstatus = Constants.CLAIM_STATUS_VIEW[1]
-        break
-      case Constants.CLAIMSTATUS_HEAD_APPROVED: newstatus = Constants.CLAIM_STATUS_VIEW[2]
-        break
-      case Constants.CLAIMSTATUS_MEDICAL_DECISION_PENDING: newstatus = Constants.CLAIM_STATUS_VIEW[3]
-        break
-      case Constants.CLAIMSTATUS_MEDICAL_DECISION_APPROVED: newstatus = Constants.CLAIM_STATUS_VIEW[4]
-        break
-      case Constants.CLAIMSTATUS_REJECTED: newstatus = Constants.CLAIM_STATUS_VIEW[5]
-        break
-      case Constants.CLAIMSTATUS_FINANCE: newstatus = Constants.CLAIM_STATUS_VIEW[6]
-        break
-      case Constants.CLAIMSTATUS_PAID: newstatus = Constants.CLAIM_STATUS_VIEW[7]
-        break
+      case Constants.CLAIMSTATUS_PENDING:
+        newstatus = Constants.CLAIM_STATUS_VIEW[1];
+        break;
+      case Constants.CLAIMSTATUS_HEAD_APPROVED:
+        newstatus = Constants.CLAIM_STATUS_VIEW[2];
+        break;
+      case Constants.CLAIMSTATUS_MEDICAL_DECISION_PENDING:
+        newstatus = Constants.CLAIM_STATUS_VIEW[3];
+        break;
+      case Constants.CLAIMSTATUS_MEDICAL_DECISION_APPROVED:
+        newstatus = Constants.CLAIM_STATUS_VIEW[4];
+        break;
+      case Constants.CLAIMSTATUS_REJECTED:
+        newstatus = Constants.CLAIM_STATUS_VIEW[5];
+        break;
+      case Constants.CLAIMSTATUS_FINANCE:
+        newstatus = Constants.CLAIM_STATUS_VIEW[6];
+        break;
+      case Constants.CLAIMSTATUS_PAID:
+        newstatus = Constants.CLAIM_STATUS_VIEW[7];
+        break;
     }
-    return newstatus
+    return newstatus;
   }
 }

@@ -6,6 +6,7 @@ import * as XLSX from 'xlsx';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Constants } from 'src/app/util/constants';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
+import { Utils } from 'src/app/util/utils';
 
 @Component({
   standalone: true,
@@ -118,12 +119,17 @@ export class ExcelReaderComponent {
   processExcelData(data: any[][]) {
     var formValues: any
     var dep: any = []
-
-    for (let i = 5; i < 2705; i++) {//2705
+var x=1
+    for (let i = 5; i < 2712; i++) {//2712
       //console.log("main i ",i)
       const row = data[i]
+      if(row[0] != undefined && row[6] != undefined){
+        console.log("emp empty ", i, row)
+      }
+      
       if(row.length == 0) continue
       if (row[0] != undefined) {
+        x++ 
         dep = []
         formValues = {
           empNo: row[2],
@@ -131,7 +137,7 @@ export class ExcelReaderComponent {
           address: '',
           email: '',
           contactNo: '',
-          nic: this.getNicorXX(row[8]),
+          nic: this.getNicorXX(row[8], row[2]),
           sex: this.getGender(row[8]),
           dob: this.dotToDash(row[9]).toISOString().substring(0, 10),
           designation: row[5],
@@ -139,7 +145,7 @@ export class ExcelReaderComponent {
           password: 'user'+row[2],
           scheme: row[1],
           registrationOpen: 0,
-          roles: [{role:'ROLE_USER'}, {role:'ROLE_ADMIN'}],
+          roles: [{role:'ROLE_USER'}],//,{role:'ROLE_ADMIN'}
           memberRegistrations: [{
             id: null,
             year: 2025,
@@ -156,7 +162,10 @@ export class ExcelReaderComponent {
           deleted: false
         }
 
+      }else{
+        console.log(i, " ", row)
       }
+      
       let nextRow: any
       let j=i+1
       do {
@@ -169,11 +178,12 @@ export class ExcelReaderComponent {
             civilStatus: civil,
             dependants: dep,
           };
-          console.log("updatedFormValues j ",j, this.updatedFormValues)
+          //console.log("updatedFormValues j ",j, this.updatedFormValues)
           //this.formGroup.setValue(updatedFormValues)
           //console.log("save data ", this.formGroup.value)
 
           this.authService.registerNew(this.updatedFormValues)
+          Utils.delay(500);
           //end of database upload
           break
         }else{
@@ -185,6 +195,7 @@ export class ExcelReaderComponent {
       } while (nextRow[6] != undefined);
       i=j-1
     }
+    console.log("x ",x)
   }
   
 
@@ -205,7 +216,7 @@ export class ExcelReaderComponent {
           email: '',
           contactNo: '',
           civilStatus: "Married",
-          nic: this.getNicorXX(data[8]),
+          nic: this.getNicorXX(data[8], data[2]),
           sex: 'Male',
           dob: this.dotToDash(data[9]).toISOString().substring(0, 10),
           designation: data[5],
@@ -213,7 +224,7 @@ export class ExcelReaderComponent {
           password: data[2],
           scheme: data[1],
           registrationOpen: 0,
-          roles: [{ role: 'user' }],
+          roles: [{ role: 'ROLE_USER' }],
           memberRegistrations: [{
             id: null,
             year: 2025,
@@ -259,9 +270,9 @@ export class ExcelReaderComponent {
       return "Unmarried"
     }
   }
-  getNicorXX(data: any): string {
+  getNicorXX(data: any, emp: any): string {
     if (data === undefined) {
-      return "XX"
+      return "XX"+emp
     } else {
       return data
     }

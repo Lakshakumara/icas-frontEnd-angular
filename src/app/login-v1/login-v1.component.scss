@@ -2,8 +2,8 @@
     padding: 0%;
 }
 
-.loggin-form {
-    padding: 20px;
+.btn{
+    margin-left: 10px;
 }
 
 .main-div {
@@ -20,3 +20,12 @@ mat-card {
     width: 400px;
     /* You can adjust the width as per your requirement */
 }
+.forgot-password a {
+    font-size: 14px;
+    color: var(--pulse-color, #1976d2); // fallback to primary if not themed
+    text-decoration: none;
+  
+    &:hover {
+      text-decoration: underline;
+    }
+  }

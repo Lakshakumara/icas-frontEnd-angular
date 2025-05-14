@@ -1,6 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Utils } from 'src/app/util/utils';
 import Swal from 'sweetalert2';
@@ -14,25 +19,36 @@ import { CommonModule } from '@angular/common';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepicker, MatDatepickerToggle, MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormField, MatLabel, MatHint, MatFormFieldModule } from '@angular/material/form-field';
+import {
+  MatDatepickerModule,
+} from '@angular/material/datepicker';
+import {
+  MatFormFieldModule,
+} from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ChipSelectorComponent } from "../../util/my/chip-selector/chip-selector.component";
+import { ChipSelectorComponent } from '../../util/my/chip-selector/chip-selector.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule,
-    MatAutocompleteModule, MatCardModule, MatFormField, MatLabel,
-    MatDatepicker, MatDatepickerToggle, MatHint, CommonModule,
-    FormsModule,
+  imports: [
+    CommonModule,
     ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatCardModule,
+    FormsModule,
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
-    MatNativeDateModule, ChipSelectorComponent],
+    MatDialogModule,
+    MatNativeDateModule,
+    ChipSelectorComponent,
+    MatButtonModule,
+    MatDatepickerModule 
+  ],
   selector: 'app-opd-new',
   templateUrl: './opd-new.component.html',
-  styleUrls: ['./opd-new.component.css']
+  styleUrls: ['./opd-new.component.css'],
 })
 export class OpdNewComponent implements OnInit {
   member!: Member;
@@ -41,7 +57,7 @@ export class OpdNewComponent implements OnInit {
   today = Utils.today;
   beforeThreeMonth = Utils.threeMonthbeforetoday;
   schemeTitles!: string[];
-  opd: string = Constants.CATEGORY_OPD
+  opd: string = Constants.CATEGORY_OPD;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -58,11 +74,14 @@ export class OpdNewComponent implements OnInit {
     id: this.buildr.control(''),
     memberId: this.buildr.control(0),
     category: this.buildr.control(Constants.CATEGORY_OPD),
-    requestFor: this.buildr.control('',),
+    requestFor: this.buildr.control(''),
     startDate: this.buildr.control(Utils.today, Validators.required),
     claimDate: this.buildr.control(Utils.today, Validators.required),
     applyDate: this.buildr.control(Utils.today),
-    requestAmount: this.buildr.control({ value: <number>{}, disabled: false }, Validators.required),
+    requestAmount: this.buildr.control(
+      { value: <number>{}, disabled: false },
+      Validators.required
+    ),
     claimStatus: this.buildr.control(Constants.CLAIMSTATUS_PENDING),
   });
   ngOnInit() {
@@ -82,7 +101,6 @@ export class OpdNewComponent implements OnInit {
          startWith(''),
          map((value) => this._filterGroup(value || ''))
        );*/
-
   }
   onNotifySelectedScheme(schemeTitles: Scheme[]) {
     if (schemeTitles.length >= 1) this.schemeTitles = [schemeTitles[0].title];
@@ -112,7 +130,7 @@ export class OpdNewComponent implements OnInit {
       requestFor: this.schemeTitles.toString(),
     });
 
-    console.log(this.dForm.value)
+    console.log(this.dForm.value);
     const steps = ['1', '2', '3'];
     const Queue = Swal.mixin({
       progressSteps: steps,
@@ -154,8 +172,8 @@ export class OpdNewComponent implements OnInit {
           allowOutsideClick: () => false,
           preConfirm: async () => {
             try {
-              if(result.value == undefined) throw ''
-              let claimid : any = result.value;
+              if (result.value == undefined) throw '';
+              let claimid: any = result.value;
               let response: any = await this.auth.downloadClaim(claimid);
               console.log('received from backend ', response);
 

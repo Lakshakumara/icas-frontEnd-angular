@@ -77,4 +77,7 @@ export class Utils {
       timer: 1500,
     });
   }
+  static delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
 }

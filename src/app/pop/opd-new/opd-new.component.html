@@ -1,15 +1,15 @@
 <form [formGroup]="dForm">
-    <h1 mat-dialog-title>{{ inputdata.title }}</h1>
-    <div mat-dialog-content>
-      <!--mat-form-field class="example-full-width">
+  <h1 mat-dialog-title>{{ inputdata.title }}</h1>
+  <div mat-dialog-content>
+    <!--mat-form-field class="example-full-width">
         <mat-label>Choose Claim Type</mat-label>
         <mat-select formControlName="requestFor">
           <mat-option [value]="ctype" *ngFor="let ctype of claimTypes">{{ ctype }}
           </mat-option>
         </mat-select>
       </mat-form-field-->
-  
-      <!--mat-form-field class="example-full-width">
+
+    <!--mat-form-field class="example-full-width">
         <mat-label>Select Scheme Title</mat-label>
         <input type="text" matInput formControlName="stateGroup" required [matAutocomplete]="autoGroup" />
         <mat-autocomplete #autoGroup="matAutocomplete">
@@ -25,27 +25,47 @@
         </mat-autocomplete>
       </mat-form-field-->
 
-      <app-chip-selector class="scheme-title" [category]="opd" (getScheme)="onNotifySelectedScheme($event)"></app-chip-selector>
+    <app-chip-selector
+      class="scheme-title"
+      [category]="opd"
+      (getScheme)="onNotifySelectedScheme($event)"
+    ></app-chip-selector>
 
-      <mat-form-field class="example-full-width">
-        <mat-label>Date of Incident</mat-label>
-        <input matInput [matDatepicker]="picker" [min]="beforeThreeMonth" [max]="today" placeholder="Date of Incident"
-          formControlName="startDate" />
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-        <mat-hint>dd/mm/yyyy</mat-hint>
-      </mat-form-field>
-  
-      <mat-form-field class="example-full-width">
-        <mat-label>Request Amount</mat-label>
-        <input matInput type="number" placeholder="0" formControlName="requestAmount" />
-  
-      </mat-form-field>
-    </div>
-    <div mat-dialog-actions>
-      <button mat-raised-button color="primary" [disabled]="!dForm.valid" (click)="saveValidator()">
-        Save
-      </button>
-      <button mat-raised-button color="warn" (click)="closePopup()">Close</button>
-    </div>
-  </form>
+    <mat-form-field class="example-full-width">
+      <mat-label>Date of Incident</mat-label>
+      <input
+        matInput
+        [matDatepicker]="picker"
+        [min]="beforeThreeMonth"
+        [max]="today"
+        placeholder="Date of Incident"
+        formControlName="startDate"
+      />
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-hint>dd/mm/yyyy</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Request Amount</mat-label>
+      <input
+        matInput
+        type="number"
+        placeholder="0"
+        formControlName="requestAmount"
+      />
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="!dForm.valid"
+      (click)="saveValidator()"
+    >Save Claim</button>
+    <button mat-raised-button color="warn" (click)="closePopup()">Close</button>
+  </div>
+</form>

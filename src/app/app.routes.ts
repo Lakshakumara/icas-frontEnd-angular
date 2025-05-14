@@ -19,9 +19,15 @@ import { DirectDownloadComponent } from './download/directdownload.component';
 import { DownloadGuard } from './download.guard';
 import { SettingsComponent } from './admin/settings/settings.component';
 import { ExcelReaderComponent } from './tool/excel-reader/excel-reader.component';
+import { AuthGuard } from './auth.guard';
+import { PasswordGuard } from './guards/password.guard';
 
-export const routes: Routes = [
+/*export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'signin' },
+  {
+    path: 'change-password',
+    loadComponent: () => import('./change-password/change-password.component').then(m => m.ChangePasswordComponent)
+  },
   { path: 'home', component: HomePageComponent },
   { path: 'signup/:empNo', component: RegisterComponent, title: 'Search for Employee data' },
   { path: 'test', component: ExcelReaderComponent },
@@ -32,7 +38,13 @@ export const routes: Routes = [
   { path: 'download', component: DownloadComponent },
   { path: 'download/:scheme/:version', component: DirectDownloadComponent, canActivate: [DownloadGuard] },
   { path: 'download/application/:year/:empNo', component: DirectDownloadComponent },
-  { path: 'admin/head/member', component: MemberComponent },
+  {
+    path: 'admin/head/member',
+    component: MemberComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] }
+  },
+  //{ path: 'admin/head/member', component: MemberComponent },
   { path: 'admin/head/claim', component: ClaimUpdateComponent },
   { path: 'admin/gad/subject/reg', component: RegistrationComponent },
   { path: 'admin/gad/subject/claimupdate', component: ClaimManageComponent },
@@ -43,4 +55,51 @@ export const routes: Routes = [
   { path: 'admin/super/access', component: AccessComponent },
   { path: 'admin/settings', component: SettingsComponent },
   { path: '**', component: LoginV1Component },
+];*/
+
+export const routes: Routes = [
+  // Public routes (no guard)
+  { path: 'signin', component: LoginV1Component },
+  { path: 'signup', component: RegisterComponent },
+  { path: 'signup/:empNo', component: RegisterComponent },
+  { path: 'test', component: ExcelReaderComponent },
+
+  // Change password route (must be accessible even when defaultPassword is true)
+  {
+    path: 'change-password',
+    loadComponent: () => import('./auth/change-password/change-password.component').then(m => m.ChangePasswordComponent)
+  },
+  {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('./auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent)
+  },
+  // Protected routes
+  {
+    path: '',
+    canActivate: [PasswordGuard],
+    children: [
+      { path: 'home', component: HomePageComponent },
+      { path: 'profile', component: ProfileComponent },
+      { path: 'c_history', component: UserOPDComponent },
+      { path: 'download', component: DownloadComponent },
+      { path: 'download/:scheme/:version', component: DirectDownloadComponent, canActivate: [DownloadGuard] },
+      { path: 'download/application/:year/:empNo', component: DirectDownloadComponent },
+
+      { path: 'admin/head/member', component: MemberComponent, canActivate: [AuthGuard], data: { roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] } },
+      { path: 'admin/head/claim', component: ClaimUpdateComponent },
+      { path: 'admin/gad/subject/reg', component: RegistrationComponent },
+      { path: 'admin/gad/subject/claimupdate', component: ClaimManageComponent },
+      { path: 'admin/gad/subject/voucher', component: VoucherComponent },
+      { path: 'admin/mec/opd', component: MecComponent, data: { param: Constants.CATEGORY_OPD } },
+      { path: 'admin/mec/hs', component: MecComponent, data: { param: Constants.CATEGORY_SHE } },
+      { path: 'admin/super/scheme', component: SchemePlanComponent },
+      { path: 'admin/super/access', component: AccessComponent },
+      { path: 'admin/settings', component: SettingsComponent },
+
+      // Fallback route
+      { path: '**', redirectTo: 'home' }
+    ]
+  }
 ];
+

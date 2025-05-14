@@ -7,13 +7,13 @@ export class Constants {
   static REGISTRATION_REJECTED: string = 'Rejected';
   static DEFAULT_PASSWORD: string = 'user';
 
-  static ROLE_USER: string = 'user';
-  static ROLE_ADMIN: string = 'admin';
-  static ROLE_GAD_HEAD: string = 'GADHead';
-  static ROLE_DEP_HEAD: string = 'DepHead';
-  static ROLE_MO: string = 'mo';
-  static ROLE_MEC: string = 'mec';
-  static ROLE_SUPER_ADMIN: string = 'superAdmin';
+  static ROLE_USER: string = 'ROLE_USER';
+  static ROLE_ADMIN: string = 'ROLE_ADMIN';
+  static ROLE_GAD_HEAD: string = 'ROLE_GADHEAD';
+  static ROLE_DEP_HEAD: string = 'ROLE_DEPpHEAD';
+  static ROLE_MO: string = 'ROLE_MO';
+  static ROLE_MEC: string = 'ROLE_MEC';
+  static ROLE_SUPER_ADMIN: string = 'ROLE_SUPERADMIN';
 
   static SCHEME_INDIVIDUAL = 'Individual';
   static SCHEME_FAMILY = 'Family';

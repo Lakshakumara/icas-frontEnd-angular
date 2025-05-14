@@ -1,14 +1,27 @@
-import { CommonModule, NgFor } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatOption, MatNativeDateModule } from '@angular/material/core';
-import { MatDatepicker, MatDatepickerToggle, MatDatepickerModule } from '@angular/material/datepicker';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
+import {
+  MatDatepickerModule,
+} from '@angular/material/datepicker';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatFormField, MatLabel, MatHint, MatFormFieldModule } from '@angular/material/form-field';
+import {
+  MatFormFieldModule,
+} from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { Dependant } from 'src/app/Model/dependant';
@@ -19,19 +32,35 @@ import { SharedService } from 'src/app/shared/shared.service';
 import { Constants } from 'src/app/util/constants';
 import { Utils } from 'src/app/util/utils';
 import Swal from 'sweetalert2';
-import { ChipSelectorComponent } from "../../util/my/chip-selector/chip-selector.component";
+import { ChipSelectorComponent } from '../../util/my/chip-selector/chip-selector.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgFor,
-    MatAutocompleteModule, MatOption, MatCardModule, MatFormField, MatCheckboxModule,
-    MatLabel, MatDividerModule,
-    MatDatepicker, MatDatepickerToggle, MatHint,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
     FormsModule,
-    MatDatepickerModule,
+  
+    // Angular Material modules
+    MatAutocompleteModule,
+    MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    MatNativeDateModule, ChipSelectorComponent],
+    MatButtonModule,
+    MatDialogModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatCheckboxModule,
+    MatDividerModule,
+    MatSelectModule,
+    MatOptionModule,
+  
+    // Your component/module
+    ChipSelectorComponent,
+  ],
+  
   selector: 'app-hospital',
   templateUrl: './hospital.component.html',
   styleUrls: ['./hospital.component.css'],
@@ -44,7 +73,7 @@ export class HospitalComponent implements OnInit {
   today = Utils.today;
   beforeThreeMonth = Utils.threeMonthbeforetoday;
   SCHEME_INDIVIDUAL: string = Constants.SCHEME_INDIVIDUAL;
-  she: string = Constants.CATEGORY_SHE
+  she: string = Constants.CATEGORY_SHE;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private ref: MatDialogRef<HospitalComponent>,
@@ -147,15 +176,16 @@ export class HospitalComponent implements OnInit {
   ngOnInit(): void {
     this.member = this.share.getUser();
     if (this.member) {
-      this.authService.getMemberDependants(this.member.empNo,)
+      this.authService
+        .getMemberDependants(this.member.empNo)
         .then((dep: any) => {
-          this.member.dependants = dep
+          this.member.dependants = dep;
           dep.forEach((b: any) => {
-            console.log(b)
+            console.log(b);
             this.claimers.push(b.relationship + '-' + b.name);
           });
-        })
-      console.log("saved Member in Sh ", this.member)
+        });
+      console.log('saved Member in Sh ', this.member);
     } else {
       this.router.navigate(['/signin']);
     }
@@ -173,7 +203,6 @@ export class HospitalComponent implements OnInit {
 
   saveClaim() {
     if (this.schemeTitles == undefined) {
-      Constants.Toast.fire('Select Scheme Titles');
       return;
     }
 
@@ -181,8 +210,6 @@ export class HospitalComponent implements OnInit {
       memberId: this.member.id,
       requestFor: this.schemeTitles.toString(),
     });
-
-    console.log('saveClaim send to save ', this.formGroup.value);
 
     const steps = ['1', '2', '3'];
     const Queue = Swal.mixin({
@@ -205,9 +232,7 @@ export class HospitalComponent implements OnInit {
         preConfirm: async () => {
           let res: any;
           try {
-            console.log('saveClaim send to save ', this.formGroup.value);
             res = await this.authService.addClaim(this.formGroup.value);
-            console.log('saveClaim received from backend ', res);
           } catch (error) {
             Swal.showValidationMessage(`
           Request failed: ${error}
@@ -258,7 +283,6 @@ export class HospitalComponent implements OnInit {
           this.closePopup();
         }
       });
-    }
-    )();
+    })();
   }
 }

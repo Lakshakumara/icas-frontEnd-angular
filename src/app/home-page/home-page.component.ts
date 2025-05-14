@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthServiceService } from '../service/auth-service.service';
 import { SharedService } from '../shared/shared.service';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { HospitalComponent } from '../pop/hospital/hospital.component';
 import { Member } from '../Model/member';
 import { Claim } from '../Model/claim';
@@ -15,7 +15,6 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDividerModule } from '@angular/material/divider';
@@ -25,6 +24,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   standalone: true,
@@ -44,11 +44,12 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatNativeDateModule,
     MatGridListModule,
     MatListModule,
-    MatChipsModule
-],
+    MatButtonModule,
+    MatDialogModule,
+  ],
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',
-  styleUrls: ['./home-page.component.css'],
+  styleUrls: ['./home-page.component.scss'],
 })
 export class HomePageComponent implements OnInit {
   member!: Member;
@@ -57,8 +58,7 @@ export class HomePageComponent implements OnInit {
   opdPaidSum: number = 0;
   hsRequestSum: number = 0;
   hsPaidSum: number = 0;
-  isAdmin: boolean = false;
-  isUser: boolean = false;
+
   constructor(
     private auth: AuthServiceService,
     private router: Router,
@@ -72,35 +72,35 @@ export class HomePageComponent implements OnInit {
     }
   }
   ngOnInit(): void {
-    console.log("All ", this.member.memberRegistrations)
-    const registerOpen = this.member.registrationOpen
-    const reg = this.member.memberRegistrations.filter(r => { return r.year === registerOpen })
-    console.log("reg ", registerOpen, Utils.currentYear, reg)
+    const registerOpen = this.member.registrationOpen;
+    const reg = this.member.memberRegistrations.filter((r) => {
+      return r.year === registerOpen;
+    });
 
     if (registerOpen != 0 && reg) {
       const Toast = Swal.mixin({
         toast: true,
-        position: "top-end",
+        position: 'top-end',
         showConfirmButton: false,
         timer: 5000,
         timerProgressBar: true,
         didOpen: (toast) => {
           toast.onmouseenter = Swal.stopTimer;
           toast.onmouseleave = Swal.resumeTimer;
-        }
+        },
       });
       Toast.fire({
-        icon: "success",
+        icon: 'success',
         title: `New Registration is available`,
         showConfirmButton: true,
         showCloseButton: true,
-        confirmButtonText: `Register Now`
+        confirmButtonText: `Register Now`,
       }).then((result) => {
         if (result.isConfirmed) {
           if (this.member != undefined) {
             this.router.navigate([`/signup/${this.member.empNo}`]);
           } else {
-            this.router.navigate([`/signin`]);
+            //this.router.navigate([`/signin`]);
           }
         }
       });
@@ -130,12 +130,11 @@ export class HomePageComponent implements OnInit {
   }
 
   opdClaim() {
-
-    this.Openpopup(0, 'OPD Reimbursement', OpdNewComponent, HomePageComponent);
+    this.Openpopup(0, 'OPD Reimbursement', OpdNewComponent);
   }
 
-  Openpopup(id: any, title: any, component: any, parent: any) {
-    var _popup = this.dialog.open(component, {
+  Openpopup(id: any, title: any, component: any) {
+    const _popup = this.dialog.open(component, {
       panelClass: 'fullscreen-dialog',
       enterAnimationDuration: '1000ms',
       exitAnimationDuration: '1000ms',
@@ -154,8 +153,7 @@ export class HomePageComponent implements OnInit {
     this.Openpopup(
       1,
       'Surgical & Hospital Expenses',
-      HospitalComponent,
-      HomePageComponent
+      HospitalComponent
     );
   }
 }

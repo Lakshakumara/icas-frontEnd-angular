@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { CanActivateFn } from '@angular/router';
 
-import { DownloadGuard } from './download.guard';
+import { passwordGuard } from './password.guard';
 
-describe('downloadGuard', () => {
+describe('passwordGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) => 
-      TestBed.runInInjectionContext(() => DownloadGuard(...guardParameters));
+      TestBed.runInInjectionContext(() => passwordGuard(...guardParameters));
 
   beforeEach(() => {
     TestBed.configureTestingModule({});

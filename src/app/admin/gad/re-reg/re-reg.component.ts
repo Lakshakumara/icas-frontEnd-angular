@@ -8,14 +8,17 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSortModule } from '@angular/material/sort';
 import { MatColumnDef, MatTableModule } from '@angular/material/table';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { SettingsService } from 'src/app/service/settings.service';
@@ -26,16 +29,18 @@ import Swal from 'sweetalert2';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    MatRadioModule,
-    MatAutocompleteModule,
-    MatTableModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatDividerModule,
     FormsModule,
-    MatDatepickerModule,
+    ReactiveFormsModule,
+
     MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatButtonModule,
+    MatRadioModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
   ],
   selector: 'app-re-reg',
   templateUrl: './re-reg.component.html',

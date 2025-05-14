@@ -11,31 +11,33 @@ import { Constants } from 'src/app/util/constants';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatCardActions, MatCardModule } from '@angular/material/card';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDividerModule } from '@angular/material/divider';
+import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatFooterRow, MatRow, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { MyTableModule } from '../../../tableFactory/tableModel/table.module';
-import { MatActionList } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { TableComponent } from "../../../tableFactory/tableModel/table.component";
 
 @Component({
   selector: 'app-voucher',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    MatAutocompleteModule,
-    MatTableModule,
-    MatCardModule,
     FormsModule,
+    FlexLayoutModule,
+    MatCardModule,
     MatFormFieldModule,
-    MyTableModule,
-    MatExpansionModule,
-  ],
+    MatSelectModule,
+    MatOptionModule,
+    MatButtonModule,
+    TableComponent,
+
+],
   templateUrl: './voucher.component.html',
   styleUrls: ['./voucher.component.css'],
 })

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Utils } from '../util/utils';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthServiceService } from '../service/auth-service.service';
@@ -8,43 +8,30 @@ import { Router } from '@angular/router';
 import { Constants } from '../util/constants';
 import Swal from 'sweetalert2';
 import { Claim } from '../Model/claim';
-import { CommonModule, NgFor } from '@angular/common';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDividerModule } from '@angular/material/divider';
+import { CommonModule } from '@angular/common';
+import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @Component({
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    NgFor,
-    MatAutocompleteModule,
-    MatAccordion,
-    MatCardModule,
-    MatMenuModule,
-    MatCheckboxModule,
-    MatToolbarModule,
-    MatDividerModule,
     FormsModule,
-    MatDatepickerModule,
+    ReactiveFormsModule,
+    FlexLayoutModule,
+
+    MatExpansionModule,
     MatFormFieldModule,
     MatInputModule,
-    MatNativeDateModule,
-    MatGridListModule,
-    MatExpansionModule
+    MatSelectModule,
+    MatOptionModule,
+    MatButtonModule,
+MatAccordion,
   ],
   selector: 'app-download',
   templateUrl: './download.component.html',
@@ -79,10 +66,10 @@ export class DownloadComponent implements OnInit {
         ]),
       });
     } else {
-      this.router.navigate(['/signin']);
+      //this.router.navigate(['/signin']);
     }
     this.auth
-      .getAllClaims('', 0, this.member.empNo, Constants.CLAIMSTATUS_PENDING)
+      .getAllClaims('', 0, this.member?.empNo, Constants.CLAIMSTATUS_PENDING)
       .subscribe((c) => {
         console.log(c.content)
         this.claimList = c.content;

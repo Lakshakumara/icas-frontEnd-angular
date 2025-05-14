@@ -16,10 +16,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSort } from '@angular/material/sort';
-import { MatColumnDef, MatTableModule } from '@angular/material/table';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
 import { merge, tap, debounceTime, distinctUntilChanged } from 'rxjs';
 import { Member, Member_Column_Accept } from 'src/app/Model/member';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
@@ -32,17 +32,17 @@ import { LoadDataSource } from 'src/app/util/dataSource/LoadData';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatColumnDef,
+    FormsModule,
     MatAutocompleteModule,
     MatTableModule,
     MatCardModule,
     MatCheckboxModule,
     MatDividerModule,
-    FormsModule,
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
-    MatPaginator,
+    MatPaginatorModule,
+    MatSortModule,
     MatProgressSpinnerModule,
   ],
   templateUrl: './member-data.component.html',

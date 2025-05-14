@@ -1,34 +1,205 @@
-<!--mat-sidenav-container class="example-container">
-  <mat-sidenav #sidenav role="navigation">
-    <app-sidenav-list [member]="member" *ngIf="isMenuShow" (sidenavClose)="sidenav.close()"></app-sidenav-list>
+<mat-sidenav-container class="example-container" autosize>
+  <mat-sidenav
+    *ngIf="isMenuShow"
+    #sidenav
+    mode="over"
+    class="sidenav"
+    role="navigation"
+  >
+    <mat-nav-list *ngIf="isMenuShow">
+      <a
+        mat-list-item
+        *ngFor="let item of menuItems"
+        (click)="
+          item.name === 'Theme' ? toggleTheme() : navigateTo(item.path, sidenav)
+        "
+      >
+        {{ item.name }}
+      </a>
+    </mat-nav-list>
   </mat-sidenav>
 
-  <mat-sidenav-content>
-    <app-header [member]="member" *ngIf="isMenuShow" (sidenavToggle)="sidenav.toggle()"></app-header>
-    <div  class="content">
-      <router-outlet></router-outlet>
-      <app-loading-spinner *ngIf="loading$ | async" [message]="message$ | async"></app-loading-spinner>
-    </div>
-    <footer class="footer">
-      <span> Software Training component by YML Kumara &#64;OUSL 2024 Under supervision of Dr.LSK Udugama</span>
-    </footer>
-  </mat-sidenav-content>
-</mat-sidenav-container-->
+  <mat-sidenav-content [ngClass]="isDarkTheme ? 'dark-theme' : 'light-theme'">
+    <mat-toolbar *ngIf="isMenuShow" class="toolbar">
+      <button
+        mat-icon-button
+        (click)="sidenav?.toggle()"
+        class="menu-button"
+        fxShow.lt-md
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
 
-<mat-sidenav-container class="example-container">
-  <mat-sidenav #sidenav role="navigation">
-    <app-sidenav-list [member]="member" *ngIf="isMenuShow" (sidenavClose)="sidenav.close()"></app-sidenav-list>
-  </mat-sidenav>
+      <div class="logo" fxFlex fxLayoutAlign="start center">
+        <a routerLink="/home">
+          <img src="favicon.ico" alt="Medical Claim Logo" height="40" />
+        </a>
+      </div>
 
-  <mat-sidenav-content>
-    <app-header [member]="member" *ngIf="isMenuShow" (sidenavToggle)="sidenav.toggle()"></app-header>
+      <span fxFlex></span>
+
+      <div class="navigation" fxLayout fxLayoutAlign="end center" fxHide.lt-md>
+        <button
+          *ngFor="let item of menuItems"
+          mat-button
+          [routerLink]="item.path"
+        >
+          {{ item.name }}
+        </button>
+
+        <button mat-button (click)="toggleTheme()">
+          <mat-icon>{{
+            isDarkTheme ? "brightness_7" : "brightness_2"
+          }}</mat-icon>
+        </button>
+
+        <button
+          *ngIf="authService.hasRole('ROLE_USER')"
+          mat-button
+          [matMenuTriggerFor]="admin"
+        >
+          Admin
+        </button>
+      </div>
+    </mat-toolbar>
+
+    <mat-menu #switch="matMenu">
+      <button *ngFor="let role of roles" mat-menu-item>{{ role }}</button>
+    </mat-menu>
+
+    <mat-menu #admin="matMenu">
+      <a
+        *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_DEPHEAD')"
+        mat-menu-item
+        [matMenuTriggerFor]="dep_head"
+      >
+        Department Head
+      </a>
+      <a
+        *ngIf="authService.hasRole('ROLE_ADMIN')"
+        mat-menu-item
+        routerLink="/admin/gad/subject/reg"
+      >
+        Management
+      </a>
+      <a
+        *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_MO', 'ROLE_MEC')"
+        mat-menu-item
+        [matMenuTriggerFor]="mec"
+      >
+        MEC
+      </a>
+      <a
+        *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERADMIN')"
+        mat-menu-item
+        [matMenuTriggerFor]="super_admin"
+      >
+        Super Admin
+      </a>
+      <a
+        *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERADMIN')"
+        mat-menu-item
+        routerLink="/admin/settings"
+      >
+        Settings
+      </a>
+    </mat-menu>
+
+    <mat-menu #dep_head="matMenu">
+      <button routerLink="admin/head/member" mat-menu-item>
+        Membership Acceptance
+      </button>
+      <button routerLink="admin/head/claim" mat-menu-item>
+        Claims Acceptance
+      </button>
+    </mat-menu>
+
+    <mat-menu #mec="matMenu">
+      <button
+        *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_MO')"
+        routerLink="admin/mec/opd"
+        mat-menu-item
+      >
+        OPD Claims
+      </button>
+      <button
+        *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_MEC')"
+        routerLink="admin/mec/hs"
+        mat-menu-item
+      >
+        H&S Claims
+      </button>
+    </mat-menu>
+
+    <mat-menu #super_admin="matMenu">
+      <button
+        *ngIf="authService.hasAnyRole('ROLE_ADMIN')"
+        routerLink="admin/super/scheme"
+        mat-menu-item
+      >
+        Scheme Update
+      </button>
+      <button
+        *ngIf="authService.hasAnyRole('ROLE_ADMIN')"
+        routerLink="admin/super/access"
+        mat-menu-item
+      >
+        Privilege Grants
+      </button>
+    </mat-menu>
 
     <div class="content">
+      <div class="ecg-background">
+        <div class="ecg-line"></div>
+      </div>
+
       <router-outlet></router-outlet>
-      <app-loading-spinner *ngIf="loading$ | async" [message]="message$ | async"></app-loading-spinner>
+      <app-loading-spinner
+        *ngIf="loading$ | async"
+        [message]="message$ | async"
+      ></app-loading-spinner>
     </div>
-    <footer class="footer">
-      <span> Software Training component by YML Kumara &#64;OUSL 2024 Under supervision of Dr.LSK Udugama</span>
+
+    <footer class="footer" *ngIf="isMenuShow">
+      <span>
+        Software Training component by YML Kumara &#64;OUSL 2024 Under
+        supervision of Dr.LSK Udugama
+      </span>
     </footer>
   </mat-sidenav-content>
 </mat-sidenav-container>
+
+<!--
+
+<mat-sidenav-container class="example-container">
+  <mat-sidenav #sidenav role="navigation">
+    <app-sidenav-list
+      [member]="member"
+      *ngIf="isMenuShow"
+      (sidenavClose)="sidenav.close()"
+    >
+    </app-sidenav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <app-header
+      [member]="member"
+      *ngIf="isMenuShow"
+      (sidenavToggle)="sidenav.toggle()"
+    ></app-header>
+
+    <div class="content">
+      <router-outlet></router-outlet>
+      <app-loading-spinner
+        *ngIf="loading$ | async"
+        [message]="message$ | async"
+      ></app-loading-spinner>
+    </div>
+    <footer class="footer">
+      <span>
+        Software Training component by YML Kumara &#64;OUSL 2024 Under
+        supervision of Dr.LSK Udugama</span
+      >
+    </footer>
+  </mat-sidenav-content>
+</mat-sidenav-container-->

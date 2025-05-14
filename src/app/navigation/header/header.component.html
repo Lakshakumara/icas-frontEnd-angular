@@ -1,11 +1,17 @@
 <mat-toolbar color="primary" class="toolbar">
-  <button mat-icon-button (click)="onToggleSidenav()" class="menu-button" fxHide.gt-xs>
+  <button
+    mat-icon-button
+    (click)="onToggleSidenav()"
+    class="menu-button"
+    fxHide.gt-xs
+  >
     <mat-icon>menu</mat-icon>
   </button>
 
+
   <div class="logo">
     <a routerLink="/home">
-      <img src="favicon.ico" alt="Medical Claim Logo">
+      <img src="favicon.ico" alt="Medical Claim Logo" />
     </a>
   </div>
 
@@ -15,16 +21,16 @@
 
   <div class="navigation" fxFlex fxLayout fxLayoutAlign="end" fxHide.xs>
     <ul fxLayout fxLayoutGap="15px" class="navigation-items">
-      <li *ngIf="roles.length > 1">
+      <li *ngIf="authService.getRoles().length > 1">
         <button mat-button [matMenuTriggerFor]="switch">Roles</button>
       </li>
       <li>
         <button mat-button routerLink="/signin">Sign out</button>
       </li>
-      <li *ngIf="isUser">
+      <li>
         <button mat-button routerLink="/c_history">Claim History</button>
       </li>
-      <li *ngIf="isUser">
+      <li>
         <button mat-button routerLink="/download">Download</button>
       </li>
       <li>
@@ -32,10 +38,12 @@
       </li>
       <li>
         <button mat-button (click)="toggleTheme()">
-          <mat-icon>{{ isDarkTheme ? 'brightness_7' : 'brightness_2' }}</mat-icon>
+          <mat-icon>{{
+            isDarkTheme ? "brightness_7" : "brightness_2"
+          }}</mat-icon>
         </button>
       </li>
-      <li *ngIf="isDepHead || isAdmin || isSuperAdmin || isGADHead || isMec || isMo">
+      <li *ngIf="authService.hasRole('ROLE_USER')">
         <button mat-button [matMenuTriggerFor]="admin">Admin</button>
       </li>
     </ul>
@@ -46,31 +54,89 @@
   </mat-menu>
 
   <mat-menu #admin="matMenu">
+    <a
+      *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_DEPHEAD')"
+      mat-menu-item
+      [matMenuTriggerFor]="dep_head"
+      >Department Head</a
+    >
+    <a
+      *ngIf="authService.hasRole('ROLE_ADMIN')"
+      mat-menu-item
+      [routerLink]="['/admin/gad/subject/reg']"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Management
+    </a>
+    <a
+      *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_MO', 'ROLE_MEC')"
+      mat-menu-item
+      [matMenuTriggerFor]="mec"
+      >MEC</a
+    >
+    <a
+      *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERADMIN')"
+      mat-menu-item
+      [matMenuTriggerFor]="super_admin"
+      >Super Admin</a
+    >
+    <a *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERADMIN')"
+    mat-menu-item
+    [routerLink]="['/admin/settings']"
+    routerLinkActive="active-link"
+    [routerLinkActiveOptions]="{ exact: true }">
+   Settings
+ </a>
+  </mat-menu>
+  <!--mat-menu #admin="matMenu">
     <button *ngIf="isDepHead" mat-menu-item [matMenuTriggerFor]="dep_head">Department Head</button>
     <button *ngIf="isAdmin" mat-menu-item routerLink="admin/gad/subject/reg">Management</button>
     <button *ngIf="isMo || isMec" mat-menu-item [matMenuTriggerFor]="mec">MEC</button>
     <button *ngIf="isSuperAdmin" mat-menu-item [matMenuTriggerFor]="super_admin">Super Admin</button>
     <button *ngIf="isAdmin || isSuperAdmin" mat-menu-item routerLink="admin/settings">Setting</button>
-  </mat-menu>
+  </mat-menu-->
 
   <mat-menu #dep_head="matMenu">
-    <button routerLink="admin/head/member" mat-menu-item>Membership Acceptance</button>
-    <button routerLink="admin/head/claim" mat-menu-item>Claims Acceptance</button>
+    <button routerLink="admin/head/member" mat-menu-item>
+      Membership Acceptance
+    </button>
+    <button routerLink="admin/head/claim" mat-menu-item>
+      Claims Acceptance
+    </button>
   </mat-menu>
 
   <mat-menu #subject_cleark="matMenu">
     <button routerLink="admin/gad/subject/reg" mat-menu-item>Members</button>
-    <button routerLink="admin/gad/subject/claimupdate" mat-menu-item>Claims Update</button>
-    <button routerLink="admin/gad/subject/voucher" mat-menu-item>Voucher Generation</button>
+    <button routerLink="admin/gad/subject/claimupdate" mat-menu-item>
+      Claims Update
+    </button>
+    <button routerLink="admin/gad/subject/voucher" mat-menu-item>
+      Voucher Generation
+    </button>
   </mat-menu>
 
   <mat-menu #mec="matMenu">
-    <button *ngIf="isMo" routerLink="admin/mec/opd" mat-menu-item>OPD Claims</button>
-    <button *ngIf="isMec" routerLink="admin/mec/hs" mat-menu-item>H&S Claims</button>
+    <button
+      *ngIf="authService.hasRole('MO')"
+      routerLink="admin/mec/opd"
+      mat-menu-item
+    >
+      OPD Claims
+    </button>
+    <button
+      *ngIf="authService.hasRole('MEC')"
+      routerLink="admin/mec/hs"
+      mat-menu-item
+    >
+      H&S Claims
+    </button>
   </mat-menu>
 
   <mat-menu #super_admin="matMenu">
     <button routerLink="admin/super/scheme" mat-menu-item>Scheme Update</button>
-    <button routerLink="admin/super/access" mat-menu-item>Privilege Grants</button>
+    <button routerLink="admin/super/access" mat-menu-item>
+      Privilege Grants
+    </button>
   </mat-menu>
 </mat-toolbar>

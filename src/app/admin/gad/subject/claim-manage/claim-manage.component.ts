@@ -2,13 +2,12 @@ import {
   AfterViewInit,
   Component,
   EventEmitter,
-  Input,
   OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Router } from '@angular/router';
 import { merge, tap } from 'rxjs';
@@ -20,40 +19,35 @@ import { ClaimDataSource } from 'src/app/util/dataSource/claim-dataSource';
 import { Constants } from 'src/app/util/constants';
 import {
   FormBuilder,
-  FormControl,
   FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDividerModule } from '@angular/material/divider';
+import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatColumnDef, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    MatColumnDef,
-    MatAutocompleteModule,
-    MatTableModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatDividerModule,
     FormsModule,
-    MatDatepickerModule,
+    ReactiveFormsModule,
+
     MatFormFieldModule,
     MatInputModule,
-    MatPaginator,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatButtonModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
+    MatOptionModule,
   ],
   selector: 'app-claim-manage',
   templateUrl: './claim-manage.component.html',

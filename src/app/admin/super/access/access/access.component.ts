@@ -1,7 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormGroup,
+  FormBuilder,
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
@@ -13,6 +20,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatList, MatListModule } from '@angular/material/list';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSortModule } from '@angular/material/sort';
 import { debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
 import { Access_type } from 'src/app/Model/role';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
@@ -20,12 +29,24 @@ import { Constants } from 'src/app/util/constants';
 
 @Component({
   standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, MatList, MatListModule,
-      MatFormFieldModule, MatLabel, MatCardModule, MatCheckboxModule,
-      MatDividerModule,
-      FormsModule,
-      MatFormFieldModule,
-      MatNativeDateModule, MatPaginatorModule, MatOptionModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatListModule,
+    MatFormFieldModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatDividerModule,
+    FormsModule,
+    MatNativeDateModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatButtonModule,
+
+  ],
   selector: 'app-access',
   templateUrl: './access.component.html',
   styleUrls: ['./access.component.css'],
@@ -56,22 +77,23 @@ export class AccessComponent implements OnInit {
 
   loadMembers(): void {
     this.authService
-      .getMembers(Constants.ALL,
+      .getMembers(
+        Constants.ALL,
         '',
         this.formGroup.get('memberSearch')!.value,
         'asc',
         this.currentPage,
-        this.pageSize,
+        this.pageSize
       )
       .subscribe((member: any) => {
         if (member && member.content) {
           this.members = member.content;
           this.totalMembers = member.totalElements;
         } else {
-          this.members =[]; // Set to empty array if member or member.content is null
+          this.members = []; // Set to empty array if member or member.content is null
           this.totalMembers = 0; // Set totalCount to 0 if there's an error
         }
-    });
+      });
   }
 
   setupMemberSearch(): void {
@@ -83,13 +105,14 @@ export class AccessComponent implements OnInit {
         switchMap((searchText) => {
           this.currentPage = 0; // Reset to the first page on search
           return searchText
-            ? this.authService.getMembers(Constants.ALL,
-              '',
-              searchText,
-              'asc',
-              this.currentPage,
-              this.pageSize,
-            )
+            ? this.authService.getMembers(
+                Constants.ALL,
+                '',
+                searchText,
+                'asc',
+                this.currentPage,
+                this.pageSize
+              )
             : of({ members: [], total: 0 });
         })
       )
@@ -98,10 +121,10 @@ export class AccessComponent implements OnInit {
           this.members = member.content;
           this.totalMembers = member.totalElements;
         } else {
-          this.members =[]; // Set to empty array if member or member.content is null
+          this.members = []; // Set to empty array if member or member.content is null
           this.totalMembers = 0; // Set totalCount to 0 if there's an error
         }
-    });
+      });
   }
 
   selectMember(member: any): void {

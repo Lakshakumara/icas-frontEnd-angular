@@ -6,7 +6,7 @@
 
   <mat-list>
     <mat-list-item *ngFor="let member of members" (click)="selectMember(member)">
-      {{ member.name }}
+      <b>{{ member.name }}</b>, {{ member.designation }} from {{ member.department }}
     </mat-list-item>
   </mat-list>
 

@@ -19,7 +19,6 @@ import { Constants } from '../util/constants';
 import { DirectDownloadComponent } from '../download/directdownload.component';
 import { DownloadGuard } from '../download.guard';
 import { SettingsComponent } from '../admin/settings/settings.component';
-import { TestComponent } from '../test/test.component';
 import { ExcelReaderComponent } from '../tool/excel-reader/excel-reader.component';
 const routes: Routes = [
   { path: 'home', component: HomePageComponent },
@@ -34,6 +33,16 @@ const routes: Routes = [
   { path: 'profile', component: ProfileComponent },
   { path: 'c_history', component: UserOPDComponent },
 
+  // Change password route (must be accessible even when defaultPassword is true)
+  {
+    path: 'change-password',
+    loadComponent: () => import('../auth/change-password/change-password.component').then(m => m.ChangePasswordComponent)
+  },
+  {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('../auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent)
+  },
   { path: 'download', component: DownloadComponent },
   { path: 'download/:scheme/:version',  component: DirectDownloadComponent, canActivate: [DownloadGuard] },
   { path: 'download/application/:year/:empNo', component: DirectDownloadComponent },

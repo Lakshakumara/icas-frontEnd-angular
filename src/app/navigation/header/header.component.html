@@ -15,16 +15,16 @@
 
   <div class="navigation" fxFlex fxLayout fxLayoutAlign="end" fxHide.xs>
     <ul fxLayout fxLayoutGap="15px" class="navigation-items">
-      <li *ngIf="roles.length > 1">
+      <li *ngIf="authService.getRoles().length > 1">
         <button mat-button [matMenuTriggerFor]="switch">Roles</button>
       </li>
       <li>
         <button mat-button routerLink="/signin">Sign out</button>
       </li>
-      <li *ngIf="isUser">
+      <li *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_USER')">
         <button mat-button routerLink="/c_history">Claim History</button>
       </li>
-      <li *ngIf="isUser">
+      <li *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_USER')">
         <button mat-button routerLink="/download">Download</button>
       </li>
       <li>
@@ -35,22 +35,22 @@
           <mat-icon>{{ isDarkTheme ? 'brightness_7' : 'brightness_2' }}</mat-icon>
         </button>
       </li>
-      <li *ngIf="isDepHead || isAdmin || isSuperAdmin || isGADHead || isMec || isMo">
+      <li *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERADMIN','ROLE_GADHEAD','ROLE_DEPHEAD','ROLE_MEC','ROLE_MO')">
         <button mat-button [matMenuTriggerFor]="admin">Admin</button>
       </li>
     </ul>
   </div>
 
   <mat-menu #switch="matMenu">
-    <button *ngFor="let role of roles" mat-menu-item>{{ role }}</button>
+    <button *ngFor="let role of authService.getRoles()" mat-menu-item>{{ role }}</button>
   </mat-menu>
 
   <mat-menu #admin="matMenu">
-    <button *ngIf="isDepHead" mat-menu-item [matMenuTriggerFor]="dep_head">Department Head</button>
-    <button *ngIf="isAdmin" mat-menu-item routerLink="admin/gad/subject/reg">Management</button>
-    <button *ngIf="isMo || isMec" mat-menu-item [matMenuTriggerFor]="mec">MEC</button>
-    <button *ngIf="isSuperAdmin" mat-menu-item [matMenuTriggerFor]="super_admin">Super Admin</button>
-    <button *ngIf="isAdmin || isSuperAdmin" mat-menu-item routerLink="admin/settings">Setting</button>
+    <button *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_DEPHEAD')" mat-menu-item [matMenuTriggerFor]="dep_head">Department Head</button>
+    <button *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERADMIN')" mat-menu-item routerLink="admin/gad/subject/reg">Management</button>
+    <button *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_MO', 'ROLE_MEC')" mat-menu-item [matMenuTriggerFor]="mec">MEC</button>
+    <button *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERADMIN')" mat-menu-item [matMenuTriggerFor]="super_admin">Super Admin</button>
+    <button *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERADMIN')" mat-menu-item routerLink="admin/settings">Setting</button>
   </mat-menu>
 
   <mat-menu #dep_head="matMenu">
@@ -65,8 +65,8 @@
   </mat-menu>
 
   <mat-menu #mec="matMenu">
-    <button *ngIf="isMo" routerLink="admin/mec/opd" mat-menu-item>OPD Claims</button>
-    <button *ngIf="isMec" routerLink="admin/mec/hs" mat-menu-item>H&S Claims</button>
+    <button *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_MO')" routerLink="admin/mec/opd" mat-menu-item>OPD Claims</button>
+    <button *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_MEC')" routerLink="admin/mec/hs" mat-menu-item>H&S Claims</button>
   </mat-menu>
 
   <mat-menu #super_admin="matMenu">

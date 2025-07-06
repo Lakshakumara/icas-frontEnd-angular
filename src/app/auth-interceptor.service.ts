@@ -12,19 +12,17 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthServiceService) {}
+  constructor(private authService: AuthServiceService) { }
 
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     const token = this.authService.getToken(); // Get stored token
-    console.log('getToken', token);
-
     if (req.url.includes('/auth/login')) {
       return next.handle(req);
     }
-    
+
     if (token) {
       // Clone request and attach token
       const cloned = req.clone({
@@ -34,7 +32,6 @@ export class AuthInterceptor implements HttpInterceptor {
       });
       return next.handle(cloned);
     }
-
     return next.handle(req);
   }
 }

@@ -5,6 +5,7 @@ import { LoaderService } from './service/loader.service';
 import { Member } from './Model/member';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
+import { AuthServiceService } from './service/auth-service.service';
 
 @Component({
   selector: 'app-root',
@@ -13,12 +14,15 @@ import { Observable } from 'rxjs';
 })
 export class AppComponent implements DoCheck, OnInit {
   title = 'ICAS';
+  publicUrlList = ['/signin', '/isValid', '/change-password'];
+
   member!: Member;
   isMenuShow = false;
   //myLoader = this.loaderService.loadingAction$;
   loading$: Observable<boolean>;
   message$: Observable<string>;
   constructor(
+    public authService: AuthServiceService,
     private router: Router,
     private loaderService: LoaderService,
     private share: SharedService
@@ -28,16 +32,18 @@ export class AppComponent implements DoCheck, OnInit {
   }
   ngOnInit(): void {
     console.log('back end ip ', environment.baseUrl);
-    
   }
 
   ngDoCheck(): void {
-    let currentUrl = this.router.url;
-    if (currentUrl == '/isValid' || currentUrl == '/signin') {
-      this.isMenuShow = false;
-    } else {
+    const currentUrl = this.router.url;
+    this.isMenuShow = !this.publicUrlList.includes(currentUrl);
+    if (this.isMenuShow) {
       this.member = this.share.getUser();
-      this.isMenuShow = true;
     }
+  }
+
+  navigateTo(path: string, sidenav: any) {
+    this.router.navigate([path]);
+    sidenav.close();
   }
 }

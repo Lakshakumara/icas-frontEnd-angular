@@ -10,7 +10,7 @@ import { Constants } from 'src/app/util/constants';
 })
 export class HeaderComponent implements OnInit {
   @Output() public sidenavToggle = new EventEmitter();
-  //roles: string[] = [];
+  roles: string[] = [];
   @Input() member!: Member;
   /*isUser: boolean = false;
   isAdmin: boolean = false;
@@ -29,6 +29,7 @@ export class HeaderComponent implements OnInit {
       this.isDarkTheme = savedTheme === 'dark';
       this.updateTheme();
     }
+    //this.roles = this.authService.getRoles();
 /*
     if (this.member && this.member.roles) {
       this.member.roles.forEach((val) => {

@@ -37,7 +37,7 @@ export class AuthServiceService {
   }
   getRoles(): string[] {
     const decodedToken1 = this.decodeToken();
-    if (decodedToken1) return decodedToken1.roles.map((r: any) => r.authority);
+    if (decodedToken1?.roles) return decodedToken1.roles.map((r: any) => r.authority);
     else return [];
   }
   decodeToken(): any {
@@ -45,7 +45,7 @@ export class AuthServiceService {
     if (token) {
       const decodedToken: any = jwtDecode(token);
       return decodedToken;
-    } else return [];
+    } else return null; // or undefined
   }
 
   // Check if the user has a specific role

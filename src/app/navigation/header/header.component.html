@@ -15,7 +15,7 @@
 
   <div class="navigation" fxFlex fxLayout fxLayoutAlign="end" fxHide.xs>
     <ul fxLayout fxLayoutGap="15px" class="navigation-items">
-      <li *ngIf="authService.getRoles().length > 1">
+      <li *ngIf="roles.length > 1">
         <button mat-button [matMenuTriggerFor]="switch">Roles</button>
       </li>
       <li>
@@ -42,7 +42,7 @@
   </div>
 
   <mat-menu #switch="matMenu">
-    <button *ngFor="let role of authService.getRoles()" mat-menu-item>{{ role }}</button>
+    <button *ngFor="let role of roles" mat-menu-item>{{ role }}</button>
   </mat-menu>
 
   <mat-menu #admin="matMenu">

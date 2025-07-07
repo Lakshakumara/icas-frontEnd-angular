@@ -63,7 +63,6 @@ export class RegisterComponent implements OnInit {
     if (!this.member) {
       this.router.navigate(['/signin']);
     }
-    console.log("this.share.getUser ",this.member)
     if (this.member.registrationOpen) {
       this.registerYear = this.member.registrationOpen
       const regNew = this.member.memberRegistrations.find(r => { return r.year == this.registerYear })
@@ -141,7 +140,6 @@ export class RegisterComponent implements OnInit {
 
   }
   Openpopup(forWhat: number, name: string, title: any, component: any) {
-    console.log("open ", this.beneficiaryData.data)
     var _popup = this.dialog.open(component, {
       //width: '40%',
       enterAnimationDuration: '1000ms',
@@ -158,14 +156,11 @@ export class RegisterComponent implements OnInit {
     });
 
     _popup.afterClosed().subscribe((item: FormGroup) => {
-      console.log("close ", item.value)
       if (item === undefined) return;
       if (forWhat == 1) {
         if (item.value.name != '') {
-          console.log("forWhat ", forWhat)
           this.dependantData.data.forEach((a) => {
             if (name != '' && a.id === item.value.id) {
-              console.log("a ", a)
               a.name = item.value.name
               a.nic = item.value.nic
               a.relationship = item.value.relationship
@@ -174,7 +169,6 @@ export class RegisterComponent implements OnInit {
               a.registrationYear = this.registerYear
             }
           });
-          console.log("Edited ", this.dependantData.data)
         }
         if (name == '') this.newDependant(item);
       }
@@ -182,7 +176,6 @@ export class RegisterComponent implements OnInit {
         let sum1: number = Number(item.value.percent);
         this.beneficiaryData.data.forEach((a) => {
           if (name != '' && a.id === item.value.id) {
-            console.log("a ", a)
             a.name = item.value.name
             a.nic = item.value.nic
             a.relationship = item.value.relationship
@@ -206,8 +199,6 @@ export class RegisterComponent implements OnInit {
         }
       }
     });
-    console.log("ben ", this.beneficiaryData.data)
-    console.log("dep ", this.dependantData.data)
   }
   popupDependant() {
     this.Openpopup(1, '', 'Add Dependants details', DependantComponent);
@@ -245,7 +236,6 @@ export class RegisterComponent implements OnInit {
     }
   }
   private newDependant(data: FormGroup): FormGroup {
-    console.log("New dep call")
     const newRow: Dependant = {
       id: data.value.id,
       name: data.value.name,
@@ -268,7 +258,7 @@ export class RegisterComponent implements OnInit {
   removeDependant(name: string) {
     this.dependantData.data = this.dependantData.data.filter(
       (u: Dependant) => { return u.name !== name; });
-    /*console.log('before removing Dependant ', this.dependantData.data);
+    /*
     Swal.fire({
       title: `Confirm to delete ${name} ?`,
       text: "You won't be able to revert this!",
@@ -299,7 +289,6 @@ export class RegisterComponent implements OnInit {
   }
 
   private newBeneficiary(data: FormGroup): FormGroup {
-    console.log("New dep call")
     const newRow: Beneficiary = {
       id: data.value.id,
       name: data.value.name,
@@ -370,7 +359,6 @@ export class RegisterComponent implements OnInit {
       password: Constants.DEFAULT_PASSWORD,
       scheme: this.schemeType,
     });
-    console.log('tobe insert registerProcess ', this.formGroup.value);
   }
   registerProcess() {
     let sum: number = 0;
@@ -437,9 +425,7 @@ export class RegisterComponent implements OnInit {
               password: Constants.DEFAULT_PASSWORD,
               scheme: this.schemeType,
             });
-            console.log('tobe insert registerProcess ', this.formGroup.value);
             res = await this.authService.registerNew(this.formGroup.value)
-            console.log('saved registerProcess ', res);
           } catch (error) {
             Swal.showValidationMessage(`Request failed: ${error}`);
           }
@@ -490,11 +476,9 @@ export class RegisterComponent implements OnInit {
           confirmButtonText: 'OK',
         }).then((resultLast) => {
           //redirect page
-          console.log("result.value check updated member details ", result.value)
           const reg = result.value?.memberRegistrations.find((r: any) => {
             return r.year == Utils.currentYear && r.acceptedDate != null;
           });
-          console.log("reg wrong in re reg", reg)
           if (reg !== undefined) {
             //TODO pass registration open is 0
             this.member.registrationOpen = 0
@@ -524,8 +508,6 @@ export class RegisterComponent implements OnInit {
     let dataType = response.type;
     let binaryData = [];
     binaryData.push(response);
-    //let fname = response.get("file name").ToString();
-    //console.log(fname);
     let downloadLink = document.createElement('a');
     downloadLink.href = window.URL.createObjectURL(
       new Blob(binaryData, { type: dataType })
@@ -580,11 +562,9 @@ export class RegisterComponent implements OnInit {
         password: Constants.DEFAULT_PASSWORD,
         scheme: this.schemeType,
       });
-      console.log('tobe insert ', this.formGroup.value);
       return this.authService
         .registerold(this.formGroup.value)
         .subscribe((reg) => {
-          console.log('saved', reg);
           return this.authService
             .getMemberold(this.formGroup.value.empNo)
             .subscribe((m) => {
@@ -683,7 +663,6 @@ export class RegisterComponent implements OnInit {
         scheme: this.schemeType,
       });
       Swal.showValidationMessage('Processing');
-      console.log('tobe insert ', this.formGroup.value);
       let res = await this.authService.register(this.formGroup.value);
 
       let res1 = await this.authService.getMember(this.formGroup.value.empNo);

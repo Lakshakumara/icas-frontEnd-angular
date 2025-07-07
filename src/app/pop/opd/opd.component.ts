@@ -105,7 +105,6 @@ export class OpdComponent implements OnInit {
       });
 
       if (result.isConfirmed) {
-        console.log('Saved Result ', result);
         await Queue.fire({
           title: 'Download Claim Application',
           text: `Claim Saved ref Number: ${result.value}`,
@@ -118,8 +117,6 @@ export class OpdComponent implements OnInit {
               if(result.value == undefined) throw ''
               let claimid : any = result.value;
               let response: any = await this.auth.downloadClaim(claimid);
-              console.log('received from backend ', response);
-
               let dataType = response.type;
               let binaryData = [];
               binaryData.push(response);

@@ -94,8 +94,6 @@ export class OpdNewComponent implements OnInit {
       memberId: this.member.id,
       requestFor: this.schemeTitles.toString(),
     });
-
-    console.log(this.dForm.value)
     const steps = ['1', '2', '3'];
     const Queue = Swal.mixin({
       progressSteps: steps,
@@ -127,7 +125,6 @@ export class OpdNewComponent implements OnInit {
       });
 
       if (result.isConfirmed) {
-        console.log('Saved Result ', result);
         await Queue.fire({
           title: 'Download Claim Application',
           text: `Claim Saved ref Number: ${result.value}`,
@@ -140,8 +137,6 @@ export class OpdNewComponent implements OnInit {
               if(result.value == undefined) throw ''
               let claimid : any = result.value;
               let response: any = await this.auth.downloadClaim(claimid);
-              console.log('received from backend ', response);
-
               let dataType = response.type;
               let binaryData = [];
               binaryData.push(response);

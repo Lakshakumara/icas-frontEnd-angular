@@ -131,11 +131,9 @@ export class HospitalComponent implements OnInit {
         .then((dep: any) => {
           this.member.dependants = dep
           dep.forEach((b: any) => {
-            console.log(b)
             this.claimers.push(b.relationship + '-' + b.name);
           });
         })
-      console.log("saved Member in Sh ", this.member)
     } else {
       this.router.navigate(['/signin']);
     }
@@ -162,8 +160,6 @@ export class HospitalComponent implements OnInit {
       requestFor: this.schemeTitles.toString(),
     });
 
-    console.log('saveClaim send to save ', this.formGroup.value);
-
     const steps = ['1', '2', '3'];
     const Queue = Swal.mixin({
       progressSteps: steps,
@@ -185,9 +181,7 @@ export class HospitalComponent implements OnInit {
         preConfirm: async () => {
           let res: any;
           try {
-            console.log('saveClaim send to save ', this.formGroup.value);
             res = await this.authService.addClaim(this.formGroup.value);
-            console.log('saveClaim received from backend ', res);
           } catch (error) {
             Swal.showValidationMessage(`
           Request failed: ${error}

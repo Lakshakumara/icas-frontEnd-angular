@@ -48,7 +48,6 @@ export class ForgotPasswordComponent {
     this.authService.forgotPassword(email)
       .subscribe(
         async (response: any) => {
-          console.log(response)
           alert(response.message);
         },
         (error: any) => {

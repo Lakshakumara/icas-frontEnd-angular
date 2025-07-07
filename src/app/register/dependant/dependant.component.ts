@@ -49,16 +49,13 @@ export class DependantComponent implements OnInit {
   }
 
   async addDependentDetails() {
-    console.log(this.dForm.value)
     if (this.dForm.invalid) {
-      console.log("not valid", this.dForm.value)
       return
     }
     const dep:any = this.authService.getMemberDependants(this.inputData.empNo, 0, this.dForm.value.name)
     if (dep.name == null) {
       this.ref.close(this.dForm);
     } else {
-      console.log('exists dep' + JSON.stringify(dep));
       dep.relationship = this.dForm.value.relationship;
       this.dForm.patchValue({
         id: dep.id,
@@ -74,7 +71,6 @@ export class DependantComponent implements OnInit {
         if (dep.name == null) {
           this.ref.close(this.dForm);
         } else {
-          console.log('exists dep' + JSON.stringify(dep));
           dep.relationship = this.dForm.value.relationship;
           this.dForm.patchValue({
             id: dep.id,
@@ -86,7 +82,6 @@ export class DependantComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.log('Error dep search like ' + error);
       },
     });*/
   }

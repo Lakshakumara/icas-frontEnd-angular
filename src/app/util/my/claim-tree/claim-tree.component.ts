@@ -18,8 +18,6 @@ export class ClaimTreeComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadMedicalHistory()
-    console.log('Recerived to tree', this.empNo)
-
   }
 
   hasChild = (_: number, node: ClaimNode) => !!node.children && node.children.length > 0;
@@ -27,7 +25,6 @@ export class ClaimTreeComponent implements OnInit {
   loadMedicalHistory() {
     this.auth.getClaimHistoryAll(this.empNo).subscribe(res => {
       this.claims = res.content
-      console.log("claim history", this.claims)
       if (this.claims == undefined) return
       const TREE_DATA: ClaimNode[] = this.claims.map((claim: any) => ({
         name: `${claim.idText} - ${claim.title}`,

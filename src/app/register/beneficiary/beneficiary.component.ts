@@ -51,14 +51,10 @@ export class BeneficiaryComponent implements OnInit {
     });
   }
   addBeneficiaryDetails() {
-    //if (this.dForm.value.percent) return;
-    console.log('addBeneficiaryDetails');
     const ben:any = this.authService.getMemberBeneficiaries(this.inputData.empNo, 0, this.dForm.value.name)
     if (ben.name == null) {
       this.ref.close(this.dForm);
     } else {
-      console.log('exists beneficiary' + JSON.stringify(ben));
-      //ben.relationship = this.dForm.value.relationship;
       this.dForm.patchValue({
         id: ben.id,
         name: ben.name,
@@ -72,7 +68,6 @@ export class BeneficiaryComponent implements OnInit {
         if (dep.name == null) {
           this.ref.close(this.dForm);
         } else {
-          console.log('exists beneficiary' + JSON.stringify(dep));
           dep.relationship = this.dForm.value.relationship;
           this.dForm.patchValue({
             id: dep.id,
@@ -83,7 +78,6 @@ export class BeneficiaryComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.log('Error  beneficiary search like ' + error);
       },
     });*/
   }

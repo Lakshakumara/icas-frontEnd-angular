@@ -46,11 +46,9 @@ export class VoucherComponent implements OnInit {
   onNotifySelected(selectedRows: Claim[]) {
     this.selectedClaimData = null;
     this.selectedClaims = selectedRows;
-    console.log('selected Rows ', selectedRows);
     this.claimData = [];
     if (selectedRows.length === 1)
       selectedRows[selectedRows.length - 1].claimData.forEach((d: any) => {
-        //console.log('d-> ', d);
         let status: string;
         if (d.claimDataStatus == 'Rejected')
           status = 'Rejected - ' + d.rejectRemarks;
@@ -59,7 +57,6 @@ export class VoucherComponent implements OnInit {
         else if (d.claimDataStatus == 'Approved')
           status = d.remarks == '' ? 'Approved ' : 'Approved - ' + d.remarks;
         else status = 'Other';
-        //console.log(d.scheme);
         if (d.scheme != null)
           this.claimData?.push({
             id: d.id,
@@ -72,7 +69,6 @@ export class VoucherComponent implements OnInit {
 
   cData(selectedRows: any) {
     this.selectedClaimData = selectedRows[0];
-    //console.log('this.selectedClaimData ', this.selectedClaimData);
   }
 
   constructor(private auth: AuthServiceService) {
@@ -141,7 +137,6 @@ export class VoucherComponent implements OnInit {
   setPaidAmount() {
     if (this.selectedClaims == null) return;
     if (this.selectedClaims.length >= 1) {
-      console.log('more than One claim selected');
       return;
     }
     let tobeUpdated: any[] = [];
@@ -183,11 +178,9 @@ export class VoucherComponent implements OnInit {
           paidAmount: this.selectedClaims![0].requestAmount - deductionAmount,
           claimStatus: Constants.CLAIMSTATUS_PAID,
         });
-        console.log(tobeUpdated);
         return await this.auth.updateClaim_new(tobeUpdated);
       },
     }).then((result) => {
-      console.log('result ', result);
       if (result.isConfirmed) {
         if (result.value >= 1) {
           Swal.fire('Claim Updated', '', 'success');
@@ -225,9 +218,7 @@ export class VoucherComponent implements OnInit {
     if (this.selectedClaims == undefined) return;
     this.tobeUpdated = [];
     let selected = this.selectedClaims.map((s) => {
-      //console.log('s.paidAmount ', s.paidAmount);
       if (s.paidAmount === null) {
-        //console.log('return  ', s.paidAmount === null);
         Constants.Toast.fire('Payment not set for the Claim ' + s.id + ' ');
         return;
       }
@@ -241,7 +232,6 @@ export class VoucherComponent implements OnInit {
       });
       return s.empNo + '-' + s.paidAmount;
     });
-    console.log('selected ', selected);
     Swal.fire({
       title: selected,
       icon: 'warning',
@@ -272,7 +262,6 @@ export class VoucherComponent implements OnInit {
     });
   }
   downloadVoucher() {
-    console.log('this.selectedvoucherId ', this.selectedvoucherId);
     if (this.selectedvoucherId == undefined) {
       return;
     }

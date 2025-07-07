@@ -34,7 +34,6 @@ export class DownloadComponent implements OnInit {
 
   ngOnInit() {
     this.member = this.share.getUser();
-    console.log(this.member)
     if (this.member != null) {
       this.appForm = new FormGroup({
         empNo: new FormControl(this.member.empNo, [Validators.required]),
@@ -48,7 +47,6 @@ export class DownloadComponent implements OnInit {
     this.auth
       .getAllClaims('', 0, this.member.empNo, Constants.CLAIMSTATUS_PENDING)
       .subscribe((c) => {
-        console.log(c.content)
         this.claimList = c.content;
       });
   }
@@ -73,7 +71,6 @@ export class DownloadComponent implements OnInit {
         );
         downloadLink.setAttribute('download', `${this.appForm.value.year}_${this.appForm.value.empNo}.pdf`);
         document.body.appendChild(downloadLink);
-        console.log(downloadLink);
         downloadLink.click();
       },
       error: (error: string) => {

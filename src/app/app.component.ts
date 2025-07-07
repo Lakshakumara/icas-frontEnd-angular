@@ -31,7 +31,7 @@ export class AppComponent implements DoCheck, OnInit {
     this.message$ = this.loaderService.messageAction$;
   }
   ngOnInit(): void {
-    console.log('back end ip ', environment.baseUrl);
+    //console.log('back end ip ', environment.baseUrl);
   }
 
   ngDoCheck(): void {

@@ -72,7 +72,6 @@ export class MemberDataComponent implements OnInit, AfterViewInit {
     this.loadMemberPage('');
   }
   loadMemberPage(filter: string) {
-    console.log('this.sort.direction ', this.sort.direction);
     this.dataSource.loadMember(
       Constants.ALL,
       null,

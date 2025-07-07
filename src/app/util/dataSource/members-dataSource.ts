@@ -52,6 +52,5 @@ export class MemberDataSource extends DataSource<Member> {
                     this.totalCount = 0; // Set totalCount to 0 if there's an error
                 }
             });
-        console.log("fetch data set ", this.dataSetSubject)
     }
 }

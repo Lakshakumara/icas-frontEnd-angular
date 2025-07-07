@@ -66,7 +66,6 @@ export class LoadDataSource extends DataSource<any> {
         finalize(() => this.loadingSubject.next(false))
       )
       .subscribe((receiveData: any) => {
-        console.log("receiveData to datasource ",receiveData)
         this.data = receiveData.content
         this.dataSetSubject.next(this.data);
         this.totalCount = receiveData.totalElements;
@@ -175,7 +174,6 @@ export class LoadDataSource extends DataSource<any> {
         this.dataSetSubject.next(receiveData);
         //this.totalCount = receiveData.totalElements;
       });
-      //console.log("fetch getHistoryMain ", this.dataSetSubject)
   }
   getSchemeData(idText: string[]) {
     this.loadingSubject.next(true);
@@ -188,30 +186,5 @@ export class LoadDataSource extends DataSource<any> {
         this.dataSetSubject.next(receiveData);
         //this.totalCount = receiveData.totalElements;
       });
-      //console.log("fetch getHistoryMain ", this.dataSetSubject)
   }
-
-  /*getClaimHistory(empNo: string) {
-    this.loadingSubject.next(true);
-    this.auth.getClaimHistory(empNo)
-      .pipe(
-        catchError(() => of([])),
-        finalize(() => this.loadingSubject.next(false))
-      )
-      .subscribe((receiveData: any) => {
-        this.dataSetSubject.next(receiveData);
-      });
-  }*/
-
-  /*requestAllData(
-    claimStatus: string
-  ) {
-    this.loadingSubject.next(true);
-    return this.auth.getAllClaims(
-      '',
-      0,
-      '',
-      claimStatus
-    );
-  }*/
 }

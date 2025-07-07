@@ -158,11 +158,9 @@ export class SetPaymentComponent implements OnInit, AfterViewInit {
           paidAmount: this.netPayment,
           claimStatus: Constants.CLAIMSTATUS_VOUCHER,
         });
-        console.log(tobeUpdated);
         return await this.auth.updateClaim_new(tobeUpdated);
       },
     }).then((result) => {
-      console.log('result ', result);
       if (result.isConfirmed) {
         if (result.value >= 1) {
           Swal.fire('Claim Updated', '', 'success');
@@ -206,7 +204,6 @@ export class SetPaymentComponent implements OnInit, AfterViewInit {
       remarks: this.formGroup.value.remarks,
     });
 
-    console.log(this.tobeUpdated);
     Swal.fire({
       title: `Update the ${this.selectedClaimData.idText}`,
       icon: 'warning',
@@ -228,59 +225,3 @@ export class SetPaymentComponent implements OnInit, AfterViewInit {
     });
   }
 }
-/*
-setPaidAmount() {
-    if (this.selectedClaim == null) return;
-    let tobeUpdated: any[] = [];
-    let timerInterval;
-    Swal.fire({
-      title: 'Update Payment Amount',
-      footer: 'Paid Amount <b></b>',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Update',
-      showLoaderOnConfirm: true,
-      input: 'number',
-      inputLabel: 'Deduction Amount',
-
-      allowOutsideClick: () => !Swal.isLoading(),
-      inputValidator: (value) => {
-        return new Promise((resolve) => {
-          if (+value <= this.selectedClaim.requestAmount) {
-            resolve('');
-          } else {
-            resolve(
-              'Max is Request Amount Rs. ' +
-              this.selectedClaim.requestAmount
-            );
-          }
-        });
-      },
-
-      /* didOpen: (deductionAmount) => {
-        const timer = Swal.getPopup()?.querySelector("b");
-        timer!.textContent = `${deductionAmount}`;
-      },*/
-
-/*preConfirm: async (deductionAmount) => {
-  tobeUpdated.push({
-    criteria: 'finalize',
-    id: this.selectedClaim.id,
-    deductionAmount: +deductionAmount,
-    paidAmount: this.selectedClaim.requestAmount - deductionAmount,
-    claimStatus: Constants.CLAIMSTATUS_PAID,
-  });
-  console.log(tobeUpdated);
-  return await this.auth.updateClaim_new(tobeUpdated);
-},
-}).then((result) => {
-console.log('result ', result);
-if (result.isConfirmed) {
-  if (result.value >= 1) {
-    Swal.fire('Claim Updated', '', 'success');
-    //this.reload();
-  } else Swal.fire('Error', 'Failed to Update', 'error');
-}
-});
-}
-*/

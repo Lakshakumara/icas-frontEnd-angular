@@ -45,7 +45,6 @@ export class ClaimDataSource extends DataSource<any> {
     pageSize = 10
   ) {
     this.loadingSubject.next(true);
-    //console.log(this.sort!.direction, this.paginator!.pageIndex,this.paginator!.pageSize,this.sort!.active)
     this.auth
       .getAllClaims(
         '',

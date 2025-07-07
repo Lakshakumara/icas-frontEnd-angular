@@ -42,8 +42,8 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   viewMode: string = 'memberDetails'; // State variable to control view
   panelTitle: string = 'Members Data';
   status_mecApproved: string = Constants.CLAIMSTATUS_MEDICAL_DECISION_APPROVED;
-  
- // @Output() sidenavClose = new EventEmitter();
+
+  // @Output() sidenavClose = new EventEmitter();
 
   //claims: Claim[] | undefined;
   //dataSource!: MemberDataSource;
@@ -70,17 +70,17 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   //@ViewChild(MatSort) sort!: MatSort;
   panelOpenState = false;
   selectedvoucherId!: number | undefined;
-  currentYear:number = Utils.currentYear
+  currentYear: number = Utils.currentYear
 
   @ViewChild(VoucherNewComponent) voucherNewComponent!: VoucherNewComponent;
-  
+
   constructor(
     private share: SharedService,
     private changeDetectorRef: ChangeDetectorRef,
     private auth: AuthServiceService,
     private buildr: FormBuilder,
     private gravatarService: GravatarService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loggeduser = this.share.getUser();
@@ -103,7 +103,7 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
       { item_id: 7, role: Constants.ROLE_SUPER_ADMIN },
     ];*/
   }
-  ngAfterViewInit() {}
+  ngAfterViewInit() { }
 
   getMember(member: any) {
     this.selectedMember = member;
@@ -135,13 +135,12 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
           role: Constants.ROLE_SUPER_ADMIN,
         });
     });
-   
+
     this.roleGroup.patchValue({
       selectedRoles: [this.selectedRoles],
       //selectedRoles: this.selectedMember!.roles.map(role => this.roleData.find(item => item.role === role))
     });
 
-    console.log('roleGroup ', this.roleGroup.value);
     /*this.roleGroup = this.buildr.group({
         selectedRoles: [this.selectedRoles],
       });*/
@@ -166,9 +165,9 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   }
   showReRegistration() {
     this.viewMode = 'reReg';
-    this.panelTitle = `Re Registration -${this.currentYear+1} `;
-    }
-  showSetPayment(){
+    this.panelTitle = `Re Registration -${this.currentYear + 1} `;
+  }
+  showSetPayment() {
     this.viewMode = 'setPayment';
     this.panelTitle = `Claim ID ${this.selectedClaim!.id}`;
   }
@@ -211,10 +210,6 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   roleUpdate() {
     if (this.selectedMember == undefined) return;
     const x = this.roleGroup.value.selectedRoles as Array<Role>;
-    console.log(
-      'this.roleGroup.value.selectedRoles ',
-      this.roleGroup.value.selectedRoles
-    );
     this.tobeUpdated = {
       criteria: 'role',
       memberId: this.selectedMember?.id,
@@ -224,7 +219,6 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
       }),
     };
 
-    console.log(this.tobeUpdated);
     this.auth.update('role', this.tobeUpdated).subscribe((data) => {
       Swal.fire({
         icon: 'info',
@@ -233,115 +227,18 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
       });
     });
   }
-  getvoucherIds(id:number[]){
+  getvoucherIds(id: number[]) {
     this.voucherIds = id
   }
-  
+
   showVoucher() {
     Constants.Toast.fire('Under Construction');
   }
-  
+
   public downloadVoucher(): void {
     if (this.voucherNewComponent) {
       this.voucherNewComponent.downloadVoucher(this.selectedvoucherId!);
     } else {
-      console.error('VoucherNewComponent not available');
     }
   }
-  /*initializeTable() {
-    this.dataSource = new MemberDataSource(this.auth);
-  }
-  
-  setupTableFeatures() {
-    this.changeDetectorRef.detectChanges();
-    this.dataSource.sort = this.sort;
-    this.loadMemberPage('');
-    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-    merge(this.sort.sortChange, this.paginator.page)
-      .pipe(tap(() => this.loadMemberPage('')))
-      .subscribe();
-
-    this.dataSource.loading$.subscribe((loading) => {
-      if (!loading) {
-        this.totalLength = this.dataSource.totalCount;
-      }
-    });
-    this.searchControl.valueChanges
-      .pipe(
-        debounceTime(300), // Wait for 300ms pause in events
-        distinctUntilChanged() // Only emit when value is different from previous value
-      )
-      .subscribe((value) => {
-        this.paginator.pageIndex = 0;
-        const filterValue = value.trim().toLowerCase();
-        this.loadMemberPage(filterValue);
-      });
-  }
-
-  loadMemberPage(filter: string) {
-    this.dataSource.loadMember(
-      Constants.ALL,
-      null,
-      filter,
-      this.sort.direction,
-      this.paginator.pageIndex,
-      this.paginator.pageSize
-    );
-  }
-
-  reNew = this.buildr.group({
-    year: this.buildr.control(this.currentYear + 1, [Validators.required]),
-    selector: this.buildr.control(''),
-  });
-
-  formGroup = this.buildr.group({
-    empNo: new FormControl('', [Validators.required]),
-    name: new FormControl('', [Validators.required]),
-    address: new FormControl(),
-    email: new FormControl(),
-    contactNo: new FormControl(),
-    nic: new FormControl(),
-    designation: new FormControl(),
-    department: new FormControl(),
-    password: new FormControl(),
-    roles: new FormControl(),
-    mDate: new FormControl(),
-    status: new FormControl(),
-  });
-
-  registerProcess() {
-    this.formGroup.patchValue({
-      mDate: new Date(),
-      status: Constants.REGISTRATION_PENDING,
-    });
-    this.auth
-      .registerold(this.formGroup.value)
-      .subscribe((response: any) => {});
-  }
-
-  clearReg() {
-    this.formGroup.reset();
-  }
-
- 
-
-  public onSidenavClose = () => {
-    this.sidenavClose.emit();
-  };
-
-  registrationOpen() {
-    if (this.reNew.value.selector !== 'all') {
-      this.reNew.patchValue({
-        selector: this.selectedMember?.empNo,
-      });
-    }
-    this.auth.update('registerOpen', this.reNew.value).subscribe((data) => {
-      Swal.fire({
-        icon: 'info',
-        title: 'Sucess',
-        text: 'Updated ' + data + 'rows',
-      });
-    });
-  }
-*/
-}
+ }

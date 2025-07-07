@@ -90,13 +90,10 @@ export class UserOPDComponent implements OnInit, AfterViewInit {
     );
   }
   onRowClicked(claim: Claim) {
-    console.log(claim);
+ 
   }
 
   search() {
-    console.log('selectedStatus ', this.selectedStatus);
-    console.log('year ', this.year);
-    console.log('selectedCategory ', this.selectedCategory);
     this.loadClaimPage();
   }
   readableStatus(status: string) {

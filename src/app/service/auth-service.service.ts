@@ -274,7 +274,6 @@ export class AuthServiceService {
     pageSize: number = 10,
     sortField: string = ''
   ): Observable<any> {
-    //console.log("getDepHeadClaims ", department)
     return this.getAllClaims(
       '',
       0,

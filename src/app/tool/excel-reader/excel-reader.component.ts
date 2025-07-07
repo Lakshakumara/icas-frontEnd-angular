@@ -18,7 +18,6 @@ import { AuthServiceService } from 'src/app/service/auth-service.service';
 export class ExcelReaderComponent {
   
   onSubmit() {
-    //console.log(this.formGroup.value)
   }
   updatedFormValues: any
   currentDateAndTime: any
@@ -68,7 +67,6 @@ export class ExcelReaderComponent {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        // console.log("loaded ", e)
       };
       reader.readAsDataURL(file);
     }
@@ -95,8 +93,6 @@ export class ExcelReaderComponent {
 
       const wsname: string = wb.SheetNames[0];
       const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-      //console.log("wsname ", wsname)
-      //console.log("ws ", ws)
       const data = <any[][]>XLSX.utils.sheet_to_json(ws, { header: 1 });
       this.processExcelData(data);
     };
@@ -104,7 +100,6 @@ export class ExcelReaderComponent {
   }
 
   dotToDash(dateText: any): Date {
-    //console.log("given value ", dateText)
     return this.excelDateToJSDate(dateText)
   }
   excelDateToJSDate(excelDate: number): Date {
@@ -118,7 +113,6 @@ export class ExcelReaderComponent {
     var dep: any = []
 
     for (let i = 1; i < 2705; i++) {//2703
-      //console.log("main i ",i)
       const row = data[i]
       if(row.length == 0) continue
       if (row[0] != undefined) {
@@ -159,7 +153,6 @@ export class ExcelReaderComponent {
       let j=i+1
       do {
         nextRow = data[j]
-        //console.log("nextRow j ",j, nextRow)
         if(nextRow[6] == undefined ){
           const civil = this.getCivilStatus(dep)
           this.updatedFormValues = {
@@ -168,8 +161,6 @@ export class ExcelReaderComponent {
             dependants: dep,
           };
           console.log("updatedFormValues j ",j, this.updatedFormValues)
-          //this.formGroup.setValue(updatedFormValues)
-          //console.log("save data ", this.formGroup.value)
 
           this.authService.registerNew(this.updatedFormValues)
           //end of database upload
@@ -178,8 +169,6 @@ export class ExcelReaderComponent {
           dep.push(this.setDepFormArrayx(nextRow))
           j++;
         }
-        
-        //console.log("j++ ",j)
       } while (nextRow[6] != undefined);
       i=j-1
     }
@@ -191,7 +180,6 @@ export class ExcelReaderComponent {
     var dep: any = []
     var i: number = 1
     data.forEach(data => {
-      //console.log("formValues", formValues)
       if (data[0] === 'Se N.') return
 
       if (data[0] != undefined) {
@@ -229,10 +217,8 @@ export class ExcelReaderComponent {
       } else {
         if (data[6] === undefined) return
         dep.push(this.setDepFormArrayx(data))
-        //console.log("dep Inner ", dep)
       }
       if (data[0] != undefined) {
-        console.log("dep ==>", dep, formValues)
         if (formValues != undefined) {
           
           this.updatedFormValues = {
@@ -244,8 +230,6 @@ export class ExcelReaderComponent {
 
         }
       }
-
-      //console.log("formValues end ", formValues)
     }
     )
   }
@@ -339,7 +323,6 @@ export class ExcelReaderComponent {
     const date = new Date(year, 0); // January 1st of the given year
     date.setDate(rest);
 
-    //console.log(nic, rest, male, date)
 
     // Adjust for leap years
     if (new Date(year, 1, 29).getMonth() != 1 && rest > 59) {

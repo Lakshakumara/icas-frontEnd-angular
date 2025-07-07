@@ -144,13 +144,11 @@ export class TableComponent implements OnInit, AfterViewInit, OnChanges {
         disableSorting: true,
       });
     }
-   // console.log('this.allowMultiSelect ', this.allowMultiSelect);
     // Setting selection model
     this.selection = new SelectionModel<{}>(this.allowMultiSelect, []);
   }
   /** Highlights the selected row on row click. */
   highlight(row: any) {
-    //console.log('from table ', row);
     this.selectedRow = row;
   }
 }

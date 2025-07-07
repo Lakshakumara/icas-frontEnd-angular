@@ -37,7 +37,6 @@ export class SchemePlanComponent implements OnInit {
     this.member = this.share.getUser();
     if (this.member) {
       this.schemeService.getScheme(Constants.ALL).subscribe((res: any) => {
-        console.log(res)
         this.dataSource.data = res;
       });
     } else this.router.navigate(['/signin']);
@@ -48,13 +47,11 @@ export class SchemePlanComponent implements OnInit {
   }
   editRow(row: Scheme) {
     if (row.id === 0) {
-      console.log('adding ', row);
       this.schemeService.addScheme(row).subscribe((newScheme: Scheme) => {
         row.id = newScheme.id;
         row.isEdit = false;
       });
     } else {
-      console.log('editiing ', row);
       this.schemeService
         .updateScheme(row)
         .subscribe(() => (row.isEdit = false));

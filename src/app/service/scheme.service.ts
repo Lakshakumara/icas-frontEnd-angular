@@ -14,13 +14,11 @@ export class SchemeService {
   constructor(private http: HttpClient) {}
 
   getSchemeTitle(category: string): Observable<SchemeTitles[]> {
-    console.log(category);
     return this.http
       .get(`${this.serviceUrl}/titles/${category}`)
       .pipe<SchemeTitles[]>(map((data: any) => data));
   }
   getScheme(category: string): Observable<Scheme[]> {
-    console.log("getScheme ", category)
     return this.http
       .get(`${this.serviceUrl}/${category}`)
       .pipe<Scheme[]>(map((data: any) => data));

@@ -31,7 +31,6 @@ export class VoucherNewComponent implements OnInit {
 
   onNotifySelected(selectedRows: Claim[]) {
     this.selectedClaims = selectedRows;
-    console.log('selected Rows ', selectedRows);
   }
 
   constructor(private auth: AuthServiceService) {
@@ -106,9 +105,7 @@ export class VoucherNewComponent implements OnInit {
     if (this.selectedClaims == undefined) return;
     this.tobeUpdated = [];
     let selected = this.selectedClaims.map((s) => {
-      //console.log('s.paidAmount ', s.paidAmount);
       if (s.paidAmount === null) {
-        //console.log('return  ', s.paidAmount === null);
         Constants.Toast.fire('Payment not set for the Claim ' + s.id + ' ');
         return;
       }
@@ -122,7 +119,6 @@ export class VoucherNewComponent implements OnInit {
       });
       return s.empNo + '-' + s.paidAmount;
     });
-    console.log('selected ', selected);
     Swal.fire({
       title: selected,
       icon: 'warning',
@@ -153,9 +149,7 @@ export class VoucherNewComponent implements OnInit {
     });
   }
   public downloadVoucher(selectedvoucherId:number):void {
-    console.log('this.selectedvoucherId ', selectedvoucherId);
-    
-    Swal.fire({
+      Swal.fire({
       title: 'Download Voucher',
       icon: 'question',
       showCancelButton: true,

@@ -131,7 +131,6 @@ export class MemberComponent implements OnInit, AfterViewInit {
       },
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
-      console.log('result value ' + result);
       if (result.isConfirmed) {
         Swal.fire('Success', result.value, 'success'); // Success message
       } else {

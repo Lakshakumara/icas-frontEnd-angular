@@ -77,7 +77,6 @@ export class ClaimHistoryComponent implements OnInit, AfterViewInit {
   }
 
   loadClaimPage() {
-    console.log(this.member.empNo);
     this.dataSource.loadClaims(
       '',
       '',
@@ -109,13 +108,11 @@ export class ClaimHistoryComponent implements OnInit, AfterViewInit {
     // Logic to handle actions when the menu is closed, if necessary
   }
   onRowClicked(claim: Claim) {
-    console.log(claim.id);
     this.expandedElement = this.expandedElement === claim.claimData ? null : claim.claimData;
     this.loadClaimData(claim);
   }
   loadClaimData(claim: Claim) {
     this.selectedClaim = claim;
-    console.log(claim);
     this.claimData =
       this.claimData === claim.claimData ? null : claim.claimData;
   }

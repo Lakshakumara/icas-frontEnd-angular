@@ -62,8 +62,6 @@ export class PaymentHistoryComponent implements OnInit, AfterViewInit {
     this.loadPaymentHistory();
     this.dataSource.loading$.subscribe((loading) => {
       if (!loading) {
-        console.log("loaded ", this.dataSource.data)
-        //this.totalLength = this.dataSource.totalCount;
       }
     });
 
@@ -83,7 +81,6 @@ export class PaymentHistoryComponent implements OnInit, AfterViewInit {
     this.selectedCategory = newCategory;
   }
   search() {
-    console.log("category ", this.selectedCategory)
   }
 
   onRowClicked(row: any) {
@@ -105,7 +102,6 @@ export class PaymentHistoryComponent implements OnInit, AfterViewInit {
   }
 
   loadExpandedData(row: any) {
-    console.log("row ", row)
     // Simulate a delay for lazy loading
     setTimeout(() => {
       this.auth.getClaimHistory(this.member.empNo, row.idText)
@@ -113,7 +109,6 @@ export class PaymentHistoryComponent implements OnInit, AfterViewInit {
           catchError(() => of([]))
         )
         .subscribe((receiveData: any) => {
-          console.log("expand loaded receiveData ", receiveData)
           row.data = receiveData.content
         });
     }, 500); // 1 second delay
@@ -122,12 +117,7 @@ export class PaymentHistoryComponent implements OnInit, AfterViewInit {
 
   openClaimDetails(claimId: number, claimIds:any, event: MouseEvent): void {
     event.preventDefault();
-    this.Openpopup(ClaimDetailsDialogComponent, claimId, claimIds)
-    /*this.auth.getClaimNew(claimId).then(claim=>{
-      console.log("received claim ",claim)
-      this.Openpopup(ClaimDetailsDialogComponent, claim, claimId, claimIds)
-    });*/
-    
+    this.Openpopup(ClaimDetailsDialogComponent, claimId, claimIds)   
   }
   Openpopup(component: any, claimId:any, claimIds: any) {
     var _popup = this.dialog.open(component, {
@@ -142,13 +132,11 @@ export class PaymentHistoryComponent implements OnInit, AfterViewInit {
     });
 
     _popup.afterClosed().subscribe((item) => {
-      console.log("Close it")
     });
   }
 
 
   getSchemeData(idText: string[]): any {
-    console.log("expand loaded ", idText)
     //this.dataSource.getSchemeData(idText);
   }
 }

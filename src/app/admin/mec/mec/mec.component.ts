@@ -213,7 +213,6 @@ export class MecComponent implements OnInit {
       remarks: this.formGroup.value.remarks,
     });
 
-    //console.log(this.tobeUpdated);
     Swal.fire({
       title: 'Complete the medical approval',
       icon: 'warning',
@@ -237,7 +236,6 @@ export class MecComponent implements OnInit {
   addClaimTitle() {
     let scheme = this.formGroup.value.stateGroup?.split('-');
     if (scheme == undefined) return;
-    //console.log('this.claimDataStatus ', this.claimDataStatus)
     if (this.claimDataStatus === undefined) return
     this.tobeUpdated = [];
     this.tobeUpdated.push({
@@ -254,7 +252,6 @@ export class MecComponent implements OnInit {
       remarks: this.formGroup.value.remarks,
     });
 
-    //console.log(this.tobeUpdated);
     Swal.fire({
       title: 'Add Claim Data',
       icon: 'question',
@@ -292,7 +289,6 @@ export class MecComponent implements OnInit {
       },
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
-      //console.log('result ', result.value);
       if (result.isConfirmed) {
         Swal.fire({
           title: 'Deleted!',
@@ -303,11 +299,9 @@ export class MecComponent implements OnInit {
         });
         //
       } else {
-        //console.log('error');
       }
     });
 
-    // console.log('selected id ', this.selectedclaimTitle.id);
   }
   private _filterGroup(value: string): SchemeTitles[] {
     if (value) {
@@ -323,7 +317,6 @@ export class MecComponent implements OnInit {
   }
 
   click() {
-    //console.log('selected', this.formGroup.value);
   }
   onValueChange(evt: any) {
     var target = evt.target;

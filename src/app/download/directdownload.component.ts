@@ -34,7 +34,6 @@ export class DirectDownloadComponent implements OnInit {
             a.click();
             window.URL.revokeObjectURL(url);
           }, error => {
-            console.error('Download failed', error);
           });
       }
 
@@ -50,7 +49,6 @@ export class DirectDownloadComponent implements OnInit {
       a.click();
       window.URL.revokeObjectURL(url);
     }, error => {
-      console.error('Download failed', error);
     });
   }
 }

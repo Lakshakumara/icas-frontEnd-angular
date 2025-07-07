@@ -51,11 +51,9 @@ export class ChipSelectorComponent implements OnInit, OnChanges  {
     this.formGroup = this.fb.group({
       schemeTitles: this.fb.control('', [Validators.required]),
     });
-
   }
 
   ngOnInit() {
-    console.log("selected Category ", this.category)
     this.setupData(this.category)
   }
 

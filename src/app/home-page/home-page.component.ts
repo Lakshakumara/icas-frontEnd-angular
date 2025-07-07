@@ -39,11 +39,8 @@ export class HomePageComponent implements OnInit {
     }
   }
   ngOnInit(): void {
-    console.log("All ", this.member.memberRegistrations)
     const registerOpen = this.member.registrationOpen
     const reg = this.member.memberRegistrations.filter(r => { return r.year === registerOpen })
-    console.log("reg ", registerOpen, Utils.currentYear, reg)
-
     if (registerOpen != 0 && reg) {
       const Toast = Swal.mixin({
         toast: true,

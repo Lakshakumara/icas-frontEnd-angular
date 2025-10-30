@@ -66,7 +66,7 @@ export class AuthServiceService {
     return !!this.getToken();
   }
 
-   changePassword(oldPassword: string, newPassword: string) {
+  changePassword(oldPassword: string, newPassword: string) {
     return this.http.post<{ token: string }>(
       `${this.API_URL}/auth/change-default-password`,
       {
@@ -84,6 +84,20 @@ export class AuthServiceService {
       }
     );
   }
+  verifyResetToken(token: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/verify-reset-token?token=${token}`);
+  }
+
+  resetPassword(token: string, newPassword: string) {
+    return this.http.post<{ token: string }>(
+      `${this.API_URL}/auth/reset-password`,
+      {
+        token,
+        newPassword,
+      }
+    );
+  }
+
   getMembers(
     searchFor: string,
     searchText: any,
@@ -554,7 +568,12 @@ export class AuthServiceService {
   async downloadClaim(claimId: number) {
     try {
       const response = await fetch(
-        `${this.API_URL}/download/application/opd/${claimId}`
+        `${this.API_URL}/download/application/opd/${claimId}`, {
+        method: 'get',
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`,
+        },
+      }
       );
       if (response.ok) return response.blob();
       else throw Error('Error generating pdf');

@@ -31,7 +31,7 @@ import { DownloadComponent } from './download/download.component';
 import { MemberComponent } from './admin/dep-head/staff-member/member.component';
 import { RegistrationComponent } from './admin/gad/subject/registration/registration.component';
 
-import { AngularSplitModule } from 'angular-split';
+//import { AngularSplitModule } from 'angular-split';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ProfileComponent } from './login-v1/profile/profile.component';
 
@@ -109,7 +109,7 @@ import { AuthInterceptor } from './auth-interceptor.service';
     ReactiveFormsModule,
     HttpClientModule,
     RoutingModule,
-    AngularSplitModule,
+   // AngularSplitModule,
     NgMultiSelectDropDownModule,
     MyTableModule,
   ],

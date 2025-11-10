@@ -36,9 +36,6 @@ export class Utils {
   static currentYear = new Date().getFullYear();
   static nextYear = new Date().getFullYear() + 1;
 
-  /* static popMassage(title: any){
-         this.popMassage(title, null);
-     }*/
   static popMassage(title: any, footer: any) {
     Swal.fire({
       icon: 'info',

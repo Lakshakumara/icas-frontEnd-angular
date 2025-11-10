@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { Member } from 'src/app/Model/member';
+import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Constants } from 'src/app/util/constants';
 
 @Component({
@@ -11,18 +12,19 @@ export class SidenavListComponent implements OnInit {
   @Output() sidenavClose = new EventEmitter();
   @Input() member!: Member;
   roles: string[] = [];
-  isUser: boolean = false;
+  /*isUser: boolean = false;
   isAdmin: boolean = false;
   isGADHead: boolean = false;
   isDepHead: boolean = false;
   isMo: boolean = false;
   isMec: boolean = false;
-  isSuperAdmin: boolean = false;
+  isSuperAdmin: boolean = false;*/
 
-  constructor() {}
+  constructor(public authService: AuthServiceService) { }
 
   ngOnInit() {
-    if (this.member)
+    this.roles = this.authService.getRoles();
+    /*if (this.member)
       if (this.member.roles)
         this.member.roles.forEach((val, key) => {
           this.roles.push(val.role);
@@ -53,7 +55,7 @@ export class SidenavListComponent implements OnInit {
               break;
           }
         });
-    this.isUser = this.roles.includes(Constants.ROLE_USER);
+    this.isUser = this.roles.includes(Constants.ROLE_USER);*/
   }
 
   public onSidenavClose = () => {

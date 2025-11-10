@@ -1,20 +1,3 @@
-<!--mat-sidenav-container class="example-container">
-  <mat-sidenav #sidenav role="navigation">
-    <app-sidenav-list [member]="member" *ngIf="isMenuShow" (sidenavClose)="sidenav.close()"></app-sidenav-list>
-  </mat-sidenav>
-
-  <mat-sidenav-content>
-    <app-header [member]="member" *ngIf="isMenuShow" (sidenavToggle)="sidenav.toggle()"></app-header>
-    <div  class="content">
-      <router-outlet></router-outlet>
-      <app-loading-spinner *ngIf="loading$ | async" [message]="message$ | async"></app-loading-spinner>
-    </div>
-    <footer class="footer">
-      <span> Software Training component by YML Kumara &#64;OUSL 2024 Under supervision of Dr.LSK Udugama</span>
-    </footer>
-  </mat-sidenav-content>
-</mat-sidenav-container-->
-
 <mat-sidenav-container class="example-container">
   <mat-sidenav #sidenav role="navigation">
     <app-sidenav-list [member]="member" *ngIf="isMenuShow" (sidenavClose)="sidenav.close()"></app-sidenav-list>

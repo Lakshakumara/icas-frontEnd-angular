@@ -1,42 +1,91 @@
-
-<mat-card *ngIf="profile">
-  <mat-card-header>
-    <mat-card-title>{{ profile.name }}</mat-card-title>
-    <mat-card-subtitle>{{ profile.designation }}</mat-card-subtitle>
-  </mat-card-header>
+<mat-card *ngIf="profile" class="profile-card">
   <mat-card-content>
-    <mat-grid-list cols="2" rowHeight="2:1">
-      <mat-grid-tile>
-        <mat-list>
-          <mat-list-item><strong>Employee No:</strong> {{ profile.empNo }}</mat-list-item>
-          <mat-list-item><strong>Email:</strong> {{ profile.email }}</mat-list-item>
-          <mat-list-item><strong>Contact No:</strong> {{ profile.contactNo }}</mat-list-item>
-          <mat-list-item><strong>NIC:</strong> {{ profile.nic }}</mat-list-item>
-          <mat-list-item><strong>Address:</strong> {{ profile.address }}</mat-list-item>
-          <mat-list-item><strong>Civil Status:</strong> {{ profile.civilStatus }}</mat-list-item>
-          <mat-list-item><strong>Sex:</strong> {{ profile.sex }}</mat-list-item>
-          <mat-list-item><strong>Date of Birth:</strong> {{ profile.dob }}</mat-list-item>
-          <mat-list-item><strong>Department:</strong> {{ profile.department }}</mat-list-item>
-        </mat-list>
-      </mat-grid-tile>
-      <mat-grid-tile>
-        <div style="padding: 16px;">
-            <h3 style="margin-bottom: 8px;">Roles</h3>
-            <mat-chip-listbox aria-label="User Roles" style="display: flex; flex-wrap: wrap; gap: 8px;">
-                <mat-chip *ngFor="let role of profile.roles" color="primary" selected>
-                    {{ role.role }}
-                    <mat-icon matChipTrailingIcon >cancel</mat-icon>
-                </mat-chip>
-            </mat-chip-listbox>
-        </div>
-    </mat-grid-tile>
-    </mat-grid-list>
-    <mat-divider></mat-divider>
-    <h3>Member Registrations Details</h3>
-    <mat-list *ngFor="let reg of profile.memberRegistrations">
-      <mat-list-item><strong>Year:</strong> {{ reg.year }}</mat-list-item>
-      <mat-list-item><strong>Scheme Type:</strong> {{ reg.schemeType }}</mat-list-item>
-      <mat-list-item><strong>Accepted Date:</strong> {{ reg.acceptedDate }}</mat-list-item>
-    </mat-list>
+
+    <!-- HEADER -->
+    <div class="profile-header">
+      <img
+        *ngIf="profile.photoUrl; else defaultPhoto"
+        [src]="profile.photoUrl"
+        alt="Profile Photo"
+        class="profile-photo"
+      />
+      <ng-template #defaultPhoto>
+        <mat-icon class="profile-photo default">person</mat-icon>
+      </ng-template>
+
+      <div class="profile-info">
+        <h2>{{ profile.name }}</h2>
+        <p class="designation">{{ profile.designation }}</p>
+        <p class="department">{{ profile.department }}</p>
+      </div>
+
+      <!-- EDIT BUTTON -->
+      <button
+        mat-mini-fab
+        color="primary"
+        class="edit-button"
+        (click)="onEditProfile()"
+        matTooltip="Edit Profile"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
+
+    <mat-divider class="section-divider"></mat-divider>
+
+    <!-- PERSONAL DETAILS -->
+    <div class="profile-grid">
+      <div class="profile-section">
+        <h3>Personal Details</h3>
+        <div class="detail"><strong>Employee No:</strong> {{ profile.empNo }}</div>
+        <div class="detail"><strong>NIC:</strong> {{ profile.nic }}</div>
+        <div class="detail"><strong>Date of Birth:</strong> {{ profile.dob | date }}</div>
+        <div class="detail"><strong>Sex:</strong> {{ profile.sex }}</div>
+        <div class="detail"><strong>Civil Status:</strong> {{ profile.civilStatus }}</div>
+      </div>
+
+      <div class="profile-section">
+        <h3>Contact</h3>
+        <div class="detail"><strong>Email:</strong> {{ profile.email }}</div>
+        <div class="detail"><strong>Contact No:</strong> {{ profile.contactNo }}</div>
+        <div class="detail"><strong>Address:</strong> {{ profile.address }}</div>
+      </div>
+    </div>
+
+    <mat-divider class="section-divider"></mat-divider>
+
+    <!-- ROLES -->
+    <div class="roles-section">
+      <h3>Roles</h3>
+      <mat-chip-listbox aria-label="User Roles" class="roles-list">
+        <mat-chip *ngFor="let role of roles" color="primary" selected>
+          {{ role }}
+        </mat-chip>
+      </mat-chip-listbox>
+    </div>
+
+    <mat-divider class="section-divider"></mat-divider>
+
+    <!-- REGISTRATIONS -->
+    <div class="registrations-section">
+      <h3>Member Registrations</h3>
+      <table class="mat-elevation-z1 reg-table">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Scheme Type</th>
+            <th>Accepted Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let reg of profile.memberRegistrations">
+            <td>{{ reg.year }}</td>
+            <td>{{ reg.schemeType }}</td>
+            <td>{{ reg.acceptedDate | date }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </mat-card-content>
 </mat-card>

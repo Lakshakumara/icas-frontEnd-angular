@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
 import { Member } from 'src/app/Model/member';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { Constants } from 'src/app/util/constants';
@@ -12,16 +13,9 @@ export class HeaderComponent implements OnInit {
   @Output() public sidenavToggle = new EventEmitter();
   roles: string[] = [];
   @Input() member!: Member;
-  /*isUser: boolean = false;
-  isAdmin: boolean = false;
-  isGADHead: boolean = false;
-  isDepHead: boolean = false;
-  isMo: boolean = false;
-  isMec: boolean = false;
-  isSuperAdmin: boolean = false;*/
   isDarkTheme = false;
 
-  constructor(public authService: AuthServiceService) { }
+  constructor(public authService: AuthServiceService, private router: Router,) { }
 
   ngOnInit() {
     const savedTheme = localStorage.getItem('theme');
@@ -29,46 +23,17 @@ export class HeaderComponent implements OnInit {
       this.isDarkTheme = savedTheme === 'dark';
       this.updateTheme();
     }
-    //this.roles = this.authService.getRoles();
-/*
-    if (this.member && this.member.roles) {
-      this.member.roles.forEach((val) => {
-
-        this.roles.push(val.role);
-        switch (val.role) {
-          case Constants.ROLE_ADMIN:
-            this.isAdmin = true;
-            this.isGADHead = true;
-            this.isDepHead = true;
-            this.isMo = true;
-            this.isMec = true;
-            this.isSuperAdmin = true;
-            break;
-          case Constants.ROLE_GAD_HEAD:
-            this.isGADHead = true;
-            break;
-          case Constants.ROLE_DEP_HEAD:
-            this.isDepHead = true;
-            break;
-          case Constants.ROLE_MO:
-            this.isMo = true;
-            break;
-          case Constants.ROLE_MEC:
-            this.isMec = true;
-            break;
-          case Constants.ROLE_SUPER_ADMIN:
-            this.isSuperAdmin = true;
-            break;
-        }
-      });
-    }
-    this.isUser = this.roles.includes(Constants.ROLE_USER);*/
-  }
+    this.roles = this.authService.getRoles();
+}
 
   public onToggleSidenav = () => {
     this.sidenavToggle.emit();
   };
 
+signOut(){
+  this.authService.logout()
+   this.router.navigate(['/signin'])
+}
   toggleTheme() {
     this.isDarkTheme = !this.isDarkTheme;
     this.updateTheme();

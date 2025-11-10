@@ -94,7 +94,6 @@ export class HomePageComponent implements OnInit {
   }
 
   opdClaim() {
-
     this.Openpopup(0, 'OPD Reimbursement', OpdNewComponent, HomePageComponent);
   }
 

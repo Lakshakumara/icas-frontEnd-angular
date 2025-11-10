@@ -22,7 +22,7 @@ import { AuthServiceService } from '../../service/auth-service.service';
     MatIconModule,
     MatCardModule,],
   templateUrl: './reset-password.component.html',
-  styleUrl: './reset-password.component.css'
+  styleUrls: ['./reset-password.component.css']
 })
 export class ResetPasswordComponent implements OnInit {
   token!: string;

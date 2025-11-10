@@ -35,7 +35,6 @@ export class ClaimDetailsDialogComponent {
   }
   loadClaim() {
     this.auth.getClaimNew(this.data.claimIds[this.currentIndex]).then(claim => {
-      console.log("received claim ", claim)
       this.claim = claim
     });
   }

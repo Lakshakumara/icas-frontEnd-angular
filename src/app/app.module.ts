@@ -55,6 +55,7 @@ import { ClaimDetailsDialogComponent } from './pop/claim-details-dialog/claim-de
 import { ExcelReaderComponent } from './tool/excel-reader/excel-reader.component';
 import { ClaimTreeComponent } from './util/my/claim-tree/claim-tree.component';
 import { AuthInterceptor } from './auth-interceptor.service';
+import { LoginV2Component } from './login-v2/login-v2.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { AuthInterceptor } from './auth-interceptor.service';
     HeaderComponent,
     SidenavListComponent,
     LoginV1Component,
+    LoginV2Component,
     DependantComponent,
     ConfirmDialogComponent,
     OpdComponent,
@@ -109,7 +111,6 @@ import { AuthInterceptor } from './auth-interceptor.service';
     ReactiveFormsModule,
     HttpClientModule,
     RoutingModule,
-   // AngularSplitModule,
     NgMultiSelectDropDownModule,
     MyTableModule,
   ],

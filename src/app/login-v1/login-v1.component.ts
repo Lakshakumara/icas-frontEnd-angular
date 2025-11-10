@@ -7,8 +7,7 @@ import { LoaderService } from '../service/loader.service';
 import { Utils } from '../util/utils';
 import Swal from 'sweetalert2';
 import { Scheme } from '../Model/scheme';
-import { Observable, of, delay, switchMap } from 'rxjs';
-import { Constants } from '../util/constants';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-login-v1',
@@ -37,11 +36,100 @@ export class LoginV1Component implements OnInit {
       empNo: new FormControl('', [Validators.required]),
     });
   }
+
+  /*async isMemberNew(): Promise<void> {
+  const empNo = this.empNoForm.value.empNo?.trim();
+  if (!empNo) return;
+
+  try {
+    this.loaderService.showLoader('Verifying member...');
+
+    // 1️⃣ Check if employee exists
+    const member = await firstValueFrom(this.authService.getMemberNew(empNo));
+
+    if (!member) {
+      this.loaderService.hideLoader();
+      await Swal.fire('Not Found', 'No member found with this Employee No.', 'error');
+      return;
+    }
+
+    // 2️⃣ Ask password
+    this.loaderService.hideLoader();
+    const { value: password } = await Swal.fire({
+      title: 'Enter password',
+      input: 'password',
+      inputLabel: 'Password',
+      inputPlaceholder: 'Enter your password',
+      inputAttributes: {
+        maxlength: '10',
+        autocapitalize: 'off',
+        autocorrect: 'off',
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Login',
+      cancelButtonText: 'Cancel',
+      preConfirm: (pass) => {
+        if (!pass) {
+          Swal.showValidationMessage('Password required');
+        }
+        return pass;
+      },
+    });
+
+    if (!password) return;
+
+    // 3️⃣ Attempt login
+    this.loaderService.showLoader('Logging in...');
+    const response = await firstValueFrom(this.authService.login(empNo, password));
+    //this.authService.saveToken(response.token);
+
+    // 4️⃣ Check registration status
+    this.loaderService.updateMessage('Checking registration status...');
+    const currentYear = Utils.currentYear;
+    const reg = member.memberRegistrations.find(
+      (r) => r.year == currentYear && r.acceptedDate != null
+    );
+
+    if (reg) {
+      this.share.setUser(member);
+      this.loaderService.updateMessage('Redirecting...');
+      const isDefaultPassword = this.authService.isDefaultPassword();
+      await this.delay(500);
+      this.router.navigate([isDefaultPassword ? '/change-password' : '/home']);
+    } else {
+      this.loaderService.hideLoader();
+      const regNext = member.memberRegistrations.find(
+        (r) => r.year == currentYear + 1
+      );
+      if (regNext) {
+        Swal.fire(
+          `Registered for year ${currentYear + 1}`,
+          `No access for ${currentYear}`,
+          'warning'
+        );
+      } else {
+        Swal.fire(
+          'Membership Pending',
+          'Contact Department Head',
+          'warning'
+        );
+      }
+      this.router.navigate(['/signin']);
+    }
+  } catch (error: any) {
+    this.loaderService.hideLoader();
+    Swal.fire('Error', error.message || 'Unexpected error occurred', 'error');
+  } finally {
+    this.loaderService.hideLoader();
+  }
+}*/
+
   async isMemberNew() {
     try {
       // Show loader with initial message
       this.loaderService.showLoader('Fetching member details...');
       await this.delay(100);
+      this.authService.getToken
       const { value: password } = await Swal.fire({
         title: 'Enter password',
         input: 'password',
@@ -65,7 +153,7 @@ export class LoginV1Component implements OnInit {
                 'Checking registration status...'
               );
               await this.delay(100);
-              let member = await this.authService.getMemberNew(this.empNoForm.value.empNo);
+              let member = await firstValueFrom(this.authService.getMemberNew(this.empNoForm.value.empNo));//this.authService.getMemberNew(this.empNoForm.value.empNo);
 
               const reg = member.memberRegistrations.find(
                 (r) => r.year == Utils.currentYear && r.acceptedDate != null

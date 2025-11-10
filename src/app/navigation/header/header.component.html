@@ -19,7 +19,7 @@
         <button mat-button [matMenuTriggerFor]="switch">Roles</button>
       </li>
       <li>
-        <button mat-button routerLink="/signin">Sign out</button>
+        <button mat-button (click)="signOut()">Sign out</button>
       </li>
       <li *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_USER')">
         <button mat-button routerLink="/c_history">Claim History</button>

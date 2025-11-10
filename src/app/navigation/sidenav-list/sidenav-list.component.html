@@ -14,17 +14,15 @@
   <a mat-list-item routerLink="/signin" (click)="onSidenavClose()">
     <mat-icon>signout</mat-icon> <span class="nav-caption">Sign Out</span>
   </a>
-  <a mat-list-item routerLink="/c_history" (click)="onSidenavClose()">
+ 
+  <a *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" mat-list-item routerLink="/c_history" (click)="onSidenavClose()">
     <mat-icon>history</mat-icon> <span class="nav-caption">Claim History</span>
   </a>
-  <a mat-list-item routerLink="/download" (click)="onSidenavClose()">
+  <a *ngIf="authService.hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" mat-list-item routerLink="/download" (click)="onSidenavClose()">
     <mat-icon>download</mat-icon>
     <span class="nav-caption">Download</span>
   </a>
   <a mat-list-item routerLink="/profile" (click)="onSidenavClose()">
     <mat-icon>contact_support</mat-icon><span class="nav-caption">Profile</span>
   </a>
-  <!--a mat-list-item *ngIf="isAdmin" mat-button matBadgeColor="accent" [matMenuTriggerFor]="admin" (click)="onSidenavClose()">
-        <mat-icon>contact_support</mat-icon><span class="nav-caption">Admin</span>
-    </a-->
 </mat-nav-list>

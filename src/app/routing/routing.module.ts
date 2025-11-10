@@ -20,6 +20,7 @@ import { DirectDownloadComponent } from '../download/directdownload.component';
 import { DownloadGuard } from '../download.guard';
 import { SettingsComponent } from '../admin/settings/settings.component';
 import { ExcelReaderComponent } from '../tool/excel-reader/excel-reader.component';
+import { LoginV2Component } from '../login-v2/login-v2.component';
 const routes: Routes = [
   { path: 'home', component: HomePageComponent },
   {
@@ -28,7 +29,7 @@ const routes: Routes = [
     title: 'Search for Employee data',
   },
   { path: 'test', component: ExcelReaderComponent },
-  { path: 'signin', component: LoginV1Component },
+  { path: 'signin', component: LoginV2Component },
   { path: 'signup', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent },
   { path: 'c_history', component: UserOPDComponent },
@@ -72,7 +73,7 @@ const routes: Routes = [
   { path: 'admin/super/scheme', component: SchemePlanComponent },
   { path: 'admin/super/access', component: AccessComponent },
   { path: 'admin/settings', component: SettingsComponent},
-  { path: '**', component: LoginV1Component },
+  { path: '**', component: LoginV2Component },
   
 ];
 

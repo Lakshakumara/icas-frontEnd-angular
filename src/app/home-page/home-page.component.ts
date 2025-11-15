@@ -62,7 +62,7 @@ export class HomePageComponent implements OnInit {
       }).then((result) => {
         if (result.isConfirmed) {
           if (this.member != undefined) {
-            this.router.navigate([`/signup/${this.member.empNo}`]);
+            this.router.navigate([`/signup/${this.member.empNo}/${registerOpen}`]);
           } else {
             this.router.navigate([`/signin`]);
           }

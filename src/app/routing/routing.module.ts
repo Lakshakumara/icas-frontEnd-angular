@@ -24,10 +24,11 @@ import { LoginV2Component } from '../login-v2/login-v2.component';
 const routes: Routes = [
   { path: 'home', component: HomePageComponent },
   {
-    path: 'signup/:empNo',
-    component: RegisterComponent,
-    title: 'Search for Employee data',
-  },
+  path: 'signup/:empNo/:year',
+  component: RegisterComponent,
+  title: 'Search for Employee data',
+},
+
   { path: 'test', component: ExcelReaderComponent },
   { path: 'signin', component: LoginV2Component },
   { path: 'signup', component: RegisterComponent },

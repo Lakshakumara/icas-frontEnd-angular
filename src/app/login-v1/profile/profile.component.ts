@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Member } from 'src/app/Model/member';
+import { Registration } from 'src/app/Model/registration';
 import { AuthServiceService } from 'src/app/service/auth-service.service';
 import { SharedService } from 'src/app/shared/shared.service';
 
@@ -10,8 +11,9 @@ import { SharedService } from 'src/app/shared/shared.service';
   styleUrls: ['./profile.component.css'],
 })
 export class ProfileComponent {
+
   profile!: Member;
-  roles!:string[];
+  roles!: string[];
   constructor(private router: Router, private share: SharedService, private authService: AuthServiceService) {
     this.profile = this.share.getUser();
     this.roles = this.authService.getRoles();
@@ -21,10 +23,19 @@ export class ProfileComponent {
     }
   }
   onEditProfile(): void {
-  // Trigger your edit logic here
-  // Example: open a dialog or navigate to edit page
-  console.log('Edit profile clicked for', this.profile.empNo);
-  // e.g., open dialog: this.dialog.open(EditProfileDialogComponent, { data: this.profile });
-}
+    // Trigger your edit logic here
+    // Example: open a dialog or navigate to edit page
+    console.log('Edit profile clicked for', this.profile.empNo);
+    // e.g., open dialog: this.dialog.open(EditProfileDialogComponent, { data: this.profile });
+  }
+  get maxYear(): number {
+    //if (!this.profile?.memberRegistrations?.length) return null;
+    return Math.max(...this.profile.memberRegistrations.map(r => r.year));
+  }
+
+  editRegistration(reg: Registration) {  
+  this.router.navigate(['/signup', this.profile.empNo, this.maxYear]);
+    //this.router.navigate(['/signup/' + this.profile.empNo+'/'+this.maxYear]);
+  }
 
 }

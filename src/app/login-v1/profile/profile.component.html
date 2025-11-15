@@ -3,12 +3,8 @@
 
     <!-- HEADER -->
     <div class="profile-header">
-      <img
-        *ngIf="profile.photoUrl; else defaultPhoto"
-        [src]="profile.photoUrl"
-        alt="Profile Photo"
-        class="profile-photo"
-      />
+      <img *ngIf="profile.photoUrl; else defaultPhoto" [src]="profile.photoUrl" alt="Profile Photo"
+        class="profile-photo" />
       <ng-template #defaultPhoto>
         <mat-icon class="profile-photo default">person</mat-icon>
       </ng-template>
@@ -20,13 +16,7 @@
       </div>
 
       <!-- EDIT BUTTON -->
-      <button
-        mat-mini-fab
-        color="primary"
-        class="edit-button"
-        (click)="onEditProfile()"
-        matTooltip="Edit Profile"
-      >
+      <button mat-mini-fab color="primary" class="edit-button" (click)="onEditProfile()" matTooltip="Edit Profile">
         <mat-icon>edit</mat-icon>
       </button>
     </div>
@@ -75,14 +65,22 @@
             <th>Year</th>
             <th>Scheme Type</th>
             <th>Accepted Date</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let reg of profile.memberRegistrations">
             <td>{{ reg.year }}</td>
             <td>{{ reg.schemeType }}</td>
-            <td>{{ reg.acceptedDate | date }}</td>
+            <td>{{ reg.acceptedDate ? (reg.acceptedDate | date) : 'Pending' }}</td>
+            <td>
+              <button *ngIf="reg.year === maxYear" mat-button color="primary" [disabled]="reg.acceptedDate"
+                (click)="editRegistration(reg)">
+                Edit
+              </button>
+            </td>
           </tr>
+
         </tbody>
       </table>
     </div>

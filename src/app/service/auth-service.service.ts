@@ -23,7 +23,7 @@ export class AuthServiceService {
   private API_URL = environment.baseUrl;
 
   constructor(private http: HttpClient) { }
-  
+
   checkMember(empNo: string): Observable<{ exists: boolean }> {
     return this.http.get<{ exists: boolean }>(`${this.API_URL}/auth/check-member/${empNo}`);
   }
@@ -115,7 +115,7 @@ export class AuthServiceService {
       }
     );
   }
-getMemberNew(empNo: any): Observable<Member> {
+  getMemberNew(empNo: any): Observable<Member> {
     return this.http
       .get<Member>(
         `${this.API_URL}/member/${empNo}`
@@ -189,19 +189,6 @@ getMemberNew(empNo: any): Observable<Member> {
     return await response.json();
   }
 
-  /*async getMemberNew(empNo: any): Promise<Member> {
-    const token = this.getToken(); // Get the stored token
-    const response = await fetch(`${this.API_URL}/member/${empNo}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`, // Attach JWT token
-        'Content-Type': 'application/json',
-      },
-    });
-    return await response.json();
-  }*/
-  //use for avove
-  
   getDependant(name: any): Observable<any> {
     return this.http
       .get<{ token: string }>(`${this.API_URL}/dependant/${name}`)

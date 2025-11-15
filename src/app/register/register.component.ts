@@ -15,10 +15,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Utils } from '../util/utils';
 import { Beneficiary, BeneficiaryColumns } from '../Model/benificiary';
 import Swal from 'sweetalert2';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BeneficiaryComponent } from './beneficiary/beneficiary.component';
 import { Member } from '../Model/member';
 import { Constants } from '../util/constants';
+import { MemberService } from '../service/member.service';
 
 @Component({
   selector: 'app-register',
@@ -26,6 +27,10 @@ import { Constants } from '../util/constants';
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent implements OnInit {
+
+empNo!: string;
+  year!: number;
+
   @Input() registerYear: number = Utils.currentYear
   formGroup!: FormGroup;
   schemeType: string = Constants.SCHEME_INDIVIDUAL;
@@ -52,7 +57,9 @@ export class RegisterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private share: SharedService,
+    private route: ActivatedRoute,
     private router: Router,
+    private memberService: MemberService,
     private authService: AuthServiceService,
     private dialog: MatDialog
   ) {
@@ -63,6 +70,40 @@ export class RegisterComponent implements OnInit {
     if (!this.member) {
       this.router.navigate(['/signin']);
     }
+
+    this.empNo = this.route.snapshot.paramMap.get('empNo')!;
+    this.year = Number(this.route.snapshot.paramMap.get('year'));
+
+    console.log('Employee No:', this.empNo);
+    console.log('Year:', this.year);
+
+   // check for registration status
+   this.memberService.getRegistration(this.empNo, this.year).subscribe({
+    next: (reg) => {
+      if (reg && reg.acceptedDate != null) {
+        console.log('Registration found:', reg);
+        Swal.fire({
+          title: `Registration for year ${this.year} already Completed.`,
+          text: `You cannot register again for the same year.`,
+          icon: 'info',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          this.router.navigate(['/signin']);
+        });
+      }
+      if(reg && reg.acceptedDate == null) {
+        //edit message
+        Swal.fire({
+          title: `Registration for year ${this.year} is pending acceptance.`,
+          text: `You can edit your registration details.`, 
+          icon: 'info',
+          confirmButtonText: 'Edit Now', 
+        }).then(() => {
+        });  
+      } 
+    }}
+  );
+
     if (this.member.registrationOpen) {
       this.registerYear = this.member.registrationOpen
       const regNew = this.member.memberRegistrations.find(r => { return r.year == this.registerYear })
@@ -517,191 +558,3 @@ export class RegisterComponent implements OnInit {
     downloadLink.click();
   }
 }
-
-
-/*registerProcess() {
-  let sum: number = 0;
-  this.beneficiaryData.data.forEach((a) => (sum += Number(a.percent)));
-
-  let msg = `Confirm to submit Data ?`;
-  let btn = 'Yes, Submit!';
-  if (sum > 100) {
-    Swal.fire({
-      title: `Beneficiary percentage is ${sum}% not acceptable`,
-      icon: 'error',
-      showCancelButton: false,
-      confirmButtonText: 'Retry !',
-    });
-    return;
-  } else if (sum < 100) {
-    msg = `Beneficiary percentage is ${sum}%`;
-    btn = `Submit anyway`;
-  }
-
-  Swal.fire({
-    title: msg,
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: btn,
-    showLoaderOnConfirm: true,
-    preConfirm: async () => {
-      this.setDep();
-      this.setBen();
-      this.formGroup.patchValue({
-        roles: [{ role: Constants.ROLE_USER }],
-        memberRegistrations: [
-          {
-            id: null,
-            year: this.registerYear,
-            schemeType: this.schemeType,
-          },
-        ],
-        mDate: Utils.today,
-        registrationOpen: 0,
-        status: Constants.REGISTRATION_PENDING,
-        password: Constants.DEFAULT_PASSWORD,
-        scheme: this.schemeType,
-      });
-      return this.authService
-        .registerold(this.formGroup.value)
-        .subscribe((reg) => {
-          return this.authService
-            .getMemberold(this.formGroup.value.empNo)
-            .subscribe((m) => {
-              this.share.setUser(m);
-              Swal.fire({
-                title: `Download pdf`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Save',
-                allowOutsideClick: () => false,
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  this.downloadMembershipApplication(
-                    this.registerYear,
-                    m.empNo
-                  );
-                }
-
-                const reg = m.memberRegistrations.find((r) => {
-                  return (
-                    r.year == Utils.currentYear && r.acceptedDate != null
-                  );
-                });
-                if (reg !== undefined) {
-                  this.router.navigate(['/home']);
-                } else {
-                  Swal.fire(
-                    'Membership acceptace is required',
-                    `Contact Department Head`,
-                    'warning'
-                  ).then(() => {
-                    this.router.navigate(['/signin']);
-                  });
-                }
-              });
-              this.formGroup.reset();
-              return m;
-            });
-        });
-    },
-    allowOutsideClick: () => !Swal.isLoading(),
-  }).then((result) => {
-    if (result.isConfirmed) {
-    }
-  });
-}
-*/
-
-
-
-
-/*registerProcess() {
-  let sum: number = 0;
-  this.beneficiaryData.data.forEach((a) => (sum += Number(a.percent)));
-
-  let msg = `Confirm to submit Data ?`;
-  let btn = 'Yes, Submit!';
-  if (sum > 100) {
-    Swal.fire({
-      title: `Beneficiary percentage is ${sum}% not acceptable`,
-      icon: 'error',
-      showCancelButton: false,
-      confirmButtonText: 'Retry !',
-    });
-    return;
-  } else if (sum < 100) {
-    msg = `Beneficiary percentage is ${sum}%`;
-    btn = `Submit anyway`;
-  } else if (sum == 100) {
-    msg = `Confirm for Registration`;
-    btn = `Confirm`;
-  }
-
-  const swalResult = await Swal.fire({
-    title: msg,
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: btn,
-    showLoaderOnConfirm: true,
-    preConfirm: async () => {
-      this.setDep();
-      this.setBen();
-      this.formGroup.patchValue({
-        roles: [{ role: Constants.ROLE_USER }],
-        memberRegistrations: [
-          {
-            id: null,
-            year: Utils.currentYear,
-            schemeType: this.schemeType,
-          },
-        ],
-        mDate: Utils.today,
-        registrationOpen: 0,
-        status: Constants.REGISTRATION_PENDING,
-        password: Constants.DEFAULT_PASSWORD,
-        scheme: this.schemeType,
-      });
-      Swal.showValidationMessage('Processing');
-      let res = await this.authService.register(this.formGroup.value);
-
-      let res1 = await this.authService.getMember(this.formGroup.value.empNo);
-
-      res1.subscribe((m) => {
-        this.share.setUser(m);
-        Swal.fire({
-          title: `Download pdf`,
-          icon: 'question',
-          showCancelButton: true,
-          confirmButtonText: 'Save',
-          allowOutsideClick: () => false,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.downloadMembershipApplication(Utils.currentYear, m.empNo);
-          }
-
-          const reg = m.memberRegistrations.find((r) => {
-            return r.year == Utils.currentYear && r.acceptedDate != null;
-          });
-          if (reg !== undefined) {
-            this.router.navigate(['/home']);
-          } else {
-            Swal.fire(
-              'Membership acceptace is required',
-              `Contact Department Head`,
-              'warning'
-            ).then(() => {
-              this.router.navigate(['/signin']);
-            });
-          }
-        });
-        this.formGroup.reset();
-      });
-      return res;
-    },
-    allowOutsideClick: () => !Swal.isLoading(),
-  }).then((result) => {
-    if (result.isConfirmed) {
-    }
-  });
-}*/

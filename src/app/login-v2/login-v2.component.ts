@@ -106,7 +106,10 @@ export class LoginV2Component implements OnInit {
 
       // Fetch member again to ensure fresh data
       const updatedMember = await firstValueFrom(this.authService.getMemberNew(empNo));
+
+      updatedMember.memberRegistrations.sort((a, b) => b.year - a.year);
       this.share.setUser(updatedMember);
+      console.log(updatedMember)
 
       const currentYear = Utils.currentYear;
       const reg = updatedMember.memberRegistrations.find(

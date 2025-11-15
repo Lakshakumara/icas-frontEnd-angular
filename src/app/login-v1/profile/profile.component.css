@@ -94,6 +94,7 @@
 .reg-table td {
   padding: 6px 8px;
   border-bottom: 1px solid #e0e0e0;
+  text-align: left; /* make both headers and cells left-aligned */
 }
 
 .section-divider {
